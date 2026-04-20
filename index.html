@@ -18,10 +18,10 @@
     .lang-b.a{background:var(--p);color:#fff}
     .input-s{background:var(--c);border-radius:12px;padding:24px;box-shadow:0 1px 3px rgba(0,0,0,.1);margin-bottom:24px}
     .input-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px}
-    .input-t{font-size:1.2rem;font-weight:600;display:flex;align-items:center;gap:8px}
-    .input-t::before{content:'';width:4px;height:16px;background:var(--p);border-radius:2px}
-    .results-t{font-size:1.2rem;font-weight:600;display:flex;align-items:center;gap:8px;margin:8px 0 16px;padding:12px 0;border-bottom:2px solid var(--b)}
-    .results-t::before{content:'';width:4px;height:16px;background:var(--s);border-radius:2px}
+    .sec-t{font-size:1.2rem;font-weight:600;display:flex;align-items:center;gap:8px}
+    .sec-t::before{content:'';width:4px;height:16px;background:var(--p);border-radius:2px}
+    .res-t{font-size:1.2rem;font-weight:600;display:flex;align-items:center;gap:8px;margin:8px 0 16px;padding-bottom:12px;border-bottom:2px solid var(--b)}
+    .res-t::before{content:'';width:4px;height:16px;background:var(--s);border-radius:2px}
     .form-g{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-bottom:20px}
     .form-gr{display:flex;flex-direction:column;gap:6px}
     .form-gr label{font-size:.9rem;font-weight:500;color:var(--tm)}
@@ -82,7 +82,7 @@
     <!-- INPUT SECTION -->
     <section class="input-s">
       <div class="input-h">
-        <div class="input-t" id="inpTitle">Ввод данных банка</div>
+        <div class="sec-t" id="inpTitle">Ввод данных банка</div>
         <div class="btn-g">
           <button class="btn btn-s" onclick="resetDef()" id="btnReset">↺ Сбросить</button>
           <button class="btn btn-p" onclick="doAnalyze()" id="btnAnalyze">🚀 Анализировать</button>
@@ -115,60 +115,59 @@
       </form>
     </section>
 
-    <!-- RESULTS SECTION -->
-    <div class="results-t" id="resultsTitle">📊 Результаты анализа</div>
+    <!-- RESULTS SECTION (Скрыт до анализа) -->
+    <div id="resultsSection" style="display:none;">
+      <div class="res-t" id="resultsTitle">📊 Результаты анализа</div>
+      <div class="grid">
+        <div class="card">
+          <div class="card-t" id="tBank">Показатели банка</div>
+          <div class="metric"><span class="metric-l" id="lProfitG">Рост прибыли</span><span class="metric-v"><span id="rProfit">+208%</span> <span class="badge badge-d" id="bProfit">высокий</span></span></div>
+          <div class="metric"><span class="metric-l" id="lCap">Капитализация</span><span class="metric-v"><span id="rCap">74.8</span> <span id="capUnit">млрд сомов</span></span></div>
+          <div class="metric"><span class="metric-l" id="lDivP">Дивиденды</span><span class="metric-v"><span id="rDiv">100</span>% <span class="badge badge-w" id="tShare">акционерам</span></span></div>
+          <div class="metric"><span class="metric-l" id="lInt">Средняя ставка</span><span class="metric-v"><span id="rInt">17–32</span>% <span class="badge badge-d" id="bInt">высокая</span></span></div>
+        </div>
+        <div class="card">
+          <div class="card-t" id="tPop">Благосостояние населения</div>
+          <div class="metric"><span class="metric-l" id="lIncG">Рост реальных доходов</span><span class="metric-v"><span id="rInc">+12.9</span>% <span class="badge badge-s" id="bInc">умеренный</span></span></div>
+          <div class="metric"><span class="metric-l" id="lPovR">Уровень бедности</span><span class="metric-v"><span id="rPov">25.7</span>% <span class="badge badge-d" id="bPov">критичный</span></span></div>
+          <div class="metric"><span class="metric-l" id="lGdpC">ВВП на душу</span><span class="metric-v">$<span id="rGdp">2,513</span> <span class="badge badge-w" id="bGdp">низкий</span></span></div>
+          <div class="metric"><span class="metric-l" id="lSalA">Средняя зарплата</span><span class="metric-v"><span id="rSal">37,361</span> <span id="salUnit">сомов</span></span></div>
+        </div>
+        <div class="card">
+          <div class="card-t" id="tCred">Структура кредитования</div>
+          <div class="chart-c"><canvas id="chart"></canvas></div>
+          <div style="margin-top:16px;font-size:.9rem;color:var(--tm)" id="credNote">Данные по микрокредитованию: потребление, бизнес, прочее</div>
+        </div>
+      </div>
 
-    <div class="grid">
-      <div class="card">
-        <div class="card-t" id="tBank">Показатели банка</div>
-        <div class="metric"><span class="metric-l" id="lProfitG">Рост прибыли</span><span class="metric-v"><span id="rProfit">+208%</span> <span class="badge badge-d" id="bProfit">высокий</span></span></div>
-        <div class="metric"><span class="metric-l" id="lCap">Капитализация</span><span class="metric-v"><span id="rCap">74.8</span> <span id="capUnit">млрд сомов</span></span></div>
-        <div class="metric"><span class="metric-l" id="lDivP">Дивиденды</span><span class="metric-v"><span id="rDiv">100</span>% <span class="badge badge-w" id="tShare">акционерам</span></span></div>
-        <div class="metric"><span class="metric-l" id="lInt">Средняя ставка</span><span class="metric-v"><span id="rInt">17–32</span>% <span class="badge badge-d" id="bInt">высокая</span></span></div>
+      <div class="card score-c">
+        <div class="card-t" id="tScore" style="justify-content:center">Индекс вклада в благосостояние страны</div>
+        <div class="score-l" id="scoreDesc">Композитная оценка реального влияния банка на уровень жизни населения страны</div>
+        <div class="score-v" id="scoreVal">32/100</div>
+        <div class="score-b"><div class="score-f" id="scoreFill" style="width:32%;background:var(--d)"></div></div>
+        <div style="display:flex;justify-content:space-between;font-size:.85rem;color:var(--tm)">
+          <span id="tLowC">Низкий вклад</span><span id="tHighC">Высокий вклад</span>
+        </div>
+        <div id="warnBox" style="margin-top:20px;padding:12px;background:#fef2f2;border-radius:8px;color:var(--d)">
+          <strong id="tWarn">⚠️ Предупреждение:</strong> <span id="warnText">Прибыль банка растёт в 16 раз быстрее доходов населения. Высокая доля потребительских кредитов указывает на кредитование бедности, а не развития.</span>
+        </div>
       </div>
-      <div class="card">
-        <div class="card-t" id="tPop">Благосостояние населения</div>
-        <div class="metric"><span class="metric-l" id="lIncG">Рост реальных доходов</span><span class="metric-v"><span id="rInc">+12.9</span>% <span class="badge badge-s" id="bInc">умеренный</span></span></div>
-        <div class="metric"><span class="metric-l" id="lPovR">Уровень бедности</span><span class="metric-v"><span id="rPov">25.7</span>% <span class="badge badge-d" id="bPov">критичный</span></span></div>
-        <div class="metric"><span class="metric-l" id="lGdpC">ВВП на душу</span><span class="metric-v">$<span id="rGdp">2,513</span> <span class="badge badge-w" id="bGdp">низкий</span></span></div>
-        <div class="metric"><span class="metric-l" id="lSalA">Средняя зарплата</span><span class="metric-v"><span id="rSal">37,361</span> <span id="salUnit">сомов</span></span></div>
-      </div>
-      <div class="card">
-        <div class="card-t" id="tCred">Структура кредитования</div>
-        <div class="chart-c"><canvas id="chart"></canvas></div>
-        <div style="margin-top:16px;font-size:.9rem;color:var(--tm)" id="credNote">Данные по микрокредитованию: потребление, бизнес, прочее</div>
-      </div>
-    </div>
 
-    <!-- WELFARE SCORE -->
-    <div class="card score-c">
-      <div class="card-t" id="tScore" style="justify-content:center">Индекс вклада в благосостояние страны</div>
-      <div class="score-l" id="scoreDesc">Композитная оценка реального влияния банка на уровень жизни населения страны</div>
-      <div class="score-v" id="scoreVal">32/100</div>
-      <div class="score-b"><div class="score-f" id="scoreFill" style="width:32%;background:var(--d)"></div></div>
-      <div style="display:flex;justify-content:space-between;font-size:.85rem;color:var(--tm)">
-        <span id="tLowC">Низкий вклад</span><span id="tHighC">Высокий вклад</span>
-      </div>
-      <div id="warnBox" style="margin-top:20px;padding:12px;background:#fef2f2;border-radius:8px;color:var(--d)">
-        <strong id="tWarn">⚠️ Предупреждение:</strong> <span id="warnText">Прибыль банка растёт в 16 раз быстрее доходов населения. Высокая доля потребительских кредитов указывает на кредитование бедности, а не развития.</span>
-      </div>
-    </div>
-
-    <!-- PROBLEMS & QUESTIONS -->
-    <div class="grid" style="margin-top:24px">
-      <div class="card">
-        <div class="card-t" id="tProb">Ключевые проблемы системы</div>
-        <div class="prob-i"><div class="prob-ic">!</div><div id="p1">Кредитование бедности: люди берут кредиты не для развития, а для выживания</div></div>
-        <div class="prob-i"><div class="prob-ic">!</div><div id="p2">Высокие ставки: 17–32% годовых создают долговую ловушку</div></div>
-        <div class="prob-i"><div class="prob-ic">!</div><div id="p3">Диспропорция прибылей: банк богатеет в 16 раз быстрее роста доходов населения</div></div>
-        <div class="prob-i"><div class="prob-ic">!</div><div id="p4">Господдержка частным акционерам: государство вливает капитал, прибыль уходит акционерам</div></div>
-      </div>
-      <div class="card">
-        <div class="card-t" id="tQuest">Критические вопросы для оценки</div>
-        <div class="quest-i" id="q1">За счёт чего формируется прибыль? (потребление или инвестиции?)</div>
-        <div class="quest-i" id="q2">Какова долговая нагрузка клиентов? (растёт ли просрочка?)</div>
-        <div class="quest-i" id="q3">Какова реальная доходность для экономики? (создаются ли рабочие места?)</div>
-        <div class="quest-i" id="q4">Кто получает дивиденды? (государство или частные акционеры?)</div>
+      <div class="grid" style="margin-top:24px">
+        <div class="card">
+          <div class="card-t" id="tProb">Ключевые проблемы системы</div>
+          <div class="prob-i"><div class="prob-ic">!</div><div id="p1">Кредитование бедности: люди берут кредиты не для развития, а для выживания</div></div>
+          <div class="prob-i"><div class="prob-ic">!</div><div id="p2">Высокие ставки: 17–32% годовых создают долговую ловушку</div></div>
+          <div class="prob-i"><div class="prob-ic">!</div><div id="p3">Диспропорция прибылей: банк богатеет в 16 раз быстрее роста доходов населения</div></div>
+          <div class="prob-i"><div class="prob-ic">!</div><div id="p4">Господдержка частным акционерам: государство вливает капитал, прибыль уходит акционерам</div></div>
+        </div>
+        <div class="card">
+          <div class="card-t" id="tQuest">Критические вопросы для оценки</div>
+          <div class="quest-i" id="q1">За счёт чего формируется прибыль? (потребление или инвестиции?)</div>
+          <div class="quest-i" id="q2">Какова долговая нагрузка клиентов? (растёт ли просрочка?)</div>
+          <div class="quest-i" id="q3">Какова реальная доходность для экономики? (создаются ли рабочие места?)</div>
+          <div class="quest-i" id="q4">Кто получает дивиденды? (государство или частные акционеры?)</div>
+        </div>
       </div>
     </div>
 
@@ -180,130 +179,48 @@
   <script>
     const tr = {
       ru: {
-        app: "Bank Welfare Analyzer",
-        inpTitle: "Ввод данных банка",
-        btnReset: "↺ Сбросить",
-        btnAnalyze: "🚀 Анализировать",
-        exLabel: "Примеры:",
-        lName: "Название банка *",
-        lCountry: "Страна",
-        lProfit: "Рост прибыли (%) *",
-        lCapital: "Капитализация",
-        lDiv: "Дивиденды акционерам (%)",
-        lIntMin: "Ставка мин (%)",
-        lIntMax: "Ставка макс (%)",
-        lInc: "Рост доходов населения (%) *",
-        lPov: "Уровень бедности (%) *",
-        lGdp: "ВВП на душу ($)",
-        lSal: "Средняя зарплата",
-        lCons: "Кредиты на потребление (%) *",
-        lBus: "Кредиты на бизнес (%) *",
-        lOther: "Прочие кредиты (%)",
-        tBank: "Показатели банка",
-        lProfitG: "Рост прибыли",
-        lCap: "Капитализация",
-        lDivP: "Дивиденды",
-        lInt: "Средняя ставка",
-        tPop: "Благосостояние населения",
-        lIncG: "Рост реальных доходов",
-        lPovR: "Уровень бедности",
-        lGdpC: "ВВП на душу",
-        lSalA: "Средняя зарплата",
-        tCred: "Структура кредитования",
-        credNote: "Данные по микрокредитованию: потребление, бизнес, прочее",
-        tScore: "Индекс вклада в благосостояние страны",
-        scoreDesc: "Композитная оценка реального влияния банка на уровень жизни населения страны",
-        tLowC: "Низкий вклад",
-        tHighC: "Высокий вклад",
-        tWarn: "⚠️ Предупреждение:",
+        app: "Bank Welfare Analyzer", inpTitle: "Ввод данных банка", btnReset: "↺ Сбросить", btnAnalyze: "🚀 Анализировать",
+        exLabel: "Примеры:", lName: "Название банка *", lCountry: "Страна", lProfit: "Рост прибыли (%) *",
+        lCapital: "Капитализация", lDiv: "Дивиденды акционерам (%)", lIntMin: "Ставка мин (%)", lIntMax: "Ставка макс (%)",
+        lInc: "Рост доходов населения (%) *", lPov: "Уровень бедности (%) *", lGdp: "ВВП на душу ($)", lSal: "Средняя зарплата",
+        lCons: "Кредиты на потребление (%) *", lBus: "Кредиты на бизнес (%) *", lOther: "Прочие кредиты (%)",
+        tBank: "Показатели банка", lProfitG: "Рост прибыли", lCap: "Капитализация", lDivP: "Дивиденды", lInt: "Средняя ставка",
+        tPop: "Благосостояние населения", lIncG: "Рост реальных доходов", lPovR: "Уровень бедности", lGdpC: "ВВП на душу", lSalA: "Средняя зарплата",
+        tCred: "Структура кредитования", credNote: "Данные по микрокредитованию: потребление, бизнес, прочее",
+        tScore: "Индекс вклада в благосостояние страны", scoreDesc: "Композитная оценка реального влияния банка на уровень жизни населения страны",
+        tLowC: "Низкий вклад", tHighC: "Высокий вклад", tWarn: "⚠️ Предупреждение:",
         warnText: "Прибыль банка растёт в 16 раз быстрее доходов населения. Высокая доля потребительских кредитов указывает на кредитование бедности, а не развития.",
-        tProb: "Ключевые проблемы системы",
-        p1: "Кредитование бедности: люди берут кредиты не для развития, а для выживания",
-        p2: "Высокие ставки: 17–32% годовых создают долговую ловушку",
-        p3: "Диспропорция прибылей: банк богатеет в 16 раз быстрее роста доходов населения",
+        tProb: "Ключевые проблемы системы", p1: "Кредитование бедности: люди берут кредиты не для развития, а для выживания",
+        p2: "Высокие ставки: 17–32% годовых создают долговую ловушку", p3: "Диспропорция прибылей: банк богатеет в 16 раз быстрее роста доходов населения",
         p4: "Господдержка частным акционерам: государство вливает капитал, прибыль уходит акционерам",
-        tQuest: "Критические вопросы для оценки",
-        q1: "За счёт чего формируется прибыль? (потребление или инвестиции?)",
-        q2: "Какова долговая нагрузка клиентов? (растёт ли просрочка?)",
-        q3: "Какова реальная доходность для экономики? (создаются ли рабочие места?)",
+        tQuest: "Критические вопросы для оценки", q1: "За счёт чего формируется прибыль? (потребление или инвестиции?)",
+        q2: "Какова долговая нагрузка клиентов? (растёт ли просрочка?)", q3: "Какова реальная доходность для экономики? (создаются ли рабочие места?)",
         q4: "Кто получает дивиденды? (государство или частные акционеры?)",
-        fRepo: "Репозиторий проекта:",
-        capU: "млрд сомов",
-        salU: "сомов",
-        tHigh: "высокий",
-        tMod: "умеренный",
-        tCrit: "критичный",
-        tLow: "низкий",
-        tShare: "акционерам",
-        cons: "Потребление",
-        bus: "Бизнес",
-        other: "Прочее",
-        resultsTitle: "📊 Результаты анализа",
-        noData: "⏳ Введите данные банка и нажмите «Анализировать»",
-        noDataEn: "⏳ Enter bank data and click «Analyze»"
+        fRepo: "Репозиторий проекта:", capU: "млрд сомов", salU: "сомов",
+        tHigh: "высокий", tMod: "умеренный", tCrit: "критичный", tLow: "низкий", tShare: "акционерам",
+        cons: "Потребление", bus: "Бизнес", other: "Прочее", resultsTitle: "📊 Результаты анализа"
       },
       en: {
-        app: "Bank Welfare Analyzer",
-        inpTitle: "Enter Bank Data",
-        btnReset: "↺ Reset",
-        btnAnalyze: "🚀 Analyze",
-        exLabel: "Examples:",
-        lName: "Bank Name *",
-        lCountry: "Country",
-        lProfit: "Profit Growth (%) *",
-        lCapital: "Capitalization",
-        lDiv: "Dividends to Shareholders (%)",
-        lIntMin: "Rate Min (%)",
-        lIntMax: "Rate Max (%)",
-        lInc: "Population Income Growth (%) *",
-        lPov: "Poverty Rate (%) *",
-        lGdp: "GDP per Capita ($)",
-        lSal: "Average Salary",
-        lCons: "Consumption Loans (%) *",
-        lBus: "Business Loans (%) *",
-        lOther: "Other Loans (%)",
-        tBank: "Bank Metrics",
-        lProfitG: "Profit Growth",
-        lCap: "Capitalization",
-        lDivP: "Dividends",
-        lInt: "Average Interest Rate",
-        tPop: "Population Welfare",
-        lIncG: "Real Income Growth",
-        lPovR: "Poverty Rate",
-        lGdpC: "GDP per Capita",
-        lSalA: "Average Salary",
-        tCred: "Credit Structure",
-        credNote: "Microcredit  consumption, business, other",
-        tScore: "Country Welfare Contribution Index",
-        scoreDesc: "Composite score of the bank's real impact on the country's population living standards",
-        tLowC: "Low contribution",
-        tHighC: "High contribution",
-        tWarn: "⚠️ Warning:",
+        app: "Bank Welfare Analyzer", inpTitle: "Enter Bank Data", btnReset: "↺ Reset", btnAnalyze: "🚀 Analyze",
+        exLabel: "Examples:", lName: "Bank Name *", lCountry: "Country", lProfit: "Profit Growth (%) *",
+        lCapital: "Capitalization", lDiv: "Dividends to Shareholders (%)", lIntMin: "Rate Min (%)", lIntMax: "Rate Max (%)",
+        lInc: "Population Income Growth (%) *", lPov: "Poverty Rate (%) *", lGdp: "GDP per Capita ($)", lSal: "Average Salary",
+        lCons: "Consumption Loans (%) *", lBus: "Business Loans (%) *", lOther: "Other Loans (%)",
+        tBank: "Bank Metrics", lProfitG: "Profit Growth", lCap: "Capitalization", lDivP: "Dividends", lInt: "Average Interest Rate",
+        tPop: "Population Welfare", lIncG: "Real Income Growth", lPovR: "Poverty Rate", lGdpC: "GDP per Capita", lSalA: "Average Salary",
+        tCred: "Credit Structure", credNote: "Microcredit  consumption, business, other",
+        tScore: "Country Welfare Contribution Index", scoreDesc: "Composite score of the bank's real impact on the country's population living standards",
+        tLowC: "Low contribution", tHighC: "High contribution", tWarn: "⚠️ Warning:",
         warnText: "Bank profit grows 16x faster than population income. High share of consumption loans indicates lending to poverty, not development.",
-        tProb: "Key System Problems",
-        p1: "Poverty lending: people borrow for survival, not development",
-        p2: "High interest rates: 17–32% p.a. create debt traps",
-        p3: "Profit disparity: bank enriches 16x faster than income growth",
+        tProb: "Key System Problems", p1: "Poverty lending: people borrow for survival, not development",
+        p2: "High interest rates: 17–32% p.a. create debt traps", p3: "Profit disparity: bank enriches 16x faster than income growth",
         p4: "State support to private shareholders: public capital, private profits",
-        tQuest: "Critical Questions for Assessment",
-        q1: "What drives profit? (consumption vs. investment loans?)",
-        q2: "What is clients' debt burden? (is delinquency growing?)",
-        q3: "What is real economic return? (are jobs created?)",
+        tQuest: "Critical Questions for Assessment", q1: "What drives profit? (consumption vs. investment loans?)",
+        q2: "What is clients' debt burden? (is delinquency growing?)", q3: "What is real economic return? (are jobs created?)",
         q4: "Who receives dividends? (state or private shareholders?)",
-        fRepo: "Project repository:",
-        capU: "bln KGS",
-        salU: "KGS",
-        tHigh: "high",
-        tMod: "moderate",
-        tCrit: "critical",
-        tLow: "low",
-        tShare: "to shareholders",
-        cons: "Consumption",
-        bus: "Business",
-        other: "Other",
-        resultsTitle: "📊 Analysis Results",
-        noData: "⏳ Enter bank data and click «Analyze»",
-        noDataEn: "⏳ Введите данные банка и нажмите «Анализировать»"
+        fRepo: "Project repository:", capU: "bln KGS", salU: "KGS",
+        tHigh: "high", tMod: "moderate", tCrit: "critical", tLow: "low", tShare: "to shareholders",
+        cons: "Consumption", bus: "Business", other: "Other", resultsTitle: "📊 Analysis Results"
       }
     };
 
@@ -314,6 +231,8 @@
     function $(id){return document.getElementById(id);}
     function fmtPct(v){return (v>=0?'+':'')+v+'%'}
     function fmtNum(v){return v.toLocaleString(lang==='ru'?'ru-RU':'en-US')}
+    function showRes(){$('resultsSection').style.display='block';}
+    function hideRes(){$('resultsSection').style.display='none';}
 
     function setLang(l){
       lang=l;
@@ -339,17 +258,13 @@
         $('povertyRate').value=def.pr;$('gdpPerCapita').value=def.gd;
         $('avgSalary').value=def.as;$('creditConsumption').value=def.cc;
         $('creditBusiness').value=def.cb;$('creditOther').value=def.co2;
+        doAnalyze();
       }else{
         $('f').reset();
-        $('bankName').value='';$('country').value='';
-        $('profitGrowth').value='';$('capital').value='';
-        $('dividends').value='';$('interestMin').value='';
-        $('interestMax').value='';$('incomeGrowth').value='';
-        $('povertyRate').value='';$('gdpPerCapita').value='';
-        $('avgSalary').value='';$('creditConsumption').value='';
-        $('creditBusiness').value='';$('creditOther').value='';
+        ['bankName','country','profitGrowth','capital','dividends','interestMin','interestMax','incomeGrowth','povertyRate','gdpPerCapita','avgSalary','creditConsumption','creditBusiness','creditOther'].forEach(id=>$(id).value='');
+        hideRes();
+        setTimeout(()=>$('bankName').focus(),50); // Курсор мигает в первом поле
       }
-      doAnalyze();
     }
 
     function resetDef(){loadEx('eldik');}
@@ -368,56 +283,32 @@
 
     function doAnalyze(){
       const d=getData();
+      const hasData = d.pg > 0 || d.ig > 0 || d.cc > 0;
+      if(!hasData){hideRes();return;}
+      
+      showRes();
       $('hTitle').textContent=`${d.bn} | ${tr[lang].app}`;
       refresh(d);
       localStorage.setItem('bwa_data',JSON.stringify(d));
-      document.querySelector('.score-c').scrollIntoView({behavior:'smooth'});
+      $('resultsTitle').scrollIntoView({behavior:'smooth',block:'start'});
     }
 
     function refresh(d=null){
       if(!d)d=getData();
-      
-      // Check if data is meaningful (not all zeros)
-      const hasData = d.pg > 0 || d.ig > 0 || d.cc > 0;
-      
-      if(!hasData){
-        // Show placeholder state
-        $('scoreVal').textContent='—/100';
-        $('scoreFill').style.width='0%';
-        $('scoreFill').style.background='var(--tm)';
-        $('warnBox').style.background='#f1f5f9';
-        $('warnBox').style.color='var(--tm)';
-        $('warnText').textContent=lang==='ru'?tr.ru.noData:tr.en.noData;
-        // Reset badges to neutral
-        $('bProfit').className='badge badge-n';
-        $('bInt').className='badge badge-n';
-        $('bInc').className='badge badge-n';
-        $('bPov').className='badge badge-n';
-        $('bGdp').className='badge badge-n';
-        // Update chart with zeros
-        if(!chart)initChart(d);else{chart.data.labels=[tr[lang].cons,tr[lang].bus,tr[lang].other];chart.data.datasets[0].data=[0,0,0];chart.update();}
-        return;
-      }
-      
-      // Normal calculation
-      $('rProfit').textContent=fmtPct(d.pg);
-      $('rCap').textContent=d.cp;
-      $('rDiv').textContent=d.di;
-      $('rInt').textContent=`${d.im}–${d.ix}`;
-      $('rInc').textContent=fmtPct(d.ig);
-      $('rPov').textContent=d.pr;
-      $('rGdp').textContent=fmtNum(d.gd);
-      $('rSal').textContent=fmtNum(d.as);
+      $('rProfit').textContent=fmtPct(d.pg);$('rCap').textContent=d.cp;
+      $('rDiv').textContent=d.di;$('rInt').textContent=`${d.im}–${d.ix}`;
+      $('rInc').textContent=fmtPct(d.ig);$('rPov').textContent=d.pr;
+      $('rGdp').textContent=fmtNum(d.gd);$('rSal').textContent=fmtNum(d.as);
       $('bProfit').className=`badge badge-${d.pg>50?'d':d.pg>20?'w':'s'}`;
       $('bInt').className=`badge badge-${d.ix>25?'d':d.ix>15?'w':'s'}`;
       $('bInc').className=`badge badge-${d.ig>10?'s':d.ig>5?'w':'d'}`;
       $('bPov').className=`badge badge-${d.pr>20?'d':d.pr>10?'w':'s'}`;
       $('bGdp').className=`badge badge-${d.gd<3000?'w':d.gd<10000?'n':'s'}`;
       if(!chart)initChart(d);else{chart.data.labels=[tr[lang].cons,tr[lang].bus,tr[lang].other];chart.data.datasets[0].data=[d.cc,d.cb,d.co2];chart.update();}
+      
       const sc=calcScore(d);
       $('scoreVal').textContent=sc+'/100';
-      const sf=$('scoreFill');
-      sf.style.width=sc+'%';
+      const sf=$('scoreFill');sf.style.width=sc+'%';
       sf.style.background=sc<40?'var(--d)':sc<70?'var(--w)':'var(--s)';
       const gap=d.pg/Math.max(d.ig,0.1);
       const wb=$('warnBox'),wt=$('warnText');
@@ -444,9 +335,7 @@
     document.addEventListener('DOMContentLoaded',()=>{
       const sv=localStorage.getItem('bwa_data');
       if(sv){try{const d=JSON.parse(sv);Object.keys(d).forEach(k=>{const el=$(k);if(el&&d[k]!==undefined)el.value=d[k]})}catch(e){}}
-      refresh(def);
-      initChart(def);
-      setLang('ru');
+      refresh(def);initChart(def);setLang('ru');showRes();
       ['creditConsumption','creditBusiness','creditOther'].forEach(id=>$(id).addEventListener('change',fixCredit));
     });
   </script>

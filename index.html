@@ -34,6 +34,7 @@
     .btn-p:hover{background:var(--pd)}
     .btn-s{background:var(--ib);color:var(--t);border:1px solid var(--b)}
     .btn-s:hover{background:var(--b)}
+    .results-label{text-align:center;color:var(--tm);font-size:.95rem;font-weight:500;margin:8px 0 16px;padding:8px;background:var(--ib);border-radius:8px}
     .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;margin-bottom:24px}
     .card{background:var(--c);border-radius:12px;padding:20px;box-shadow:0 1px 3px rgba(0,0,0,.1)}
     .card-t{font-size:1.1rem;font-weight:600;margin-bottom:16px}
@@ -76,6 +77,7 @@
       </div>
     </header>
 
+    <!-- INPUT SECTION -->
     <section class="input-s">
       <div class="input-h">
         <div class="input-t" id="inpTitle">Ввод данных банка</div>
@@ -111,19 +113,22 @@
       </form>
     </section>
 
+    <!-- OUTPUT SECTION -->
+    <div class="results-label" id="resultsLabel">📊 Результаты анализа</div>
+
     <div class="grid">
       <div class="card">
         <div class="card-t" id="tBank">Показатели банка</div>
-        <div class="metric"><span class="metric-l" id="lProfitG">Рост прибыли</span><span class="metric-v"><span id="rProfit">+208%</span> <span class="badge badge-d" id="bProfit" id="tHigh">высокий</span></span></div>
+        <div class="metric"><span class="metric-l" id="lProfitG">Рост прибыли</span><span class="metric-v"><span id="rProfit">+208%</span> <span class="badge badge-d" id="bProfit">высокий</span></span></div>
         <div class="metric"><span class="metric-l" id="lCap">Капитализация</span><span class="metric-v"><span id="rCap">74.8</span> <span id="capUnit">млрд сомов</span></span></div>
         <div class="metric"><span class="metric-l" id="lDivP">Дивиденды</span><span class="metric-v"><span id="rDiv">100</span>% <span class="badge badge-w" id="tShare">акционерам</span></span></div>
         <div class="metric"><span class="metric-l" id="lInt">Средняя ставка</span><span class="metric-v"><span id="rInt">17–32</span>% <span class="badge badge-d" id="bInt">высокая</span></span></div>
       </div>
       <div class="card">
         <div class="card-t" id="tPop">Благосостояние населения</div>
-        <div class="metric"><span class="metric-l" id="lIncG">Рост реальных доходов</span><span class="metric-v"><span id="rInc">+12.9</span>% <span class="badge badge-s" id="bInc" id="tMod">умеренный</span></span></div>
-        <div class="metric"><span class="metric-l" id="lPovR">Уровень бедности</span><span class="metric-v"><span id="rPov">25.7</span>% <span class="badge badge-d" id="bPov" id="tCrit">критичный</span></span></div>
-        <div class="metric"><span class="metric-l" id="lGdpC">ВВП на душу</span><span class="metric-v">$<span id="rGdp">2,513</span> <span class="badge badge-w" id="bGdp" id="tLow">низкий</span></span></div>
+        <div class="metric"><span class="metric-l" id="lIncG">Рост реальных доходов</span><span class="metric-v"><span id="rInc">+12.9</span>% <span class="badge badge-s" id="bInc">умеренный</span></span></div>
+        <div class="metric"><span class="metric-l" id="lPovR">Уровень бедности</span><span class="metric-v"><span id="rPov">25.7</span>% <span class="badge badge-d" id="bPov">критичный</span></span></div>
+        <div class="metric"><span class="metric-l" id="lGdpC">ВВП на душу</span><span class="metric-v">$<span id="rGdp">2,513</span> <span class="badge badge-w" id="bGdp">низкий</span></span></div>
         <div class="metric"><span class="metric-l" id="lSalA">Средняя зарплата</span><span class="metric-v"><span id="rSal">37,361</span> <span id="salUnit">сомов</span></span></div>
       </div>
       <div class="card">
@@ -133,9 +138,10 @@
       </div>
     </div>
 
+    <!-- WELFARE SCORE -->
     <div class="card score-c">
-      <div class="card-t" id="tScore" style="justify-content:center">Индекс вклада в благосостояние</div>
-      <div class="score-l" id="scoreDesc">Композитная оценка реального влияния банка на уровень жизни населения</div>
+      <div class="card-t" id="tScore" style="justify-content:center">Индекс вклада в благосостояние страны</div>
+      <div class="score-l" id="scoreDesc">Композитная оценка реального влияния банка на уровень жизни населения страны</div>
       <div class="score-v" id="scoreVal">32/100</div>
       <div class="score-b"><div class="score-f" id="scoreFill" style="width:32%;background:var(--d)"></div></div>
       <div style="display:flex;justify-content:space-between;font-size:.85rem;color:var(--tm)">
@@ -146,6 +152,7 @@
       </div>
     </div>
 
+    <!-- PROBLEMS & QUESTIONS -->
     <div class="grid" style="margin-top:24px">
       <div class="card">
         <div class="card-t" id="tProb">Ключевые проблемы системы</div>
@@ -169,7 +176,6 @@
   </div>
 
   <script>
-    // Translations
     const tr = {
       ru: {
         app: "Bank Welfare Analyzer",
@@ -203,8 +209,8 @@
         lSalA: "Средняя зарплата",
         tCred: "Структура кредитования",
         credNote: "Данные по микрокредитованию: потребление, бизнес, прочее",
-        tScore: "Индекс вклада в благосостояние",
-        scoreDesc: "Композитная оценка реального влияния банка на уровень жизни населения",
+        tScore: "Индекс вклада в благосостояние страны",
+        scoreDesc: "Композитная оценка реального влияния банка на уровень жизни населения страны",
         tLowC: "Низкий вклад",
         tHighC: "Высокий вклад",
         tWarn: "⚠️ Предупреждение:",
@@ -229,7 +235,8 @@
         tShare: "акционерам",
         cons: "Потребление",
         bus: "Бизнес",
-        other: "Прочее"
+        other: "Прочее",
+        resultsLabel: "📊 Результаты анализа"
       },
       en: {
         app: "Bank Welfare Analyzer",
@@ -263,8 +270,8 @@
         lSalA: "Average Salary",
         tCred: "Credit Structure",
         credNote: "Microcredit  consumption, business, other",
-        tScore: "Welfare Contribution Index",
-        scoreDesc: "Composite score of the bank's real impact on population living standards",
+        tScore: "Country Welfare Contribution Index",
+        scoreDesc: "Composite score of the bank's real impact on the country's population living standards",
         tLowC: "Low contribution",
         tHighC: "High contribution",
         tWarn: "⚠️ Warning:",
@@ -289,7 +296,8 @@
         tShare: "to shareholders",
         cons: "Consumption",
         bus: "Business",
-        other: "Other"
+        other: "Other",
+        resultsLabel: "📊 Analysis Results"
       }
     };
 
@@ -318,11 +326,38 @@
       $('exEldik').classList.toggle('a',n==='eldik');
       $('exNew').classList.toggle('a',n==='new');
       if(n==='eldik'){
-        Object.keys(def).forEach(k=>{const el=$(k);if(el&&def[k]!==undefined)el.value=def[k]});
+        // Load ALL default values
+        $('bankName').value=def.bn;
+        $('country').value=def.co;
+        $('profitGrowth').value=def.pg;
+        $('capital').value=def.cp;
+        $('dividends').value=def.di;
+        $('interestMin').value=def.im;
+        $('interestMax').value=def.ix;
+        $('incomeGrowth').value=def.ig;
+        $('povertyRate').value=def.pr;
+        $('gdpPerCapita').value=def.gd;
+        $('avgSalary').value=def.as;
+        $('creditConsumption').value=def.cc;
+        $('creditBusiness').value=def.cb;
+        $('creditOther').value=def.co2;
       }else{
+        // Clear ALL form fields
         $('f').reset();
         $('bankName').value='';
         $('country').value='';
+        $('profitGrowth').value='';
+        $('capital').value='';
+        $('dividends').value='';
+        $('interestMin').value='';
+        $('interestMax').value='';
+        $('incomeGrowth').value='';
+        $('povertyRate').value='';
+        $('gdpPerCapita').value='';
+        $('avgSalary').value='';
+        $('creditConsumption').value='';
+        $('creditBusiness').value='';
+        $('creditOther').value='';
       }
       doAnalyze();
     }

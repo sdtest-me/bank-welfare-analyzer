@@ -35,8 +35,6 @@
     .btn{padding:12px 24px;border:none;border-radius:8px;font-weight:600;cursor:pointer}
     .btn-p{background:var(--p);color:#fff}
     .btn-p:hover{background:var(--pd)}
-    .btn-s{background:var(--ib);color:var(--t);border:1px solid var(--b)}
-    .btn-s:hover{background:var(--b)}
     .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;margin-bottom:24px}
     .card{background:var(--c);border-radius:12px;padding:20px;box-shadow:0 1px 3px rgba(0,0,0,.1)}
     .card-t{font-size:1.1rem;font-weight:600;margin-bottom:16px}
@@ -84,7 +82,6 @@
       <div class="input-h">
         <div class="sec-t" id="inpTitle">Ввод данных банка</div>
         <div class="btn-g">
-          <button class="btn btn-s" onclick="resetDef()" id="btnReset">↺ Сбросить</button>
           <button class="btn btn-p" onclick="doAnalyze()" id="btnAnalyze">🚀 Анализировать</button>
         </div>
       </div>
@@ -179,8 +176,9 @@
   <script>
     const tr = {
       ru: {
-        app:"Bank Welfare Analyzer",inpTitle:"Ввод данных банка",btnReset:"↺ Сбросить",btnAnalyze:"🚀 Анализировать",
-        exLabel:"Примеры:",lName:"Название банка *",lCountry:"Страна",lProfit:"Рост прибыли (%) *",
+        app:"Bank Welfare Analyzer",inpTitle:"Ввод данных банка",btnAnalyze:"🚀 Анализировать",
+        exLabel:"Примеры:",exEldik:"🏦 Eldik Bank",exNew:"✨ Новый банк",
+        lName:"Название банка *",lCountry:"Страна",lProfit:"Рост прибыли (%) *",
         lCapital:"Капитализация",lDiv:"Дивиденды акционерам (%)",lIntMin:"Ставка мин (%)",lIntMax:"Ставка макс (%)",
         lInc:"Рост доходов населения (%) *",lPov:"Уровень бедности (%) *",lGdp:"ВВП на душу ($)",lSal:"Средняя зарплата",
         lCons:"Кредиты на потребление (%) *",lBus:"Кредиты на бизнес (%) *",lOther:"Прочие кредиты (%)",
@@ -201,8 +199,9 @@
         cons:"Потребление",bus:"Бизнес",other:"Прочее",resultsTitle:"📊 Результаты анализа"
       },
       en: {
-        app:"Bank Welfare Analyzer",inpTitle:"Enter Bank Data",btnReset:"↺ Reset",btnAnalyze:"🚀 Analyze",
-        exLabel:"Examples:",lName:"Bank Name *",lCountry:"Country",lProfit:"Profit Growth (%) *",
+        app:"Bank Welfare Analyzer",inpTitle:"Enter Bank Data",btnAnalyze:"🚀 Analyze",
+        exLabel:"Examples:",exEldik:"🏦 Eldik Bank",exNew:"✨ New Bank",
+        lName:"Bank Name *",lCountry:"Country",lProfit:"Profit Growth (%) *",
         lCapital:"Capitalization",lDiv:"Dividends to Shareholders (%)",lIntMin:"Rate Min (%)",lIntMax:"Rate Max (%)",
         lInc:"Population Income Growth (%) *",lPov:"Poverty Rate (%) *",lGdp:"GDP per Capita ($)",lSal:"Average Salary",
         lCons:"Consumption Loans (%) *",lBus:"Business Loans (%) *",lOther:"Other Loans (%)",
@@ -237,43 +236,29 @@
       lang=l;
       $('btnRU').classList.toggle('a',l==='ru');
       $('btnEN').classList.toggle('a',l==='en');
-      // Update all translatable elements
       Object.keys(tr[lang]).forEach(k=>{if($(k))$(k).textContent=tr[lang][k]});
-      // Update currency units
       $('capUnit').textContent=tr[lang].capU;
       $('salUnit').textContent=tr[lang].salU;
-      // Update title
       document.title=tr[lang].app;
       $('hTitle').textContent=tr[lang].app;
-      // Update chart labels
       if(chart){chart.data.labels=[tr[lang].cons,tr[lang].bus,tr[lang].other];chart.update();}
-      // Update badge texts (this was missing!)
       updateBadgeTexts();
-      // Refresh results to recalculate warning text
       refresh();
     }
 
     function updateBadgeTexts(){
-      // Update badge text content based on their class (color indicates meaning)
-      const badges={
-        'bProfit':'tHigh','bInt':'tHigh','bInc':'tMod','bPov':'tCrit','bGdp':'tLow','bDiv':'tShare'
-      };
-      Object.entries(badges).forEach(([id,key])=>{
-        if($(id))$(id).textContent=tr[lang][key];
-      });
+      const map={bProfit:'tHigh',bInt:'tHigh',bInc:'tMod',bPov:'tCrit',bGdp:'tLow',bDiv:'tShare'};
+      Object.entries(map).forEach(([id,key])=>{if($(id))$(id).textContent=tr[lang][key]});
     }
 
     function loadEx(n){
       $('exEldik').classList.toggle('a',n==='eldik');
       $('exNew').classList.toggle('a',n==='new');
       if(n==='eldik'){
-        $('bankName').value=def.bn;$('country').value=def.co;
-        $('profitGrowth').value=def.pg;$('capital').value=def.cp;
-        $('dividends').value=def.di;$('interestMin').value=def.im;
-        $('interestMax').value=def.ix;$('incomeGrowth').value=def.ig;
-        $('povertyRate').value=def.pr;$('gdpPerCapita').value=def.gd;
-        $('avgSalary').value=def.as;$('creditConsumption').value=def.cc;
-        $('creditBusiness').value=def.cb;$('creditOther').value=def.co2;
+        Object.keys(def).forEach(k=>{
+          const map={bn:'bankName',co:'country',pg:'profitGrowth',cp:'capital',di:'dividends',im:'interestMin',ix:'interestMax',ig:'incomeGrowth',pr:'povertyRate',gd:'gdpPerCapita',as:'avgSalary',cc:'creditConsumption',cb:'creditBusiness',co2:'creditOther'};
+          if($(map[k]))$(map[k]).value=def[k];
+        });
         doAnalyze();
       }else{
         $('f').reset();
@@ -282,8 +267,6 @@
         setTimeout(()=>$('bankName').focus(),50);
       }
     }
-
-    function resetDef(){loadEx('eldik');}
 
     function getData(){
       return {
@@ -314,23 +297,18 @@
       $('rDiv').textContent=d.di;$('rInt').textContent=`${d.im}–${d.ix}`;
       $('rInc').textContent=fmtPct(d.ig);$('rPov').textContent=d.pr;
       $('rGdp').textContent=fmtNum(d.gd);$('rSal').textContent=fmtNum(d.as);
-      // Update badge classes (colors)
       $('bProfit').className=`badge badge-${d.pg>50?'d':d.pg>20?'w':'s'}`;
       $('bInt').className=`badge badge-${d.ix>25?'d':d.ix>15?'w':'s'}`;
       $('bInc').className=`badge badge-${d.ig>10?'s':d.ig>5?'w':'d'}`;
       $('bPov').className=`badge badge-${d.pr>20?'d':d.pr>10?'w':'s'}`;
       $('bGdp').className=`badge badge-${d.gd<3000?'w':d.gd<10000?'n':'s'}`;
       $('bDiv').className=`badge badge-${d.di>80?'w':'n'}`;
-      // Update badge texts
       updateBadgeTexts();
-      // Update chart
       if(!chart)initChart(d);else{chart.data.labels=[tr[lang].cons,tr[lang].bus,tr[lang].other];chart.data.datasets[0].data=[d.cc,d.cb,d.co2];chart.update();}
-      // Calculate score
       const sc=calcScore(d);
       $('scoreVal').textContent=sc+'/100';
       const sf=$('scoreFill');sf.style.width=sc+'%';
       sf.style.background=sc<40?'var(--d)':sc<70?'var(--w)':'var(--s)';
-      // Update warning
       const gap=d.pg/Math.max(d.ig,0.1);
       const wb=$('warnBox'),wt=$('warnText');
       if(gap>5&&d.cc>40){wb.style.background='#fef2f2';wb.style.color='var(--d)';wt.textContent=lang==='ru'?`Прибыль банка растёт в ${Math.round(gap)} раз быстрее доходов населения. Высокая доля потребительских кредитов (${d.cc}%) указывает на кредитование бедности, а не развития.`:`Bank profit grows ${Math.round(gap)}x faster than population income. High share of consumption loans (${d.cc}%) indicates lending to poverty, not development.`;}
@@ -355,7 +333,7 @@
 
     document.addEventListener('DOMContentLoaded',()=>{
       const sv=localStorage.getItem('bwa_data');
-      if(sv){try{const d=JSON.parse(sv);Object.keys(d).forEach(k=>{const el=$(k);if(el&&d[k]!==undefined)el.value=d[k]})}catch(e){}}
+      if(sv){try{const d=JSON.parse(sv);Object.keys(d).forEach(k=>{const m={bn:'bankName',co:'country',pg:'profitGrowth',cp:'capital',di:'dividends',im:'interestMin',ix:'interestMax',ig:'incomeGrowth',pr:'povertyRate',gd:'gdpPerCapita',as:'avgSalary',cc:'creditConsumption',cb:'creditBusiness',co2:'creditOther'};if($(m[k])&&d[k]!==undefined)$(m[k]).value=d[k]})}catch(e){}}
       refresh(def);initChart(def);setLang('ru');showRes();
       ['creditConsumption','creditBusiness','creditOther'].forEach(id=>$(id).addEventListener('change',fixCredit));
     });

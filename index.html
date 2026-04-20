@@ -115,7 +115,7 @@
       </form>
     </section>
 
-    <!-- RESULTS SECTION (Скрыт до анализа) -->
+    <!-- RESULTS SECTION -->
     <div id="resultsSection" style="display:none;">
       <div class="res-t" id="resultsTitle">📊 Результаты анализа</div>
       <div class="grid">
@@ -123,7 +123,7 @@
           <div class="card-t" id="tBank">Показатели банка</div>
           <div class="metric"><span class="metric-l" id="lProfitG">Рост прибыли</span><span class="metric-v"><span id="rProfit">+208%</span> <span class="badge badge-d" id="bProfit">высокий</span></span></div>
           <div class="metric"><span class="metric-l" id="lCap">Капитализация</span><span class="metric-v"><span id="rCap">74.8</span> <span id="capUnit">млрд сомов</span></span></div>
-          <div class="metric"><span class="metric-l" id="lDivP">Дивиденды</span><span class="metric-v"><span id="rDiv">100</span>% <span class="badge badge-w" id="tShare">акционерам</span></span></div>
+          <div class="metric"><span class="metric-l" id="lDivP">Дивиденды</span><span class="metric-v"><span id="rDiv">100</span>% <span class="badge badge-w" id="bDiv">акционерам</span></span></div>
           <div class="metric"><span class="metric-l" id="lInt">Средняя ставка</span><span class="metric-v"><span id="rInt">17–32</span>% <span class="badge badge-d" id="bInt">высокая</span></span></div>
         </div>
         <div class="card">
@@ -179,54 +179,53 @@
   <script>
     const tr = {
       ru: {
-        app: "Bank Welfare Analyzer", inpTitle: "Ввод данных банка", btnReset: "↺ Сбросить", btnAnalyze: "🚀 Анализировать",
-        exLabel: "Примеры:", lName: "Название банка *", lCountry: "Страна", lProfit: "Рост прибыли (%) *",
-        lCapital: "Капитализация", lDiv: "Дивиденды акционерам (%)", lIntMin: "Ставка мин (%)", lIntMax: "Ставка макс (%)",
-        lInc: "Рост доходов населения (%) *", lPov: "Уровень бедности (%) *", lGdp: "ВВП на душу ($)", lSal: "Средняя зарплата",
-        lCons: "Кредиты на потребление (%) *", lBus: "Кредиты на бизнес (%) *", lOther: "Прочие кредиты (%)",
-        tBank: "Показатели банка", lProfitG: "Рост прибыли", lCap: "Капитализация", lDivP: "Дивиденды", lInt: "Средняя ставка",
-        tPop: "Благосостояние населения", lIncG: "Рост реальных доходов", lPovR: "Уровень бедности", lGdpC: "ВВП на душу", lSalA: "Средняя зарплата",
-        tCred: "Структура кредитования", credNote: "Данные по микрокредитованию: потребление, бизнес, прочее",
-        tScore: "Индекс вклада в благосостояние страны", scoreDesc: "Композитная оценка реального влияния банка на уровень жизни населения страны",
-        tLowC: "Низкий вклад", tHighC: "Высокий вклад", tWarn: "⚠️ Предупреждение:",
-        warnText: "Прибыль банка растёт в 16 раз быстрее доходов населения. Высокая доля потребительских кредитов указывает на кредитование бедности, а не развития.",
-        tProb: "Ключевые проблемы системы", p1: "Кредитование бедности: люди берут кредиты не для развития, а для выживания",
-        p2: "Высокие ставки: 17–32% годовых создают долговую ловушку", p3: "Диспропорция прибылей: банк богатеет в 16 раз быстрее роста доходов населения",
-        p4: "Господдержка частным акционерам: государство вливает капитал, прибыль уходит акционерам",
-        tQuest: "Критические вопросы для оценки", q1: "За счёт чего формируется прибыль? (потребление или инвестиции?)",
-        q2: "Какова долговая нагрузка клиентов? (растёт ли просрочка?)", q3: "Какова реальная доходность для экономики? (создаются ли рабочие места?)",
-        q4: "Кто получает дивиденды? (государство или частные акционеры?)",
-        fRepo: "Репозиторий проекта:", capU: "млрд сомов", salU: "сомов",
-        tHigh: "высокий", tMod: "умеренный", tCrit: "критичный", tLow: "низкий", tShare: "акционерам",
-        cons: "Потребление", bus: "Бизнес", other: "Прочее", resultsTitle: "📊 Результаты анализа"
+        app:"Bank Welfare Analyzer",inpTitle:"Ввод данных банка",btnReset:"↺ Сбросить",btnAnalyze:"🚀 Анализировать",
+        exLabel:"Примеры:",lName:"Название банка *",lCountry:"Страна",lProfit:"Рост прибыли (%) *",
+        lCapital:"Капитализация",lDiv:"Дивиденды акционерам (%)",lIntMin:"Ставка мин (%)",lIntMax:"Ставка макс (%)",
+        lInc:"Рост доходов населения (%) *",lPov:"Уровень бедности (%) *",lGdp:"ВВП на душу ($)",lSal:"Средняя зарплата",
+        lCons:"Кредиты на потребление (%) *",lBus:"Кредиты на бизнес (%) *",lOther:"Прочие кредиты (%)",
+        tBank:"Показатели банка",lProfitG:"Рост прибыли",lCap:"Капитализация",lDivP:"Дивиденды",lInt:"Средняя ставка",
+        tPop:"Благосостояние населения",lIncG:"Рост реальных доходов",lPovR:"Уровень бедности",lGdpC:"ВВП на душу",lSalA:"Средняя зарплата",
+        tCred:"Структура кредитования",credNote:"Данные по микрокредитованию: потребление, бизнес, прочее",
+        tScore:"Индекс вклада в благосостояние страны",scoreDesc:"Композитная оценка реального влияния банка на уровень жизни населения страны",
+        tLowC:"Низкий вклад",tHighC:"Высокий вклад",tWarn:"⚠️ Предупреждение:",
+        warnText:"Прибыль банка растёт в 16 раз быстрее доходов населения. Высокая доля потребительских кредитов указывает на кредитование бедности, а не развития.",
+        tProb:"Ключевые проблемы системы",p1:"Кредитование бедности: люди берут кредиты не для развития, а для выживания",
+        p2:"Высокие ставки: 17–32% годовых создают долговую ловушку",p3:"Диспропорция прибылей: банк богатеет в 16 раз быстрее роста доходов населения",
+        p4:"Господдержка частным акционерам: государство вливает капитал, прибыль уходит акционерам",
+        tQuest:"Критические вопросы для оценки",q1:"За счёт чего формируется прибыль? (потребление или инвестиции?)",
+        q2:"Какова долговая нагрузка клиентов? (растёт ли просрочка?)",q3:"Какова реальная доходность для экономики? (создаются ли рабочие места?)",
+        q4:"Кто получает дивиденды? (государство или частные акционеры?)",
+        fRepo:"Репозиторий проекта:",capU:"млрд сомов",salU:"сомов",
+        tHigh:"высокий",tMod:"умеренный",tCrit:"критичный",tLow:"низкий",tShare:"акционерам",
+        cons:"Потребление",bus:"Бизнес",other:"Прочее",resultsTitle:"📊 Результаты анализа"
       },
       en: {
-        app: "Bank Welfare Analyzer", inpTitle: "Enter Bank Data", btnReset: "↺ Reset", btnAnalyze: "🚀 Analyze",
-        exLabel: "Examples:", lName: "Bank Name *", lCountry: "Country", lProfit: "Profit Growth (%) *",
-        lCapital: "Capitalization", lDiv: "Dividends to Shareholders (%)", lIntMin: "Rate Min (%)", lIntMax: "Rate Max (%)",
-        lInc: "Population Income Growth (%) *", lPov: "Poverty Rate (%) *", lGdp: "GDP per Capita ($)", lSal: "Average Salary",
-        lCons: "Consumption Loans (%) *", lBus: "Business Loans (%) *", lOther: "Other Loans (%)",
-        tBank: "Bank Metrics", lProfitG: "Profit Growth", lCap: "Capitalization", lDivP: "Dividends", lInt: "Average Interest Rate",
-        tPop: "Population Welfare", lIncG: "Real Income Growth", lPovR: "Poverty Rate", lGdpC: "GDP per Capita", lSalA: "Average Salary",
-        tCred: "Credit Structure", credNote: "Microcredit  consumption, business, other",
-        tScore: "Country Welfare Contribution Index", scoreDesc: "Composite score of the bank's real impact on the country's population living standards",
-        tLowC: "Low contribution", tHighC: "High contribution", tWarn: "⚠️ Warning:",
-        warnText: "Bank profit grows 16x faster than population income. High share of consumption loans indicates lending to poverty, not development.",
-        tProb: "Key System Problems", p1: "Poverty lending: people borrow for survival, not development",
-        p2: "High interest rates: 17–32% p.a. create debt traps", p3: "Profit disparity: bank enriches 16x faster than income growth",
-        p4: "State support to private shareholders: public capital, private profits",
-        tQuest: "Critical Questions for Assessment", q1: "What drives profit? (consumption vs. investment loans?)",
-        q2: "What is clients' debt burden? (is delinquency growing?)", q3: "What is real economic return? (are jobs created?)",
-        q4: "Who receives dividends? (state or private shareholders?)",
-        fRepo: "Project repository:", capU: "bln KGS", salU: "KGS",
-        tHigh: "high", tMod: "moderate", tCrit: "critical", tLow: "low", tShare: "to shareholders",
-        cons: "Consumption", bus: "Business", other: "Other", resultsTitle: "📊 Analysis Results"
+        app:"Bank Welfare Analyzer",inpTitle:"Enter Bank Data",btnReset:"↺ Reset",btnAnalyze:"🚀 Analyze",
+        exLabel:"Examples:",lName:"Bank Name *",lCountry:"Country",lProfit:"Profit Growth (%) *",
+        lCapital:"Capitalization",lDiv:"Dividends to Shareholders (%)",lIntMin:"Rate Min (%)",lIntMax:"Rate Max (%)",
+        lInc:"Population Income Growth (%) *",lPov:"Poverty Rate (%) *",lGdp:"GDP per Capita ($)",lSal:"Average Salary",
+        lCons:"Consumption Loans (%) *",lBus:"Business Loans (%) *",lOther:"Other Loans (%)",
+        tBank:"Bank Metrics",lProfitG:"Profit Growth",lCap:"Capitalization",lDivP:"Dividends",lInt:"Average Interest Rate",
+        tPop:"Population Welfare",lIncG:"Real Income Growth",lPovR:"Poverty Rate",lGdpC:"GDP per Capita",lSalA:"Average Salary",
+        tCred:"Credit Structure",credNote:"Microcredit  consumption, business, other",
+        tScore:"Country Welfare Contribution Index",scoreDesc:"Composite score of the bank's real impact on the country's population living standards",
+        tLowC:"Low contribution",tHighC:"High contribution",tWarn:"⚠️ Warning:",
+        warnText:"Bank profit grows 16x faster than population income. High share of consumption loans indicates lending to poverty, not development.",
+        tProb:"Key System Problems",p1:"Poverty lending: people borrow for survival, not development",
+        p2:"High interest rates: 17–32% p.a. create debt traps",p3:"Profit disparity: bank enriches 16x faster than income growth",
+        p4:"State support to private shareholders: public capital, private profits",
+        tQuest:"Critical Questions for Assessment",q1:"What drives profit? (consumption vs. investment loans?)",
+        q2:"What is clients' debt burden? (is delinquency growing?)",q3:"What is real economic return? (are jobs created?)",
+        q4:"Who receives dividends? (state or private shareholders?)",
+        fRepo:"Project repository:",capU:"bln KGS",salU:"KGS",
+        tHigh:"high",tMod:"moderate",tCrit:"critical",tLow:"low",tShare:"to shareholders",
+        cons:"Consumption",bus:"Business",other:"Other",resultsTitle:"📊 Analysis Results"
       }
     };
 
-    let lang = 'ru';
-    let chart = null;
-    const def = {bn:"Eldik Bank",co:"Кыргызстан",pg:208,cp:74.8,di:100,im:17,ix:32,ig:12.9,pr:25.7,gd:2513,as:37361,cc:53,cb:20,co2:27};
+    let lang='ru',chart=null;
+    const def={bn:"Eldik Bank",co:"Кыргызстан",pg:208,cp:74.8,di:100,im:17,ix:32,ig:12.9,pr:25.7,gd:2513,as:37361,cc:53,cb:20,co2:27};
 
     function $(id){return document.getElementById(id);}
     function fmtPct(v){return (v>=0?'+':'')+v+'%'}
@@ -238,13 +237,30 @@
       lang=l;
       $('btnRU').classList.toggle('a',l==='ru');
       $('btnEN').classList.toggle('a',l==='en');
+      // Update all translatable elements
       Object.keys(tr[lang]).forEach(k=>{if($(k))$(k).textContent=tr[lang][k]});
+      // Update currency units
       $('capUnit').textContent=tr[lang].capU;
       $('salUnit').textContent=tr[lang].salU;
+      // Update title
       document.title=tr[lang].app;
       $('hTitle').textContent=tr[lang].app;
+      // Update chart labels
       if(chart){chart.data.labels=[tr[lang].cons,tr[lang].bus,tr[lang].other];chart.update();}
+      // Update badge texts (this was missing!)
+      updateBadgeTexts();
+      // Refresh results to recalculate warning text
       refresh();
+    }
+
+    function updateBadgeTexts(){
+      // Update badge text content based on their class (color indicates meaning)
+      const badges={
+        'bProfit':'tHigh','bInt':'tHigh','bInc':'tMod','bPov':'tCrit','bGdp':'tLow','bDiv':'tShare'
+      };
+      Object.entries(badges).forEach(([id,key])=>{
+        if($(id))$(id).textContent=tr[lang][key];
+      });
     }
 
     function loadEx(n){
@@ -263,7 +279,7 @@
         $('f').reset();
         ['bankName','country','profitGrowth','capital','dividends','interestMin','interestMax','incomeGrowth','povertyRate','gdpPerCapita','avgSalary','creditConsumption','creditBusiness','creditOther'].forEach(id=>$(id).value='');
         hideRes();
-        setTimeout(()=>$('bankName').focus(),50); // Курсор мигает в первом поле
+        setTimeout(()=>$('bankName').focus(),50);
       }
     }
 
@@ -283,9 +299,8 @@
 
     function doAnalyze(){
       const d=getData();
-      const hasData = d.pg > 0 || d.ig > 0 || d.cc > 0;
+      const hasData=d.pg>0||d.ig>0||d.cc>0;
       if(!hasData){hideRes();return;}
-      
       showRes();
       $('hTitle').textContent=`${d.bn} | ${tr[lang].app}`;
       refresh(d);
@@ -299,17 +314,23 @@
       $('rDiv').textContent=d.di;$('rInt').textContent=`${d.im}–${d.ix}`;
       $('rInc').textContent=fmtPct(d.ig);$('rPov').textContent=d.pr;
       $('rGdp').textContent=fmtNum(d.gd);$('rSal').textContent=fmtNum(d.as);
+      // Update badge classes (colors)
       $('bProfit').className=`badge badge-${d.pg>50?'d':d.pg>20?'w':'s'}`;
       $('bInt').className=`badge badge-${d.ix>25?'d':d.ix>15?'w':'s'}`;
       $('bInc').className=`badge badge-${d.ig>10?'s':d.ig>5?'w':'d'}`;
       $('bPov').className=`badge badge-${d.pr>20?'d':d.pr>10?'w':'s'}`;
       $('bGdp').className=`badge badge-${d.gd<3000?'w':d.gd<10000?'n':'s'}`;
+      $('bDiv').className=`badge badge-${d.di>80?'w':'n'}`;
+      // Update badge texts
+      updateBadgeTexts();
+      // Update chart
       if(!chart)initChart(d);else{chart.data.labels=[tr[lang].cons,tr[lang].bus,tr[lang].other];chart.data.datasets[0].data=[d.cc,d.cb,d.co2];chart.update();}
-      
+      // Calculate score
       const sc=calcScore(d);
       $('scoreVal').textContent=sc+'/100';
       const sf=$('scoreFill');sf.style.width=sc+'%';
       sf.style.background=sc<40?'var(--d)':sc<70?'var(--w)':'var(--s)';
+      // Update warning
       const gap=d.pg/Math.max(d.ig,0.1);
       const wb=$('warnBox'),wt=$('warnText');
       if(gap>5&&d.cc>40){wb.style.background='#fef2f2';wb.style.color='var(--d)';wt.textContent=lang==='ru'?`Прибыль банка растёт в ${Math.round(gap)} раз быстрее доходов населения. Высокая доля потребительских кредитов (${d.cc}%) указывает на кредитование бедности, а не развития.`:`Bank profit grows ${Math.round(gap)}x faster than population income. High share of consumption loans (${d.cc}%) indicates lending to poverty, not development.`;}

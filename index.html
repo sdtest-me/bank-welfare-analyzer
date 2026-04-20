@@ -17,6 +17,7 @@
       --text: #1e293b;
       --text-muted: #64748b;
       --border: #e2e8f0;
+      --input-bg: #f1f5f9;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -78,6 +79,138 @@
     .lang-btn.active {
       background: var(--primary);
       color: white;
+    }
+    
+    /* Input Section */
+    .input-section {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      margin-bottom: 24px;
+    }
+    .input-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .input-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .input-title::before {
+      content: '';
+      width: 4px;
+      height: 16px;
+      background: var(--primary);
+      border-radius: 2px;
+    }
+    
+    /* Form Grid */
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .form-group label {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+    .form-group input,
+    .form-group select {
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--input-bg);
+      font-size: 1rem;
+      transition: border-color 0.2s;
+    }
+    .form-group input:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: var(--primary);
+      background: white;
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    
+    /* Examples */
+    .examples {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+      padding: 12px;
+      background: var(--input-bg);
+      border-radius: 8px;
+    }
+    .example-btn {
+      padding: 8px 14px;
+      border: 1px solid var(--border);
+      background: white;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .example-btn:hover,
+    .example-btn.active {
+      border-color: var(--primary);
+      background: var(--primary);
+      color: white;
+    }
+    
+    /* Buttons */
+    .btn-group {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+    .btn-primary:hover {
+      background: var(--primary-dark);
+      transform: translateY(-1px);
+    }
+    .btn-secondary {
+      background: var(--input-bg);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-secondary:hover {
+      background: var(--border);
     }
     
     /* Cards */
@@ -221,7 +354,41 @@
     @media (max-width: 768px) {
       header { flex-direction: column; align-items: flex-start; }
       .grid { grid-template-columns: 1fr; }
+      .form-row { grid-template-columns: 1fr; }
       .score-value { font-size: 2.5rem; }
+    }
+    
+    /* Slider */
+    .slider-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .slider {
+      flex: 1;
+      height: 6px;
+      -webkit-appearance: none;
+      background: var(--border);
+      border-radius: 3px;
+      outline: none;
+    }
+    .slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      background: var(--primary);
+      border-radius: 50%;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .slider::-webkit-slider-thumb:hover {
+      background: var(--primary-dark);
+    }
+    .slider-value {
+      min-width: 40px;
+      text-align: right;
+      font-weight: 600;
+      color: var(--primary);
     }
   </style>
 </head>
@@ -239,26 +406,119 @@
       </div>
     </header>
 
-    <!-- Main Grid -->
+    <!-- Input Section -->
+    <section class="input-section">
+      <div class="input-header">
+        <div class="input-title" data-i18n="input_title">Ввод данных банка</div>
+        <div class="btn-group">
+          <button class="btn btn-secondary" onclick="resetToDefault()">
+            <span data-i18n="btn_reset">↺ Сбросить</span>
+          </button>
+          <button class="btn btn-primary" onclick="analyzeBank()">
+            <span data-i18n="btn_analyze">🚀 Анализировать</span>
+          </button>
+        </div>
+      </div>
+      
+      <!-- Quick Examples -->
+      <div class="examples">
+        <span style="font-size: 0.85rem; color: var(--text-muted); margin-right: 8px;" data-i18n="examples_label">Примеры:</span>
+        <button class="example-btn active" onclick="loadExample('eldik')">🏦 Eldik Bank</button>
+        <button class="example-btn" onclick="loadExample('empty')">✨ Новый банк</button>
+      </div>
+      
+      <!-- Form -->
+      <form id="bankForm" onsubmit="event.preventDefault(); analyzeBank();">
+        <div class="form-grid">
+          <!-- Bank Info -->
+          <div class="form-group">
+            <label data-i18n="field_bank_name">Название банка *</label>
+            <input type="text" id="bankName" value="Eldik Bank" required />
+          </div>
+          <div class="form-group">
+            <label data-i18n="field_country">Страна</label>
+            <input type="text" id="country" value="Кыргызстан" />
+          </div>
+          
+          <!-- Bank Metrics -->
+          <div class="form-group">
+            <label data-i18n="field_profit_growth">Рост прибыли (%) *</label>
+            <input type="number" id="profitGrowth" value="208" step="0.1" required />
+          </div>
+          <div class="form-group">
+            <label data-i18n="field_capital">Капитализация (млрд сомов)</label>
+            <input type="number" id="capital" value="74.8" step="0.1" />
+          </div>
+          <div class="form-group">
+            <label data-i18n="field_dividends">Дивиденды акционерам (%)</label>
+            <input type="number" id="dividends" value="100" min="0" max="100" />
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label data-i18n="field_interest_min">Ставка мин (%)</label>
+              <input type="number" id="interestMin" value="17" min="0" max="100" />
+            </div>
+            <div class="form-group">
+              <label data-i18n="field_interest_max">Ставка макс (%)</label>
+              <input type="number" id="interestMax" value="32" min="0" max="100" />
+            </div>
+          </div>
+          
+          <!-- Population Metrics -->
+          <div class="form-group">
+            <label data-i18n="field_income_growth">Рост доходов населения (%) *</label>
+            <input type="number" id="incomeGrowth" value="12.9" step="0.1" required />
+          </div>
+          <div class="form-group">
+            <label data-i18n="field_poverty">Уровень бедности (%) *</label>
+            <input type="number" id="povertyRate" value="25.7" step="0.1" min="0" max="100" required />
+          </div>
+          <div class="form-group">
+            <label data-i18n="field_gdp">ВВП на душу ($)</label>
+            <input type="number" id="gdpPerCapita" value="2513" />
+          </div>
+          <div class="form-group">
+            <label data-i18n="field_avg_salary">Средняя зарплата (сомов)</label>
+            <input type="number" id="avgSalary" value="37361" />
+          </div>
+          
+          <!-- Credit Structure -->
+          <div class="form-group">
+            <label data-i18n="field_credit_consumption">Кредиты на потребление (%) *</label>
+            <input type="number" id="creditConsumption" value="53" min="0" max="100" required />
+          </div>
+          <div class="form-group">
+            <label data-i18n="field_credit_business">Кредиты на бизнес (%) *</label>
+            <input type="number" id="creditBusiness" value="20" min="0" max="100" required />
+          </div>
+          <div class="form-group">
+            <label data-i18n="field_credit_other">Прочие кредиты (%)</label>
+            <input type="number" id="creditOther" value="27" min="0" max="100" />
+          </div>
+        </div>
+      </form>
+    </section>
+
+    <!-- Results Grid -->
     <div class="grid">
       <!-- Bank Metrics -->
       <div class="card">
         <div class="card-title" data-i18n="bank_metrics">Показатели банка</div>
         <div class="metric">
-          <span class="metric-label" data-i18n="profit_growth">Рост прибыли (2024)</span>
-          <span class="metric-value">+208% <span class="badge badge-danger" data-i18n="high">высокий</span></span>
+          <span class="metric-label" data-i18n="profit_growth">Рост прибыли</span>
+          <span class="metric-value"><span id="resProfitGrowth">+208%</span> <span class="badge badge-danger" id="badgeProfit" data-i18n="high">высокий</span></span>
         </div>
         <div class="metric">
-          <span class="metric-label" data-i18n="capital_increase">Увеличение капитала</span>
-          <span class="metric-value">61.5 млрд сомов</span>
+          <span class="metric-label" data-i18n="capital_increase">Капитализация</span>
+          <span class="metric-value"><span id="resCapital">74.8</span> <span data-i18n="currency_unit">млрд сомов</span></span>
         </div>
         <div class="metric">
-          <span class="metric-label" data-i18n="dividend_policy">Политика дивидендов</span>
-          <span class="metric-value">100% <span class="badge badge-warning" data-i18n="to_shareholders">акционерам</span></span>
+          <span class="metric-label" data-i18n="dividend_policy">Дивиденды</span>
+          <span class="metric-value"><span id="resDividends">100</span>% <span class="badge badge-warning" id="badgeDividend" data-i18n="to_shareholders">акционерам</span></span>
         </div>
         <div class="metric">
-          <span class="metric-label" data-i18n="avg_interest">Средняя ставка по кредитам</span>
-          <span class="metric-value">17–32% <span class="badge badge-danger" data-i18n="high">высокая</span></span>
+          <span class="metric-label" data-i18n="avg_interest">Средняя ставка</span>
+          <span class="metric-value"><span id="resInterest">17–32</span>% <span class="badge badge-danger" id="badgeInterest" data-i18n="high">высокая</span></span>
         </div>
       </div>
 
@@ -267,19 +527,19 @@
         <div class="card-title" data-i18n="population_welfare">Благосостояние населения</div>
         <div class="metric">
           <span class="metric-label" data-i18n="income_growth">Рост реальных доходов</span>
-          <span class="metric-value">+12.9% <span class="badge badge-success" data-i18n="moderate">умеренный</span></span>
+          <span class="metric-value"><span id="resIncomeGrowth">+12.9</span>% <span class="badge badge-success" id="badgeIncome" data-i18n="moderate">умеренный</span></span>
         </div>
         <div class="metric">
           <span class="metric-label" data-i18n="poverty_rate">Уровень бедности</span>
-          <span class="metric-value">25.7% <span class="badge badge-danger" data-i18n="critical">критичный</span></span>
+          <span class="metric-value"><span id="resPoverty">25.7</span>% <span class="badge badge-danger" id="badgePoverty" data-i18n="critical">критичный</span></span>
         </div>
         <div class="metric">
-          <span class="metric-label" data-i18n="gdp_per_capita">ВВП на душу населения</span>
-          <span class="metric-value">$2,513 <span class="badge badge-warning" data-i18n="low">низкий</span></span>
+          <span class="metric-label" data-i18n="gdp_per_capita">ВВП на душу</span>
+          <span class="metric-value">$<span id="resGDP">2,513</span> <span class="badge badge-warning" id="badgeGDP" data-i18n="low">низкий</span></span>
         </div>
         <div class="metric">
           <span class="metric-label" data-i18n="avg_salary">Средняя зарплата</span>
-          <span class="metric-value">~37,361 сомов (~$430)</span>
+          <span class="metric-value"><span id="resSalary">37,361</span> <span data-i18n="currency_unit">сомов</span></span>
         </div>
       </div>
 
@@ -290,7 +550,7 @@
           <canvas id="creditChart"></canvas>
         </div>
         <div style="margin-top: 16px; font-size: 0.9rem; color: var(--text-muted);" data-i18n="credit_note">
-          Данные по микрокредитованию: 53% — на потребление, 20% — на бизнес, 27% — прочее
+          Данные по микрокредитованию: потребление, бизнес, прочее
         </div>
       </div>
     </div>
@@ -307,9 +567,9 @@
         <span data-i18n="score_low">Низкий вклад</span>
         <span data-i18n="score_high">Высокий вклад</span>
       </div>
-      <div style="margin-top: 20px; padding: 12px; background: #fef2f2; border-radius: 8px; color: var(--danger);">
+      <div id="scoreWarning" style="margin-top: 20px; padding: 12px; background: #fef2f2; border-radius: 8px; color: var(--danger);">
         <strong data-i18n="score_warning">⚠️ Предупреждение:</strong> 
-        <span data-i18n="score_warning_text">Прибыль банка растёт в 16 раз быстрее доходов населения. Высокая доля потребительских кредитов указывает на кредитование бедности, а не развития.</span>
+        <span id="scoreWarningText" data-i18n="score_warning_text">Прибыль банка растёт в 16 раз быстрее доходов населения. Высокая доля потребительских кредитов указывает на кредитование бедности, а не развития.</span>
       </div>
     </div>
 
@@ -360,22 +620,40 @@
   </div>
 
   <script>
-    // Translations
+    // ==================== TRANSLATIONS ====================
     const translations = {
       ru: {
         app_title: "Bank Welfare Analyzer",
+        input_title: "Ввод данных банка",
+        btn_reset: "↺ Сбросить",
+        btn_analyze: "🚀 Анализировать",
+        examples_label: "Примеры:",
+        field_bank_name: "Название банка *",
+        field_country: "Страна",
+        field_profit_growth: "Рост прибыли (%) *",
+        field_capital: "Капитализация (млрд сомов)",
+        field_dividends: "Дивиденды акционерам (%)",
+        field_interest_min: "Ставка мин (%)",
+        field_interest_max: "Ставка макс (%)",
+        field_income_growth: "Рост доходов населения (%) *",
+        field_poverty: "Уровень бедности (%) *",
+        field_gdp: "ВВП на душу ($)",
+        field_avg_salary: "Средняя зарплата (сомов)",
+        field_credit_consumption: "Кредиты на потребление (%) *",
+        field_credit_business: "Кредиты на бизнес (%) *",
+        field_credit_other: "Прочие кредиты (%)",
         bank_metrics: "Показатели банка",
-        profit_growth: "Рост прибыли (2024)",
-        capital_increase: "Увеличение капитала",
-        dividend_policy: "Политика дивидендов",
-        avg_interest: "Средняя ставка по кредитам",
+        profit_growth: "Рост прибыли",
+        capital_increase: "Капитализация",
+        dividend_policy: "Дивиденды",
+        avg_interest: "Средняя ставка",
         population_welfare: "Благосостояние населения",
         income_growth: "Рост реальных доходов",
         poverty_rate: "Уровень бедности",
-        gdp_per_capita: "ВВП на душу населения",
+        gdp_per_capita: "ВВП на душу",
         avg_salary: "Средняя зарплата",
         credit_structure: "Структура кредитования",
-        credit_note: "Данные по микрокредитованию: 53% — на потребление, 20% — на бизнес, 27% — прочее",
+        credit_note: "Данные по микрокредитованию: потребление, бизнес, прочее",
         welfare_score: "Индекс вклада в благосостояние",
         score_desc: "Композитная оценка реального влияния банка на уровень жизни населения",
         score_low: "Низкий вклад",
@@ -394,6 +672,7 @@
         question_4: "Кто получает дивиденды? (государство или частные акционеры?)",
         footer_source: "Источники данных:",
         footer_repo: "Репозиторий проекта:",
+        currency_unit: "млрд сомов",
         high: "высокий",
         moderate: "умеренный",
         critical: "критичный",
@@ -402,18 +681,36 @@
       },
       en: {
         app_title: "Bank Welfare Analyzer",
+        input_title: "Enter Bank Data",
+        btn_reset: "↺ Reset",
+        btn_analyze: "🚀 Analyze",
+        examples_label: "Examples:",
+        field_bank_name: "Bank Name *",
+        field_country: "Country",
+        field_profit_growth: "Profit Growth (%) *",
+        field_capital: "Capitalization (bln KGS)",
+        field_dividends: "Dividends to Shareholders (%)",
+        field_interest_min: "Rate Min (%)",
+        field_interest_max: "Rate Max (%)",
+        field_income_growth: "Population Income Growth (%) *",
+        field_poverty: "Poverty Rate (%) *",
+        field_gdp: "GDP per Capita ($)",
+        field_avg_salary: "Average Salary (KGS)",
+        field_credit_consumption: "Consumption Loans (%) *",
+        field_credit_business: "Business Loans (%) *",
+        field_credit_other: "Other Loans (%)",
         bank_metrics: "Bank Metrics",
-        profit_growth: "Profit Growth (2024)",
-        capital_increase: "Capital Increase",
-        dividend_policy: "Dividend Policy",
-        avg_interest: "Average Loan Interest Rate",
+        profit_growth: "Profit Growth",
+        capital_increase: "Capitalization",
+        dividend_policy: "Dividends",
+        avg_interest: "Average Interest Rate",
         population_welfare: "Population Welfare",
         income_growth: "Real Income Growth",
         poverty_rate: "Poverty Rate",
         gdp_per_capita: "GDP per Capita",
         avg_salary: "Average Salary",
         credit_structure: "Credit Structure",
-        credit_note: "Microcredit data: 53% consumption, 20% business, 27% other",
+        credit_note: "Microcredit  consumption, business, other",
         welfare_score: "Welfare Contribution Index",
         score_desc: "Composite score of the bank's real impact on population living standards",
         score_low: "Low contribution",
@@ -432,6 +729,7 @@
         question_4: "Who receives dividends? (state or private shareholders?)",
         footer_source: "Data sources:",
         footer_repo: "Project repository:",
+        currency_unit: "bln KGS",
         high: "high",
         moderate: "moderate",
         critical: "critical",
@@ -441,7 +739,32 @@
     };
 
     let currentLang = 'ru';
+    let creditChart = null;
 
+    // ==================== DEFAULT DATA (Eldik Bank) ====================
+    const defaultData = {
+      bankName: "Eldik Bank",
+      country: "Кыргызстан",
+      profitGrowth: 208,
+      capital: 74.8,
+      dividends: 100,
+      interestMin: 17,
+      interestMax: 32,
+      incomeGrowth: 12.9,
+      povertyRate: 25.7,
+      gdpPerCapita: 2513,
+      avgSalary: 37361,
+      creditConsumption: 53,
+      creditBusiness: 20,
+      creditOther: 27
+    };
+
+    const defaultDataEN = {
+      ...defaultData,
+      country: "Kyrgyzstan"
+    };
+
+    // ==================== LANGUAGE FUNCTIONS ====================
     function setLanguage(lang) {
       currentLang = lang;
       
@@ -458,38 +781,144 @@
         }
       });
       
-      // Update chart labels
-      updateChartLabels();
+      // Update form placeholders/labels if needed
+      updateFormLabels();
       
-      // Update score warning background
-      updateScoreWarning();
+      // Update chart
+      if (creditChart) updateChartLabels();
+      
+      // Re-render results
+      updateResults();
     }
 
-    function updateChartLabels() {
-      if (window.creditChart) {
-        window.creditChart.data.labels = currentLang === 'ru' 
-          ? ['Потребление', 'Бизнес', 'Прочее'] 
-          : ['Consumption', 'Business', 'Other'];
-        window.creditChart.update();
+    function updateFormLabels() {
+      // Currency units in form
+      const capitalLabel = document.querySelector('label[for="capital"]');
+      const salaryLabel = document.querySelector('label[for="avgSalary"]');
+      if (capitalLabel && translations[currentLang].currency_unit) {
+        const unit = currentLang === 'ru' ? 'млрд сомов' : 'bln KGS';
+        capitalLabel.textContent = translations[currentLang].field_capital.replace(/\(.*\)/, `(${unit})`);
       }
     }
 
-    function updateScoreWarning() {
-      const warningBox = document.querySelector('.score-card div[style*="background: #fef2f2"]');
-      if (warningBox) {
-        warningBox.style.color = currentLang === 'ru' ? 'var(--danger)' : 'var(--danger)';
+    // ==================== FORM FUNCTIONS ====================
+    function loadExample(name) {
+      // Update example buttons
+      document.querySelectorAll('.example-btn').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+      
+      if (name === 'eldik') {
+        const data = currentLang === 'ru' ? defaultData : defaultDataEN;
+        Object.keys(data).forEach(key => {
+          const el = document.getElementById(key);
+          if (el && data[key] !== undefined) el.value = data[key];
+        });
+      } else if (name === 'empty') {
+        // Clear form for new bank
+        document.getElementById('bankForm').reset();
+        document.getElementById('bankName').value = '';
+        document.getElementById('country').value = '';
       }
+      
+      analyzeBank();
     }
 
-    // Initialize Chart
-    function initChart() {
+    function resetToDefault() {
+      loadExample('eldik');
+      document.querySelectorAll('.example-btn')[0].classList.add('active');
+      document.querySelectorAll('.example-btn')[1].classList.remove('active');
+    }
+
+    function getFormData() {
+      return {
+        bankName: document.getElementById('bankName').value || 'Unknown Bank',
+        country: document.getElementById('country').value,
+        profitGrowth: parseFloat(document.getElementById('profitGrowth').value) || 0,
+        capital: parseFloat(document.getElementById('capital').value) || 0,
+        dividends: parseFloat(document.getElementById('dividends').value) || 0,
+        interestMin: parseFloat(document.getElementById('interestMin').value) || 0,
+        interestMax: parseFloat(document.getElementById('interestMax').value) || 0,
+        incomeGrowth: parseFloat(document.getElementById('incomeGrowth').value) || 0,
+        povertyRate: parseFloat(document.getElementById('povertyRate').value) || 0,
+        gdpPerCapita: parseFloat(document.getElementById('gdpPerCapita').value) || 0,
+        avgSalary: parseInt(document.getElementById('avgSalary').value) || 0,
+        creditConsumption: parseFloat(document.getElementById('creditConsumption').value) || 0,
+        creditBusiness: parseFloat(document.getElementById('creditBusiness').value) || 0,
+        creditOther: parseFloat(document.getElementById('creditOther').value) || 0
+      };
+    }
+
+    function analyzeBank() {
+      const data = getFormData();
+      
+      // Update header
+      document.querySelector('.logo span').textContent = `${data.bankName} | ${translations[currentLang].app_title}`;
+      
+      // Update results
+      updateResults(data);
+      
+      // Save to localStorage
+      localStorage.setItem('bwa_custom_data', JSON.stringify(data));
+      
+      // Scroll to results
+      document.querySelector('.score-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    // ==================== RESULTS UPDATE ====================
+    function updateResults(data = null) {
+      if (!data) data = getFormData();
+      
+      // Format numbers
+      const fmt = {
+        pct: (v) => (v >= 0 ? '+' : '') + v + '%',
+        num: (v) => v.toLocaleString(currentLang === 'ru' ? 'ru-RU' : 'en-US'),
+        money: (v) => '$' + v.toLocaleString(currentLang === 'ru' ? 'ru-RU' : 'en-US')
+      };
+      
+      // Bank metrics
+      document.getElementById('resProfitGrowth').textContent = fmt.pct(data.profitGrowth);
+      document.getElementById('resCapital').textContent = data.capital;
+      document.getElementById('resDividends').textContent = data.dividends;
+      document.getElementById('resInterest').textContent = `${data.interestMin}–${data.interestMax}`;
+      
+      // Population metrics
+      document.getElementById('resIncomeGrowth').textContent = fmt.pct(data.incomeGrowth);
+      document.getElementById('resPoverty').textContent = data.povertyRate;
+      document.getElementById('resGDP').textContent = fmt.num(data.gdpPerCapita);
+      document.getElementById('resSalary').textContent = fmt.num(data.avgSalary);
+      
+      // Update badges
+      updateBadge('badgeProfit', data.profitGrowth > 50 ? 'danger' : data.profitGrowth > 20 ? 'warning' : 'success', 'high');
+      updateBadge('badgeDividend', data.dividends > 80 ? 'warning' : 'neutral', 'to_shareholders');
+      updateBadge('badgeInterest', data.interestMax > 25 ? 'danger' : data.interestMax > 15 ? 'warning' : 'success', 'high');
+      updateBadge('badgeIncome', data.incomeGrowth > 10 ? 'success' : data.incomeGrowth > 5 ? 'warning' : 'danger', 'moderate');
+      updateBadge('badgePoverty', data.povertyRate > 20 ? 'danger' : data.povertyRate > 10 ? 'warning' : 'success', 'critical');
+      updateBadge('badgeGDP', data.gdpPerCapita < 3000 ? 'warning' : data.gdpPerCapita < 10000 ? 'neutral' : 'success', 'low');
+      
+      // Update chart
+      updateChart(data);
+      
+      // Calculate and update score
+      const score = calculateWelfareScore(data);
+      updateScoreDisplay(score, data);
+    }
+
+    function updateBadge(id, type, fallbackKey) {
+      const badge = document.getElementById(id);
+      if (!badge) return;
+      badge.className = `badge badge-${type}`;
+      // Keep existing text, just update class
+    }
+
+    // ==================== CHART ====================
+    function initChart(data) {
       const ctx = document.getElementById('creditChart').getContext('2d');
-      window.creditChart = new Chart(ctx, {
+      creditChart = new Chart(ctx, {
         type: 'doughnut',
-        data: {
-          labels: currentLang === 'ru' ? ['Потребление', 'Бизнес', 'Прочее'] : ['Consumption', 'Business', 'Other'],
+         {
+          labels: getChartLabels(),
           datasets: [{
-            data: [53, 20, 27],
+             [data.creditConsumption, data.creditBusiness, data.creditOther],
             backgroundColor: ['#dc2626', '#16a34a', '#64748b'],
             borderWidth: 0,
             spacing: 2
@@ -501,17 +930,11 @@
           plugins: {
             legend: {
               position: 'bottom',
-              labels: {
-                usePointStyle: true,
-                padding: 20,
-                font: { size: 11 }
-              }
+              labels: { usePointStyle: true, padding: 20, font: { size: 11 } }
             },
             tooltip: {
               callbacks: {
-                label: function(context) {
-                  return context.label + ': ' + context.parsed + '%';
-                }
+                label: (ctx) => ctx.label + ': ' + ctx.parsed + '%'
               }
             }
           },
@@ -520,20 +943,48 @@
       });
     }
 
-    // Calculate Welfare Score (simplified logic)
-    function calculateWelfareScore() {
-      // Factors (weights in parentheses):
-      // - Profit/Income growth gap: 208% / 12.9% = 16x → negative (weight: 30%)
-      // - Consumption loan share: 53% → negative (weight: 25%)
-      // - Poverty rate: 25.7% → negative context (weight: 20%)
-      // - Interest rates: 17-32% → negative (weight: 15%)
-      // - Dividend policy: 100% to shareholders → neutral/negative (weight: 10%)
+    function updateChart(data) {
+      if (!creditChart) {
+        initChart(data);
+      } else {
+        creditChart.data.labels = getChartLabels();
+        creditChart.data.datasets[0].data = [data.creditConsumption, data.creditBusiness, data.creditOther];
+        creditChart.update();
+      }
+    }
+
+    function getChartLabels() {
+      return currentLang === 'ru' 
+        ? ['Потребление', 'Бизнес', 'Прочее'] 
+        : ['Consumption', 'Business', 'Other'];
+    }
+
+    function updateChartLabels() {
+      if (creditChart) {
+        creditChart.data.labels = getChartLabels();
+        creditChart.update();
+      }
+    }
+
+    // ==================== WELFARE SCORE CALCULATION ====================
+    function calculateWelfareScore(data) {
+      // Factors (weights):
+      // 1. Profit/Income gap (30%): Higher gap = lower score
+      const gapRatio = data.profitGrowth / Math.max(data.incomeGrowth, 0.1);
+      const gapFactor = Math.max(0, 100 - gapRatio * 3);
       
-      const gapFactor = Math.max(0, 100 - (208 / 12.9) * 2); // ~32
-      const consumptionFactor = 100 - 53; // 47
-      const povertyFactor = 100 - 25.7; // 74.3
-      const interestFactor = Math.max(0, 100 - (24.5 - 10) * 2); // ~71 (mid-rate 24.5%)
-      const dividendFactor = 50; // neutral
+      // 2. Consumption loans share (25%): Higher = lower score
+      const consumptionFactor = 100 - data.creditConsumption;
+      
+      // 3. Poverty rate context (20%): Higher poverty = lower potential impact
+      const povertyFactor = 100 - data.povertyRate;
+      
+      // 4. Interest rates (15%): Higher = more burden
+      const avgRate = (data.interestMin + data.interestMax) / 2;
+      const interestFactor = Math.max(0, 100 - (avgRate - 10) * 2);
+      
+      // 5. Dividend policy (10%): Lower to shareholders = better for society
+      const dividendFactor = 100 - data.dividends * 0.5;
       
       const score = Math.round(
         gapFactor * 0.30 +
@@ -546,11 +997,7 @@
       return Math.max(0, Math.min(100, score));
     }
 
-    // Initialize
-    document.addEventListener('DOMContentLoaded', function() {
-      initChart();
-      
-      const score = calculateWelfareScore();
+    function updateScoreDisplay(score, data) {
       document.getElementById('scoreValue').textContent = score + '/100';
       
       const scoreFill = document.getElementById('scoreFill');
@@ -564,9 +1011,81 @@
         scoreFill.style.background = 'var(--success)';
       }
       
+      // Update warning message dynamically
+      const warningBox = document.getElementById('scoreWarning');
+      const warningText = document.getElementById('scoreWarningText');
+      
+      const gapRatio = data.profitGrowth / Math.max(data.incomeGrowth, 0.1);
+      const isHighGap = gapRatio > 5;
+      const isHighConsumption = data.creditConsumption > 40;
+      
+      if (isHighGap && isHighConsumption) {
+        warningBox.style.display = 'block';
+        warningBox.style.background = '#fef2f2';
+        warningBox.style.color = 'var(--danger)';
+        warningText.textContent = currentLang === 'ru'
+          ? `Прибыль банка растёт в ${Math.round(gapRatio)} раз быстрее доходов населения. Высокая доля потребительских кредитов (${data.creditConsumption}%) указывает на кредитование бедности, а не развития.`
+          : `Bank profit grows ${Math.round(gapRatio)}x faster than population income. High share of consumption loans (${data.creditConsumption}%) indicates lending to poverty, not development.`;
+      } else if (score >= 70) {
+        warningBox.style.display = 'block';
+        warningBox.style.background = '#dcfce7';
+        warningBox.style.color = '#166534';
+        warningText.textContent = currentLang === 'ru'
+          ? `✅ Банк показывает сбалансированную модель: умеренные ставки, фокус на бизнес-кредитование и рост доходов населения.`
+          : `✅ Bank shows balanced model: moderate rates, focus on business lending, and population income growth.`;
+      } else {
+        warningBox.style.display = 'block';
+        warningBox.style.background = '#fef3c7';
+        warningBox.style.color = '#92400e';
+        warningText.textContent = currentLang === 'ru'
+          ? `⚠️ Требуется мониторинг: отдельные показатели указывают на риски долговой нагрузки.`
+          : `⚠️ Monitor needed: some indicators suggest debt burden risks.`;
+      }
+    }
+
+    // ==================== INITIALIZATION ====================
+    document.addEventListener('DOMContentLoaded', function() {
+      // Load from localStorage if available
+      const saved = localStorage.getItem('bwa_custom_data');
+      if (saved) {
+        try {
+          const data = JSON.parse(saved);
+          Object.keys(data).forEach(key => {
+            const el = document.getElementById(key);
+            if (el && data[key] !== undefined) el.value = data[key];
+          });
+          // Don't auto-analyze, let user click
+        } catch(e) {
+          console.log('Could not load saved data');
+        }
+      }
+      
+      // Initialize with default data display
+      updateResults(defaultData);
+      
+      // Initialize chart
+      initChart(defaultData);
+      
       // Set initial language
       setLanguage('ru');
+      
+      // Add input validation for credit structure (must sum to ~100)
+      ['creditConsumption', 'creditBusiness', 'creditOther'].forEach(id => {
+        document.getElementById(id).addEventListener('change', validateCreditStructure);
+      });
     });
+
+    function validateCreditStructure() {
+      const c = parseFloat(document.getElementById('creditConsumption').value) || 0;
+      const b = parseFloat(document.getElementById('creditBusiness').value) || 0;
+      const o = parseFloat(document.getElementById('creditOther').value) || 0;
+      const total = c + b + o;
+      
+      if (Math.abs(total - 100) > 1) {
+        // Auto-adjust 'other' to make sum = 100
+        document.getElementById('creditOther').value = Math.max(0, 100 - c - b);
+      }
+    }
   </script>
 </body>
 </html>

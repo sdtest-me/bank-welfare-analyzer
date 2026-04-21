@@ -153,10 +153,11 @@ The gap between Bank and Population stages indicates systemic risk:
 | 16–30% | Moderate misalignment | 🟡 Medium |
 | 31%+ | Critical extraction | 🔴 High |
 
-**Example Interpretation**:
-- Bank Red (40%) vs Population Red (30%) = +10% gap → Bank extracts value at Red stage while population struggles at Beige-Red transition
-- Population Purple (20%) shows traditional family support systems, but Bank has 0% Purple = no community connection
-- Bank Blue (25%) shows compliance, but serves the Red agenda
+**Example Interpretation (Eldik Bank, Over-indebted Society >40%):**
+- Bank Red (40%) vs Population Beige (40%) = 0% gap → But the meanings are opposite: Population Beige means survival, Bank Red means aggressive extraction from this survival.
+- Population Red is only 5% (no riots), but Bank Red is 40% (aggressive debt collection). The system is stable only because the population is hyper-disciplined.
+- Population Green is 12% (high mutual aid to survive), while Bank Green is 0% (no empathy for debtors).
+- Bank Blue is 20% (formal compliance), serving the Red agenda (profit extraction).
 
 ---
 
@@ -356,6 +357,7 @@ Repository: [github.com/sdtest-me/bank-welfare-analyzer](https://github.com/sdte
 - **Зеленая (0%)**: 100% вывод дивидендов + кредитование бедности = полное отсутствие эмпатии банка к клиентам.
 
 **Нормализация**: Та же — сумма = 100%, макс. на стадию = 40%.
+
 ### 3.4 Источники данных для расчёта стадий Спиральной Динамики (цMEM-ов)
 
 | Показатель | Источник | URL | Метод верификации |
@@ -380,10 +382,11 @@ Repository: [github.com/sdtest-me/bank-welfare-analyzer](https://github.com/sdte
 | 16–30% | Умеренное несоответствие | 🟡 Средний |
 | 31%+ | Критическая экстракция | 🔴 Высокий |
 
-**Пример интерпретации**:
-- Банк в Красной стадии (40%) vs Население в Красной стадии (30%) = +10% разрыв → Банк извлекает ценность на Красной стадии, в то время как население борется на переходе Бежевая-Красная
-- Население в Фиолетовой стадии (20%) показывает традиционную семейную поддержку, но Банк имеет 0% в Фиолетовой стадии = нет связи с сообществом
-- Банк в Синей стадии (25%) показывает соответствие, но служит Красной повестке
+**Пример интерпретации (Элдик Банк, Закредитованное общество >40%):**
+- Банк Красная (40%) vs Население Бежевая (40%) = 0% разрыв → Но смыслы прямо противоположны: Бежевая населения означает выживание, Красная банка — агрессивную экстракцию из этого выживания.
+- Население Красная всего 5% (нет бунтов), а Банк Красная 40% (агрессивное выбивание долгов). Система стабильна лишь потому, что население гипер-дисциплинированно.
+- Население Зеленая 12% (высокая взаимовыручка для выживания), тогда как Банк Зеленая 0% (нет эмпатии к должникам).
+- Банк Синяя 20% (формальное соблюдение правил), обслуживающая Красную повестку (извлечение прибыли).
 
 ---
 

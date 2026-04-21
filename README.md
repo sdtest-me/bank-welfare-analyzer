@@ -154,10 +154,10 @@ The gap between Bank and Population stages indicates systemic risk:
 | 31%+ | Critical extraction | 🔴 High |
 
 **Example Interpretation (Eldik Bank, Over-indebted Society >40%):**
-- Bank Red (40%) vs Population Beige (40%) = 0% gap → But the meanings are opposite: Population Beige means survival, Bank Red means aggressive extraction from this survival.
-- Population Red is only 5% (no riots), but Bank Red is 40% (aggressive debt collection). The system is stable only because the population is hyper-disciplined.
-- Population Green is 12% (high mutual aid to survive), while Bank Green is 0% (no empathy for debtors).
-- Bank Blue is 20% (formal compliance), serving the Red agenda (profit extraction).
+- Bank Red (40%) vs Population Beige (39%) = +1% gap → The meanings are opposite: Population Beige means survival, Bank Red means aggressive extraction from this survival.
+- Population Red is only 6% (no riots), but Bank Red is 40% (aggressive debt collection). The system is stable only because the population is hyper-disciplined.
+- Population Green is 14% (high mutual aid to survive), while Bank Green is 0% (no empathy for debtors).
+- Bank Blue is 24% (formal compliance), serving the Red agenda (profit extraction).
 
 ---
 
@@ -383,10 +383,10 @@ Repository: [github.com/sdtest-me/bank-welfare-analyzer](https://github.com/sdte
 | 31%+ | Критическая экстракция | 🔴 Высокий |
 
 **Пример интерпретации (Элдик Банк, Закредитованное общество >40%):**
-- Банк Красная (40%) vs Население Бежевая (40%) = 0% разрыв → Но смыслы прямо противоположны: Бежевая населения означает выживание, Красная банка — агрессивную экстракцию из этого выживания.
-- Население Красная всего 5% (нет бунтов), а Банк Красная 40% (агрессивное выбивание долгов). Система стабильна лишь потому, что население гипер-дисциплинированно.
-- Население Зеленая 12% (высокая взаимовыручка для выживания), тогда как Банк Зеленая 0% (нет эмпатии к должникам).
-- Банк Синяя 20% (формальное соблюдение правил), обслуживающая Красную повестку (извлечение прибыли).
+- Банк Красная (40%) vs Население Бежевая (39%) = +1% разрыв → Но смыслы прямо противоположны: Бежевая населения означает выживание, Красная банка — агрессивную экстракцию из этого выживания.
+- Население Красная всего 6% (нет бунтов), а Банк Красная 40% (агрессивное выбивание долгов). Система стабильна лишь потому, что население гипер-дисциплинированно.
+- Население Зеленая 14% (высокая взаимовыручка для выживания), тогда как Банк Зеленая 0% (нет эмпатии к должникам).
+- Банк Синяя 24% (формальное соблюдение правил), обслуживающая Красную повестку (извлечение прибыли).
 
 ---
 

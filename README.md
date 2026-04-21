@@ -82,40 +82,52 @@ Spiral Dynamics theory is a psychological and sociological model that describes 
 
 Population stages are calculated based on objective macroeconomic indicators. The sum of all 8 stages always equals **100%**, with no single stage exceeding **40%**.
 
+**Important Condition:** If the share of consumer loans exceeds 40% (`creditConsumption > 40`), the "over-indebted society" logic applies. Otherwise, standard logic is used.
+
 | Stage (vMEME) | Color | Key Indicators | Calculation Formula | Max % |
 |-------|-------|----------------|---------------------|-------|
-| **Beige** | 🟤 | Survival, basic needs | If consumer loans > 40%: **40%**, else: `min(30, poverty_rate × 1.2)` | 40% |
-| **Purple** | 🟣 | Traditional, family bonds | `min(25, 30 − (GDP_per_capita / 200))` | 25% |
-| **Red** | 🔴 | Inequality, power, survival struggle | `min(35, 20 + poverty_rate × 0.4)` | 35% |
-| **Blue** | 🔵 | Order, regular payments, education | **Fixed: 33%** (indicates regular loan payments) | 33% |
-| **Orange** | 🟠 | Achievement, middle class, entrepreneurship | `min(25, GDP_per_capita / 150)` | 25% |
-| **Green** | 🟢 | Community, equality, social protection | `max(0, min(20, 100 − poverty_rate − 40))` | 20% |
-| **Yellow** | 🟡 | Flexibility, adaptation, learning | `min(15, income_growth > 10 ? 12 : 5)` | 15% |
-| **Turquoise** | 💎 | Holistic, global vision | **Fixed: 0%** (not yet achievable in developing economies) | 0% |
+| **Beige** | 🟤 | Survival, basic needs | If cons. > 40%: **40%**, else: `min(30, poverty_rate × 1.2)` | 40% |
+| **Purple** | 🟣 | Traditional, family bonds | If cons. > 40%: `min(15, 15 − (GDP / 300))`, else: `min(25, 30 − (GDP / 200))` | 25% |
+| **Red** | 🔴 | Inequality, riots, robberies | If cons. > 40%: **5%** (low level, no riots), else: `min(35, 20 + poverty_rate × 0.4)` | 35% |
+| **Blue** | 🔵 | Order, payment discipline | If cons. > 40%: **25%** (high, pay debts), else: **Fixed: 33%** | 33% |
+| **Orange** | 🟠 | Achievement, middle class | If cons. > 40%: `min(5, GDP / 500)`, else: `min(25, GDP / 150)` | 25% |
+| **Green** | 🟢 | Empathy, mutual aid | If cons. > 40%: `min(15, poverty_rate × 0.4 + 2)`, else: `min(20, poverty_rate × 0.5)` | 20% |
+| **Yellow** | 🟡 | Flexibility, adaptation | If cons. > 40%: **0%**, else: `min(15, income_growth > 10 ? 12 : 5)` | 15% |
+| **Turquoise** | 💎 | Holistic, global vision | **Fixed: 0%** | 0% |
 
-**Normalization**: After initial calculation, all values are normalized to ensure:
-- Total sum = exactly 100%
-- No single stage exceeds 40%
-- Excess is redistributed proportionally to stages below the cap
+**Logic for over-indebted changes (>40%):**
+- **Beige (40%)**: People take loans for survival.
+- **Red (5%)**: Despite poverty, the population does not riot or rob (low aggression).
+- **Blue (25%)**: The population is hyper-disciplined in paying bank debts.
+- **Green (up to 15%)**: In conditions of poverty, people survive through mutual aid from neighbors and relatives (empathy grows).
+
+**Normalization**: After initial calculation, all values are normalized using an algorithm (sum = 100%, max per stage = 40%).
+
+---
 
 ### 3.3 Bank Spiral Dynamics Stage (vMEME) Calculation
 
 Bank stages are calculated based on financial metrics and business practices. The sum of all 8 stages always equals **100%**, with no single stage exceeding **40%**.
 
-| Stage | Color | Key Indicators | Calculation Formula | Max % |
+| Stage (vMEME) | Color | Key Indicators | Calculation Formula | Max % |
 |-------|-------|----------------|---------------------|-------|
-| **Beige** | 🟤 | Survival, near bankruptcy | `max(0, 100 − capitalization)` | 40% |
-| **Purple** | 🟣 | Family business, nepotism | **Fixed: 0%** (rarely applies to formal banks) | 0% |
-| **Red** | 🔴 | Aggressive profit extraction, consumer lending | `min(40, 20 + (profit_gap > 5 ? 15 : profit_gap × 3) + (consumer_loans > 40 ? 5 : 0))` | 40% |
-| **Blue** | 🔵 | Compliance, hierarchy, standardization | `min(30, 20)` | 30% |
-| **Orange** | 🟠 | Business lending, innovation, competition | `min(30, business_loans × 1 + (profit_gap < 3 ? 10 : 0))` | 30% |
-| **Green** | 🟢 | ESG, financial inclusion, stakeholder focus | `max(0, min(20, 100 − dividends − (consumer_loans > 40 ? 15 : 0)))` | 20% |
-| **Yellow** | 🟡 | Adaptive, flexible, systemic thinking | `min(15, business_loans > 25 ? 10 : 3)` | 15% |
-| **Turquoise** | 💎 | Holistic, ecosystem thinking | **Fixed: 0%** (not yet achievable in current banking models) | 0% |
+| **Beige** | 🟤 | Survival, near bankruptcy | If capital < 10: `min(40, (10 - capital) × 10)`, else: **0%** | 40% |
+| **Purple** | 🟣 | Family business, nepotism | **Fixed: 0%** | 0% |
+| **Red** | 🔴 | Aggressive profit extraction | `min(40, 20 + (profit_gap > 5 ? 15 : profit_gap × 3) + (cons. > 40 ? 5 : 0))` | 40% |
+| **Blue** | 🔵 | Compliance, hierarchy | `min(30, 20)` | 30% |
+| **Orange** | 🟠 | Business lending, innovation | `min(30, business_loans × 1 + (profit_gap < 3 ? 10 : 0))` | 30% |
+| **Green** | 🟢 | ESG, empathy for debtors | `max(0, min(20, 100 - dividends - (cons. > 40 ? 15 : 0)))` | 20% |
+| **Yellow** | 🟡 | Adaptive, systemic thinking | `min(15, business_loans > 25 ? 10 : 3)` | 15% |
+| **Turquoise** | 💎 | Holistic, ecosystem thinking | **Fixed: 0%** | 0% |
 
 **Profit Gap** = Bank Profit Growth / Population Income Growth
 
-**Normalization**: Same as population - total = 100%, max per stage = 40%
+**Logic for Bank changes:**
+- **Beige (0%)**: A bank with a capitalization of 74.8 bln is not in the survival stage (the formula zeroes it out if capital > 10).
+- **Red (up to 40%)**: The bank aggressively extracts debts (high Red), while the population submissively pays (low Red).
+- **Green (0%)**: 100% dividend payout + poverty lending = absolute lack of bank empathy for clients.
+
+**Normalization**: Same — sum = 100%, max per stage = 40%.
 
 ### 3.4 Data Sources for Spiral Dynamics Stage (vMEME) Calculation
 
@@ -298,21 +310,28 @@ Repository: [github.com/sdtest-me/bank-welfare-analyzer](https://github.com/sdte
 
 Стадии населения рассчитываются на основе объективных макроэкономических показателей. Сумма всех 8 стадий всегда равна **100%**, ни одна стадия не превышает **40%**.
 
-| Стадия | Цвет | Ключевые индикаторы | Формула расчёта | Макс % |
-|--------|------|---------------------|-----------------|--------|
-| **Бежевая** | 🟤 | Выживание, базовые потребности | Если потреб.кредиты > 40%: **40%**, иначе: `min(30, уровень_бедности × 1.2)` | 40% |
-| **Фиолетовая** | 🟣 | Традиции, семейные связи | `min(25, 30 − (ВВП_на_душу / 200))` | 25% |
-| **Красная** | 🔴 | Неравенство, власть, борьба за выживание | `min(35, 20 + уровень_бедности × 0.4)` | 35% |
-| **Синяя** | 🔵 | Порядок, регулярные платежи, образование | **Фиксировано: 33%** (индикатор регулярных платежей по кредитам) | 33% |
-| **Оранжевая** | 🟠 | Достижения, средний класс, предпринимательство | `min(25, ВВП_на_душу / 150)` | 25% |
-| **Зелёная** | 🟢 | Сообщество, равенство, соцзащита | `max(0, min(20, 100 − уровень_бедности − 40))` | 20% |
-| **Жёлтая** | 🟡 | Гибкость, адаптация, обучение | `min(15, рост_доходов > 10 ? 12 : 5)` | 15% |
-| **Бирюзовая** | 💎 | Холизм, глобальное видение | **Фиксировано: 0%** (пока недостижимо в развивающихся экономиках) | 0% |
+**Важное условие:** Если доля потребительских кредитов превышает 40% (`creditConsumption > 40`), применяется логика "закредитованного общества". В ином случае — стандартная логика.
 
-**Нормализация**: После первоначального расчёта все значения нормализуются для обеспечения:
-- Общая сумма = ровно 100%
-- Ни одна стадия не превышает 40%
-- Избыток перераспределяется пропорционально стадиям ниже лимита
+| Стадия (цМЕМ) | Цвет | Ключевые индикаторы | Формула расчёта | Макс % |
+|--------|------|---------------------|-----------------|--------|
+| **Бежевая** | 🟤 | Выживание, базовые потребности | Если потр. > 40%: **40%**, иначе: `min(30, бедность × 1.2)` | 40% |
+| **Фиолетовая** | 🟣 | Традиции, семейные связи | Если потр. > 40%: `min(15, 15 − (ВВП / 300))`, иначе: `min(25, 30 − (ВВП / 200))` | 25% |
+| **Красная** | 🔴 | Неравенство, бунт, грабежи | Если потр. > 40%: **5%** (низкий уровень, нет бунтов), иначе: `min(35, 20 + бедность × 0.4)` | 35% |
+| **Синяя** | 🔵 | Порядок, дисциплина платежей | Если потр. > 40%: **25%** (высокая, платят долги), иначе: **Фикс: 33%** | 33% |
+| **Оранжевая** | 🟠 | Достижения, средний класс | Если потр. > 40%: `min(5, ВВП / 500)`, иначе: `min(25, ВВП / 150)` | 25% |
+| **Зеленая** | 🟢 | Эмпатия, взаимовыручка | Если потр. > 40%: `min(15, бедность × 0.4 + 2)`, иначе: `min(20, бедность × 0.5)` | 20% |
+| **Желтая** | 🟡 | Гибкость, адаптация | Если потр. > 40%: **0%**, иначе: `min(15, рост_доходов > 10 ? 12 : 5)` | 15% |
+| **Бирюзовая** | 💎 | Холизм, глобальное видение | **Фиксировано: 0%** | 0% |
+
+**Логика изменений при закредитованности (>40%):**
+- **Бежевая (40%)**: Люди берут кредиты на выживание.
+- **Красная (5%)**: Несмотря на нищету, население не бастует и не грабит (низкая агрессия).
+- **Синяя (25%)**: Население гипер-дисциплинированно платит долги банкам.
+- **Зеленая (до 15%)**: В условиях бедности люди спасаются взаимовыручкой соседей и родственников (эмпатия растет).
+
+**Нормализация**: После первоначального расчёта все значения нормализуются алгоритмом (сумма = 100%, макс. на стадию = 40%).
+
+---
 
 ### 3.3 Расчёт стадий Спиральной Динамики (цMEM-ов) для банка
 
@@ -320,19 +339,23 @@ Repository: [github.com/sdtest-me/bank-welfare-analyzer](https://github.com/sdte
 
 | Стадия (цМЕМ) | Цвет | Ключевые индикаторы | Формула расчёта | Макс % |
 |--------|------|---------------------|-----------------|--------|
-| **Бежевая** | 🟤 | Выживание, близость к банкротству | `max(0, 100 − капитализация)` | 40% |
-| **Фиолетовая** | 🟣 | Семейный бизнес, кумовство | **Фиксировано: 0%** (редко применяется к формальным банкам) | 0% |
-| **Красная** | 🔴 | Агрессивное извлечение прибыли, потреб.кредиты | `min(40, 20 + (разрыв_прибыли > 5 ? 15 : разрыв_прибыли × 3) + (потреб_кредиты > 40 ? 5 : 0))` | 40% |
-| **Синяя** | 🔵 | Соответствие, иерархия, стандартизация | `min(30, 20)` | 30% |
-| **Оранжевая** | 🟠 | Бизнес-кредиты, инновации, конкуренция | `min(30, бизнес_кредиты × 1 + (разрыв_прибыли < 3 ? 10 : 0))` | 30% |
-| **Зелёная** | 🟢 | ESG, финансовая инклюзия, фокус на стейкхолдерах | `max(0, min(20, 100 − дивиденды − (потреб_кредиты > 40 ? 15 : 0)))` | 20% |
-| **Жёлтая** | 🟡 | Адаптивность, гибкость, системное мышление | `min(15, бизнес_кредиты > 25 ? 10 : 3)` | 15% |
-| **Бирюзовая** | 💎 | Холизм, экосистемное мышление | **Фиксировано: 0%** (пока недостижимо в текущих банковских моделях) | 0% |
+| **Бежевая** | 🟤 | Выживание, близость к банкротству | Если капитал < 10: `min(40, (10 - капитал) × 10)`, иначе: **0%** | 40% |
+| **Фиолетовая** | 🟣 | Семейный бизнес, кумовство | **Фиксировано: 0%** | 0% |
+| **Красная** | 🔴 | Агрессивное извлечение прибыли | `min(40, 20 + (разрыв > 5 ? 15 : разрыв × 3) + (потр. > 40 ? 5 : 0))` | 40% |
+| **Синяя** | 🔵 | Соответствие, иерархия | `min(30, 20)` | 30% |
+| **Оранжевая** | 🟠 | Бизнес-кредиты, инновации | `min(30, бизнес_кредиты × 1 + (разрыв < 3 ? 10 : 0))` | 30% |
+| **Зеленая** | 🟢 | ESG, эмпатия к должникам | `max(0, min(20, 100 - дивиденды - (потр. > 40 ? 15 : 0)))` | 20% |
+| **Желтая** | 🟡 | Адаптивность, системное мышление | `min(15, бизнес_кредиты > 25 ? 10 : 3)` | 15% |
+| **Бирюзовая** | 💎 | Холизм, экосистемное мышление | **Фиксировано: 0%** | 0% |
 
 **Разрыв прибыли** = Рост прибыли банка / Рост доходов населения
 
-**Нормализация**: Как и для населения — сумма = 100%, макс. на стадию = 40%
+**Логика изменений для банка:**
+- **Бежевая (0%)**: Банк с капитализацией 74.8 млрд не находится в стадии выживания (формула обнуляет её, если капитал > 10).
+- **Красная (до 40%)**: Банк агрессивно выбивает долги (высокий Красный), в то время как население покорно платит (низкий Красный).
+- **Зеленая (0%)**: 100% вывод дивидендов + кредитование бедности = полное отсутствие эмпатии банка к клиентам.
 
+**Нормализация**: Та же — сумма = 100%, макс. на стадию = 40%.
 ### 3.4 Источники данных для расчёта стадий Спиральной Динамики (цMEM-ов)
 
 | Показатель | Источник | URL | Метод верификации |

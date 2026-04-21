@@ -10,16 +10,12 @@
     *{box-sizing:border-box;margin:0;padding:0}
     body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--t);line-height:1.6;padding:12px}
     .container{max-width:1200px;margin:0 auto}
-    
-    /* Header */
     header{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;background:var(--c);border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.1);margin-bottom:16px;flex-wrap:wrap;gap:10px}
     .logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:1.1rem}
     .logo-i{width:36px;height:36px;background:var(--p);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:.9rem}
     .lang{display:flex;gap:6px;background:var(--bg);padding:3px;border-radius:8px}
     .lang-b{padding:7px 14px;border:none;background:transparent;border-radius:6px;cursor:pointer;font-weight:500;font-size:.9rem}
     .lang-b.a{background:var(--p);color:#fff}
-    
-    /* Input Section */
     .input-s{background:var(--c);border-radius:12px;padding:18px;box-shadow:0 1px 3px rgba(0,0,0,.1);margin-bottom:16px}
     .input-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px}
     .sec-t{font-size:1.15rem;font-weight:600;display:flex;align-items:center;gap:8px}
@@ -27,27 +23,19 @@
     .btn-p{padding:12px 22px;border:none;border-radius:8px;font-weight:600;cursor:pointer;background:var(--p);color:#fff;font-size:.95rem;transition:all .2s}
     .btn-p:hover{background:var(--pd)}
     .btn-p:active{transform:scale(.97)}
-    
-    /* Examples - mobile optimized */
     .ex{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px;padding:12px;background:var(--ib);border-radius:10px;align-items:center}
     .ex-label{font-size:.85rem;color:var(--tm);margin-right:4px;width:100%;margin-bottom:2px}
     .ex-b{padding:9px 16px;border:1px solid var(--b);background:#fff;border-radius:20px;font-size:.85rem;cursor:pointer;transition:all .2s;white-space:nowrap}
     .ex-b.a{border-color:var(--p);background:var(--p);color:#fff}
     .ex-b:hover{border-color:var(--p);background:var(--p);color:#fff}
-    
-    /* Form */
     .form-g{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px;margin-bottom:16px}
     .form-gr{display:flex;flex-direction:column;gap:5px}
     .form-gr label{font-size:.85rem;font-weight:500;color:var(--tm)}
     .form-gr input{padding:11px 13px;border:1px solid var(--b);border-radius:8px;background:var(--ib);font-size:1rem;transition:border-color .2s}
     .form-gr input:focus{outline:none;border-color:var(--p);background:#fff}
     .form-r{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-    
-    /* Results title */
     .res-t{font-size:1.15rem;font-weight:600;display:flex;align-items:center;gap:8px;margin:8px 0 14px;padding-bottom:10px;border-bottom:2px solid var(--b)}
     .res-t::before{content:'';width:4px;height:16px;background:var(--s);border-radius:2px}
-    
-    /* Cards */
     .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-bottom:16px}
     .card{background:var(--c);border-radius:12px;padding:16px;box-shadow:0 1px 3px rgba(0,0,0,.1)}
     .card-t{font-size:1.05rem;font-weight:600;margin-bottom:14px}
@@ -60,33 +48,21 @@
     .badge-w{background:#fef3c7;color:#92400e}
     .badge-d{background:#fee2e2;color:#991b1b}
     .badge-n{background:#f1f5f9;color:#475569}
-    
-    /* Score */
     .score-c{text-align:center;padding:20px}
     .score-v{font-size:2.8rem;font-weight:800;margin:14px 0}
     .score-l{color:var(--tm);margin-bottom:14px;font-size:.95rem}
     .score-b{height:10px;background:var(--b);border-radius:5px;overflow:hidden;margin:14px 0}
     .score-f{height:100%;border-radius:5px;transition:width .5s}
-    
-    /* Chart */
     .chart-c{position:relative;height:260px;margin-top:12px}
-    
-    /* Problems */
     .prob-i{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--b)}
     .prob-i:last-child{border-bottom:none}
     .prob-ic{width:22px;height:22px;background:var(--d);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;flex-shrink:0;margin-top:2px}
     .prob-i div:last-child{font-size:.9rem}
-    
-    /* Questions */
     .quest-i{padding:10px 0;border-bottom:1px solid var(--b);font-size:.9rem}
     .quest-i:last-child{border-bottom:none}
     .quest-i::before{content:'▸ ';color:var(--p);font-weight:700}
-    
-    /* Footer */
     footer{text-align:center;padding:20px;color:var(--tm);font-size:.85rem}
     footer a{color:var(--p);text-decoration:none}
-    
-    /* MOBILE OPTIMIZATION */
     @media(max-width:600px){
       body{padding:8px}
       header{padding:12px 14px;margin-bottom:12px}
@@ -117,7 +93,6 @@
       .quest-i{font-size:.85rem;padding:8px 0}
       footer{padding:16px;font-size:.8rem}
     }
-    
     @media(max-width:400px){
       .logo{font-size:.95rem;gap:8px}
       .logo-i{width:28px;height:28px;font-size:.8rem}
@@ -141,7 +116,6 @@
       </div>
     </header>
 
-    <!-- INPUT SECTION -->
     <section class="input-s">
       <div class="input-h">
         <div class="sec-t" id="inpTitle">Ввод данных банка</div>
@@ -174,7 +148,6 @@
       </form>
     </section>
 
-    <!-- RESULTS SECTION -->
     <div id="resultsSection" style="display:none;">
       <div class="res-t" id="resultsTitle">📊 Результаты анализа</div>
       <div class="grid">
@@ -317,10 +290,8 @@
       $('exEldik').classList.toggle('a',n==='eldik');
       $('exNew').classList.toggle('a',n==='new');
       if(n==='eldik'){
-        Object.keys(def).forEach(k=>{
-          const map={bn:'bankName',co:'country',pg:'profitGrowth',cp:'capital',di:'dividends',im:'interestMin',ix:'interestMax',ig:'incomeGrowth',pr:'povertyRate',gd:'gdpPerCapita',as:'avgSalary',cc:'creditConsumption',cb:'creditBusiness',co2:'creditOther'};
-          if($(map[k]))$(map[k]).value=def[k];
-        });
+        const map={bn:'bankName',co:'country',pg:'profitGrowth',cp:'capital',di:'dividends',im:'interestMin',ix:'interestMax',ig:'incomeGrowth',pr:'povertyRate',gd:'gdpPerCapita',as:'avgSalary',cc:'creditConsumption',cb:'creditBusiness',co2:'creditOther'};
+        Object.keys(def).forEach(k=>{if($(map[k]))$(map[k]).value=def[k]});
         doAnalyze();
       }else{
         $('f').reset();
@@ -380,7 +351,27 @@
 
     function initChart(d){
       const ctx=$('chart').getContext('2d');
-      chart=new Chart(ctx,{type:'doughnut',data:{labels:[tr[lang].cons,tr[lang].bus,tr[lang].other],datasets:[{[d.cc,d.cb,d.co2],backgroundColor:['#dc2626','#16a34a','#64748b'],borderWidth:0,spacing:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{usePointStyle:true,padding:20,font:{size:11}}},tooltip:{callbacks:{label:ctx=>ctx.label+': '+ctx.parsed+'%'}}},cutout:'65%'}});
+      chart=new Chart(ctx,{
+        type:'doughnut',
+        data:{
+          labels:[tr[lang].cons,tr[lang].bus,tr[lang].other],
+          datasets:[{
+            data:[d.cc,d.cb,d.co2],
+            backgroundColor:['#dc2626','#16a34a','#64748b'],
+            borderWidth:0,
+            spacing:2
+          }]
+        },
+        options:{
+          responsive:true,
+          maintainAspectRatio:false,
+          plugins:{
+            legend:{position:'bottom',labels:{usePointStyle:true,padding:20,font:{size:11}}},
+            tooltip:{callbacks:{label:ctx=>ctx.label+': '+ctx.parsed+'%'}}
+          },
+          cutout:'65%'
+        }
+      });
     }
 
     function calcScore(d){
@@ -395,8 +386,11 @@
 
     document.addEventListener('DOMContentLoaded',()=>{
       const sv=localStorage.getItem('bwa_data');
-      if(sv){try{const d=JSON.parse(sv);Object.keys(d).forEach(k=>{const m={bn:'bankName',co:'country',pg:'profitGrowth',cp:'capital',di:'dividends',im:'interestMin',ix:'interestMax',ig:'incomeGrowth',pr:'povertyRate',gd:'gdpPerCapita',as:'avgSalary',cc:'creditConsumption',cb:'creditBusiness',co2:'creditOther'};if($(m[k])&&d[k]!==undefined)$(m[k]).value=d[k]})}catch(e){}}
-      refresh(def);initChart(def);setLang('ru');showRes();
+      if(sv){try{const d=JSON.parse(sv);const m={bn:'bankName',co:'country',pg:'profitGrowth',cp:'capital',di:'dividends',im:'interestMin',ix:'interestMax',ig:'incomeGrowth',pr:'povertyRate',gd:'gdpPerCapita',as:'avgSalary',cc:'creditConsumption',cb:'creditBusiness',co2:'creditOther'};Object.keys(d).forEach(k=>{if($(m[k])&&d[k]!==undefined)$(m[k]).value=d[k]})}catch(e){}}
+      refresh(def);
+      initChart(def);
+      setLang('ru');
+      showRes();
       ['creditConsumption','creditBusiness','creditOther'].forEach(id=>$(id).addEventListener('change',fixCredit));
     });
   </script>

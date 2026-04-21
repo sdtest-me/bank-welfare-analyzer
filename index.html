@@ -63,6 +63,34 @@
     .quest-i::before{content:'▸ ';color:var(--p);font-weight:700}
     footer{text-align:center;padding:20px;color:var(--tm);font-size:.85rem}
     footer a{color:var(--p);text-decoration:none}
+    
+    /* Spiral Dynamics Styles */
+    .spiral-section{margin-top:24px}
+    .spiral-title{font-size:1.15rem;font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+    .spiral-title::before{content:'';width:4px;height:16px;background:linear-gradient(90deg,#F5F5DC,#8B4789,#E53935,#1E88E5,#FB8C00,#43A047,#FFD600,#00BCD4);border-radius:2px}
+    .spiral-desc{font-size:.9rem;color:var(--tm);margin-bottom:16px}
+    .spiral-chart-container{height:400px;position:relative;margin-bottom:20px}
+    .stage-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+    .stage-card{padding:14px;background:var(--ib);border-radius:8px;border-left:4px solid}
+    .stage-card.population{border-left-color:#16a34a}
+    .stage-card.bank{border-left-color:#dc2626}
+    .stage-card-title{font-size:.85rem;color:var(--tm);margin-bottom:8px}
+    .stage-bar{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
+    .stage-item{padding:4px 8px;border-radius:4px;font-size:.75rem;font-weight:600;color:#fff}
+    .stage-beige{background:#F5F5DC;color:#333}
+    .stage-purple{background:#8B4789}
+    .stage-red{background:#E53935}
+    .stage-blue{background:#1E88E5}
+    .stage-orange{background:#FB8C00}
+    .stage-green{background:#43A047}
+    .stage-yellow{background:#FFD600;color:#333}
+    .stage-turquoise{background:#00BCD4}
+    .dominant-stage{margin-top:10px;padding:8px;background:#fff;border-radius:6px;font-weight:600;font-size:.9rem}
+    .gap-analysis{margin-top:16px;padding:14px;background:#fef2f2;border-radius:8px;border-left:4px solid var(--d)}
+    .gap-analysis.warning{background:#fef3c7;border-left-color:var(--w)}
+    .gap-analysis.success{background:#dcfce7;border-left-color:var(--s)}
+    .gap-title{font-weight:600;margin-bottom:8px;font-size:.95rem}
+    .gap-text{font-size:.85rem;line-height:1.5}
     @media(max-width:600px){
       body{padding:8px}
       header{padding:12px 14px;margin-bottom:12px}
@@ -88,6 +116,8 @@
       .score-v{font-size:2.2rem}
       .score-l{font-size:.85rem}
       .chart-c{height:220px}
+      .spiral-chart-container{height:320px}
+      .stage-grid{grid-template-columns:1fr}
       .prob-i{padding:8px 0}
       .prob-i div:last-child{font-size:.85rem}
       .quest-i{font-size:.85rem;padding:8px 0}
@@ -100,6 +130,7 @@
       .input-s{padding:12px}
       .ex-b{padding:7px 8px;font-size:.75rem}
       .score-v{font-size:1.8rem}
+      .spiral-chart-container{height:280px}
     }
   </style>
 </head>
@@ -185,6 +216,34 @@
         </div>
       </div>
 
+      <!-- Spiral Dynamics Section -->
+      <div class="card spiral-section">
+        <div class="spiral-title" id="spiralTitle">🌀 Spiral Dynamics Analysis</div>
+        <div class="spiral-desc" id="spiralDesc">Comparison of Population Life Conditions vs Bank Organizational Culture</div>
+        
+        <div class="spiral-chart-container">
+          <canvas id="spiralChart"></canvas>
+        </div>
+        
+        <div class="stage-grid">
+          <div class="stage-card population">
+            <div class="stage-card-title" id="popTitle">👥 Population Life Conditions</div>
+            <div class="stage-bar" id="popStages"></div>
+            <div class="dominant-stage" id="popDominant"></div>
+          </div>
+          <div class="stage-card bank">
+            <div class="stage-card-title" id="bankTitle">🏦 Bank Culture</div>
+            <div class="stage-bar" id="bankStages"></div>
+            <div class="dominant-stage" id="bankDominant"></div>
+          </div>
+        </div>
+        
+        <div id="gapAnalysis" class="gap-analysis">
+          <div class="gap-title" id="gapTitle">⚠️ Spiral Gap Analysis</div>
+          <div class="gap-text" id="gapText"></div>
+        </div>
+      </div>
+
       <div class="grid" style="margin-top:16px">
         <div class="card">
           <div class="card-t" id="tProb">Ключевые проблемы системы</div>
@@ -231,7 +290,15 @@
         q4:"Кто получает дивиденды? (государство или частные акционеры?)",
         fRepo:"Репозиторий проекта:",capU:"млрд сомов",salU:"сомов",
         tHigh:"высокий",tMod:"умеренный",tCrit:"критичный",tLow:"низкий",tShare:"акционерам",
-        cons:"Потребление",bus:"Бизнес",other:"Прочее",resultsTitle:"📊 Результаты анализа"
+        cons:"Потребление",bus:"Бизнес",other:"Прочее",resultsTitle:"📊 Результаты анализа",
+        spiralTitle:"🌀 Spiral Dynamics Analysis",
+        spiralDesc:"Сравнение условий жизни населения и организационной культуры банка",
+        popTitle:"👥 Условия жизни населения",
+        bankTitle:"🏦 Культура банка",
+        gapTitle:"⚠️ Анализ разрыва спиралей",
+        stages:{beige:"🟤 Бежевая",purple:"🟣 Фиолетовая",red:"🔴 Красная",blue:"🔵 Синяя",orange:"🟠 Оранжевая",green:"🟢 Зеленая",yellow:"🟡 Желтая",turquoise:"💎 Бирюзовая"},
+        dominant:"Доминирующая стадия:",
+        gapText:"Банк работает на агрессивной Красной стадии (извлечение прибыли), в то время как население борется за выживание на переходе Бежевая-Красная. Это создает неустойчивую долговую спираль."
       },
       en: {
         app:"Bank Welfare Analyzer",inpTitle:"Enter Bank Data",btnAnalyze:"🚀 Analyze",
@@ -254,12 +321,21 @@
         q4:"Who receives dividends? (state or private shareholders?)",
         fRepo:"Project repository:",capU:"bln KGS",salU:"KGS",
         tHigh:"high",tMod:"moderate",tCrit:"critical",tLow:"low",tShare:"to shareholders",
-        cons:"Consumption",bus:"Business",other:"Other",resultsTitle:"📊 Analysis Results"
+        cons:"Consumption",bus:"Business",other:"Other",resultsTitle:"📊 Analysis Results",
+        spiralTitle:"🌀 Spiral Dynamics Analysis",
+        spiralDesc:"Comparison of Population Life Conditions vs Bank Organizational Culture",
+        popTitle:"👥 Population Life Conditions",
+        bankTitle:"🏦 Bank Culture",
+        gapTitle:"⚠️ Spiral Gap Analysis",
+        stages:{beige:"🟤 Beige",purple:"🟣 Purple",red:"🔴 Red",blue:"🔵 Blue",orange:"🟠 Orange",green:"🟢 Green",yellow:"🟡 Yellow",turquoise:"💎 Turquoise"},
+        dominant:"Dominant Stage:",
+        gapText:"Bank operates at aggressive Red stage (profit extraction) while population struggles at Beige-Red transition (survival). This creates unsustainable debt spiral."
       }
     };
 
-    let lang='ru',chart=null;
+    let lang='ru',chart=null,spiralChart=null;
     const def={bn:"Eldik Bank",co:"Кыргызстан",pg:208,cp:74.8,di:100,im:17,ix:32,ig:12.9,pr:25.7,gd:2513,as:37361,cc:53,cb:20,co2:27};
+    const stageColors={beige:'#F5F5DC',purple:'#8B4789',red:'#E53935',blue:'#1E88E5',orange:'#FB8C00',green:'#43A047',yellow:'#FFD600',turquoise:'#00BCD4'};
 
     function $(id){return document.getElementById(id);}
     function fmtPct(v){return (v>=0?'+':'')+v+'%'}
@@ -271,7 +347,7 @@
       lang=l;
       $('btnRU').classList.toggle('a',l==='ru');
       $('btnEN').classList.toggle('a',l==='en');
-      Object.keys(tr[lang]).forEach(k=>{if($(k))$(k).textContent=tr[lang][k]});
+      Object.keys(tr[lang]).forEach(k=>{if($(k) && k!=='stages')$(k).textContent=tr[lang][k]});
       $('capUnit').textContent=tr[lang].capU;
       $('salUnit').textContent=tr[lang].salU;
       document.title=tr[lang].app;
@@ -324,6 +400,151 @@
       $('resultsTitle').scrollIntoView({behavior:'smooth',block:'start'});
     }
 
+    function calculateSpiralStages(data){
+      const population={beige:0,purple:0,red:0,blue:0,orange:0,green:0,yellow:0,turquoise:0};
+      const bank={beige:0,purple:0,red:0,blue:0,orange:0,green:0,yellow:0,turquoise:0};
+      
+      // Population stages based on macro indicators
+      population.beige=Math.min(40,data.povertyRate*1.5);
+      population.purple=Math.min(25,(100-data.gdpPerCapita/50)*0.3);
+      population.red=Math.min(40,20+data.povertyRate*0.5+(data.gd<3000?10:0));
+      population.blue=Math.min(30,data.avgSalary/1500);
+      population.orange=Math.min(30,data.gdpPerCapita/150);
+      population.green=Math.max(0,100-data.povertyRate-30);
+      population.yellow=Math.min(15,data.ig>10?10:5);
+      population.turquoise=0;
+      
+      // Bank stages based on our metrics
+      const profitGap=data.pg/Math.max(data.ig,1);
+      bank.beige=Math.max(0,100-data.cp);
+      bank.purple=0;
+      bank.red=Math.min(40,(profitGap*8)+(data.cc*0.4));
+      bank.blue=Math.min(30,20+(profitGap<3?10:0));
+      bank.orange=Math.min(30,data.cb*1.2+(profitGap<2?15:0));
+      bank.green=Math.max(0,100-data.di-(data.cc>40?20:0));
+      bank.yellow=Math.min(15,data.cb>30?12:5);
+      bank.turquoise=0;
+      
+      // Normalize to 100%
+      const popTotal=Object.values(population).reduce((a,b)=>a+b,0);
+      const bankTotal=Object.values(bank).reduce((a,b)=>a+b,0);
+      
+      Object.keys(population).forEach(k=>population[k]=Math.round(population[k]/popTotal*100));
+      Object.keys(bank).forEach(k=>bank[k]=Math.round(bank[k]/bankTotal*100));
+      
+      return{population,bank};
+    }
+
+    function initSpiralChart(population,bank){
+      if(spiralChart)spiralChart.destroy();
+      
+      const ctx=$('spiralChart').getContext('2d');
+      spiralChart=new Chart(ctx,{
+        type:'line',
+        data:{
+          labels:['Beige','Purple','Red','Blue','Orange','Green','Yellow','Turquoise'],
+          datasets:[
+            {
+              label:'👥 Population',
+               [population.beige,population.purple,population.red,population.blue,population.orange,population.green,population.yellow,population.turquoise],
+              borderColor:'#16a34a',
+              backgroundColor:'rgba(22,163,74,0.1)',
+              borderWidth:3,
+              pointBackgroundColor:'#16a34a',
+              pointRadius:6,
+              pointHoverRadius:8,
+              tension:0.4,
+              fill:true
+            },
+            {
+              label:'🏦 Bank',
+               [bank.beige,bank.purple,bank.red,bank.blue,bank.orange,bank.green,bank.yellow,bank.turquoise],
+              borderColor:'#dc2626',
+              backgroundColor:'rgba(220,38,38,0.1)',
+              borderWidth:3,
+              pointBackgroundColor:'#dc2626',
+              pointRadius:6,
+              pointHoverRadius:8,
+              tension:0.4,
+              fill:true
+            }
+          ]
+        },
+        options:{
+          responsive:true,
+          maintainAspectRatio:false,
+          plugins:{
+            legend:{position:'top',labels:{usePointStyle:true,padding:15,font:{size:11}}},
+            tooltip:{
+              mode:'index',
+              intersect:false,
+              callbacks:{
+                label:function(context){
+                  return context.dataset.label+': '+context.parsed.y+'%';
+                }
+              }
+            }
+          },
+          scales:{
+            y:{
+              beginAtZero:true,
+              max:45,
+              ticks:{stepSize:10}
+            },
+            x:{
+              grid:{display:false}
+            }
+          }
+        }
+      });
+    }
+
+    function renderStageBars(population,bank){
+      const stages=['beige','purple','red','blue','orange','green','yellow','turquoise'];
+      const stageIcons={beige:'🟤',purple:'🟣',red:'🔴',blue:'🔵',orange:'🟠',green:'🟢',yellow:'🟡',turquoise:'💎'};
+      
+      // Population bars
+      let popHTML='';
+      stages.forEach(s=>{
+        if(population[s]>0){
+          popHTML+=`<div class="stage-item stage-${s}">${stageIcons[s]} ${population[s]}%</div>`;
+        }
+      });
+      $('popStages').innerHTML=popHTML;
+      
+      // Bank bars
+      let bankHTML='';
+      stages.forEach(s=>{
+        if(bank[s]>0){
+          bankHTML+=`<div class="stage-item stage-${s}">${stageIcons[s]} ${bank[s]}%</div>`;
+        }
+      });
+      $('bankStages').innerHTML=bankHTML;
+      
+      // Find dominant stages
+      const popDominant=stages.reduce((a,b)=>population[a]>population[b]?a:b);
+      const bankDominant=stages.reduce((a,b)=>bank[a]>bank[b]?a:b);
+      
+      $('popDominant').innerHTML=`${tr[lang].dominant} ${stageIcons[popDominant]} ${popDominant.charAt(0).toUpperCase()+popDominant.slice(1)} (${population[popDominant]}%)`;
+      $('bankDominant').innerHTML=`${tr[lang].dominant} ${stageIcons[bankDominant]} ${bankDominant.charAt(0).toUpperCase()+bankDominant.slice(1)} (${bank[bankDominant]}%)`;
+      
+      // Gap analysis
+      const gap=bank[bankDominant]-population[popDominant];
+      const gapEl=$('gapAnalysis');
+      const gapText=$('gapText');
+      
+      if(bankDominant==='red'&&population[popDominant]<25){
+        gapEl.className='gap-analysis';
+        gapText.innerHTML=`<strong>${tr[lang].gapTitle}</strong><br><br>• ${tr[lang].gapText}<br>• ${tr[lang].lang==='ru'?'Разрыв между банком и населением критический':'The gap between bank and population is critical'}`;
+      }else if(gap<15){
+        gapEl.className='gap-analysis success';
+        gapText.innerHTML=`<strong>✅ ${tr[lang].lang==='ru'?'Сбалансированное развитие':'Balanced Development'}</strong><br><br>${tr[lang].lang==='ru'?'Банк и население находятся на близких стадиях развития':'Bank and population are at similar development stages'}`;
+      }else{
+        gapEl.className='gap-analysis warning';
+        gapText.innerHTML=`<strong>⚠️ ${tr[lang].lang==='ru'?'Требуется мониторинг':'Monitor Needed'}</strong><br><br>${tr[lang].lang==='ru'?'Есть разрыв между стадиями, но ситуация контролируема':'There is a stage gap, but the situation is manageable'}`;
+      }
+    }
+
     function refresh(d=null){
       if(!d)d=getData();
       $('rProfit').textContent=fmtPct(d.pg);$('rCap').textContent=d.cp;
@@ -338,6 +559,12 @@
       $('bDiv').className=`badge badge-${d.di>80?'w':'n'}`;
       updateBadgeTexts();
       if(!chart)initChart(d);else{chart.data.labels=[tr[lang].cons,tr[lang].bus,tr[lang].other];chart.data.datasets[0].data=[d.cc,d.cb,d.co2];chart.update();}
+      
+      // Calculate and render Spiral Dynamics
+      const spiral=calculateSpiralStages(d);
+      initSpiralChart(spiral.population,spiral.bank);
+      renderStageBars(spiral.population,spiral.bank);
+      
       const sc=calcScore(d);
       $('scoreVal').textContent=sc+'/100';
       const sf=$('scoreFill');sf.style.width=sc+'%';
@@ -351,27 +578,7 @@
 
     function initChart(d){
       const ctx=$('chart').getContext('2d');
-      chart=new Chart(ctx,{
-        type:'doughnut',
-        data:{
-          labels:[tr[lang].cons,tr[lang].bus,tr[lang].other],
-          datasets:[{
-            data:[d.cc,d.cb,d.co2],
-            backgroundColor:['#dc2626','#16a34a','#64748b'],
-            borderWidth:0,
-            spacing:2
-          }]
-        },
-        options:{
-          responsive:true,
-          maintainAspectRatio:false,
-          plugins:{
-            legend:{position:'bottom',labels:{usePointStyle:true,padding:20,font:{size:11}}},
-            tooltip:{callbacks:{label:ctx=>ctx.label+': '+ctx.parsed+'%'}}
-          },
-          cutout:'65%'
-        }
-      });
+      chart=new Chart(ctx,{type:'doughnut',data:{labels:[tr[lang].cons,tr[lang].bus,tr[lang].other],datasets:[{[d.cc,d.cb,d.co2],backgroundColor:['#dc2626','#16a34a','#64748b'],borderWidth:0,spacing:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{usePointStyle:true,padding:20,font:{size:11}}},tooltip:{callbacks:{label:ctx=>ctx.label+': '+ctx.parsed+'%'}}},cutout:'65%'}});
     }
 
     function calcScore(d){

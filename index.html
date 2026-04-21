@@ -378,7 +378,7 @@
       let keys=Object.keys(obj), sum=0;
       for(let k of keys){obj[k]=Math.round(obj[k]);sum+=obj[k];}
       let diff=100-sum;
-      if(diff!==0){let target=keys.reduce((a,b)=>obj[a]>=obj[b]?a:b);obj[target]+=diff;}
+      if(diff!==0){let target=keys.find(k => obj[k] + diff <= max); if(!target) target = keys[0]; obj[target] += diff;}
     }
 
     function calculateSpiralStages(data){

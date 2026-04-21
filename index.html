@@ -89,8 +89,13 @@
     .gap-analysis.success{background:#dcfce7;border-left-color:var(--s)}
     .gap-title{font-weight:600;margin-bottom:8px;font-size:.95rem}
     .gap-text{font-size:.85rem;line-height:1.5}
+    .detail-table{margin-top:16px;padding:14px;background:var(--ib);border-radius:8px}
+    .detail-title{font-weight:600;margin-bottom:8px;font-size:.95rem}
+    .stage-grid-detail{display:grid;grid-template-columns:repeat(8,1fr);gap:4px;text-align:center;font-size:.75rem;margin:8px 0}
+    .stage-cell{padding:6px;background:#fff;border-radius:4px;font-weight:600}
+    .dominant-text{margin-top:8px;font-weight:600;font-size:.9rem}
     @media(max-width:600px){
-      body{padding:8px}header{padding:12px 14px;margin-bottom:12px}.logo{font-size:1rem}.logo-i{width:32px;height:32px;font-size:.85rem}.lang-b{padding:6px 12px;font-size:.85rem}.input-s{padding:14px;margin-bottom:12px;border-radius:10px}.input-h{flex-direction:column;align-items:flex-start;gap:8px;margin-bottom:14px}.sec-t{font-size:1.05rem;width:100%}.btn-p{width:100%;text-align:center;padding:13px 20px;font-size:1rem}.ex{padding:10px;margin-bottom:14px;border-radius:8px}.ex-label{width:100%;margin-bottom:6px;font-size:.8rem}.ex-b{flex:1;min-width:0;text-align:center;padding:8px 10px;font-size:.8rem}.form-g{grid-template-columns:1fr;gap:12px}.form-r{grid-template-columns:1fr;gap:10px}.form-gr input{padding:10px 12px;font-size:1rem}.res-t{font-size:1.05rem;margin-bottom:12px}.grid{grid-template-columns:1fr;gap:12px}.card{padding:14px;border-radius:10px}.card-t{font-size:1rem;margin-bottom:12px}.metric{flex-direction:column;align-items:flex-start;gap:4px;padding:8px 0}.metric-v{justify-content:flex-start;width:100%}.score-v{font-size:2.2rem}.score-l{font-size:.85rem}.chart-c{height:220px}.spiral-chart-container{height:320px}.stage-grid{grid-template-columns:1fr}.prob-i{padding:8px 0}.prob-i div:last-child{font-size:.85rem}.quest-i{font-size:.85rem;padding:8px 0}footer{padding:16px;font-size:.8rem}
+      body{padding:8px}header{padding:12px 14px;margin-bottom:12px}.logo{font-size:1rem}.logo-i{width:32px;height:32px;font-size:.85rem}.lang-b{padding:6px 12px;font-size:.85rem}.input-s{padding:14px;margin-bottom:12px;border-radius:10px}.input-h{flex-direction:column;align-items:flex-start;gap:8px;margin-bottom:14px}.sec-t{font-size:1.05rem;width:100%}.btn-p{width:100%;text-align:center;padding:13px 20px;font-size:1rem}.ex{padding:10px;margin-bottom:14px;border-radius:8px}.ex-label{width:100%;margin-bottom:6px;font-size:.8rem}.ex-b{flex:1;min-width:0;text-align:center;padding:8px 10px;font-size:.8rem}.form-g{grid-template-columns:1fr;gap:12px}.form-r{grid-template-columns:1fr;gap:10px}.form-gr input{padding:10px 12px;font-size:1rem}.res-t{font-size:1.05rem;margin-bottom:12px}.grid{grid-template-columns:1fr;gap:12px}.card{padding:14px;border-radius:10px}.card-t{font-size:1rem;margin-bottom:12px}.metric{flex-direction:column;align-items:flex-start;gap:4px;padding:8px 0}.metric-v{justify-content:flex-start;width:100%}.score-v{font-size:2.2rem}.score-l{font-size:.85rem}.chart-c{height:220px}.spiral-chart-container{height:320px}.stage-grid{grid-template-columns:1fr}.prob-i{padding:8px 0}.prob-i div:last-child{font-size:.85rem}.quest-i{font-size:.85rem;padding:8px 0}footer{padding:16px;font-size:.8rem}.stage-grid-detail{grid-template-columns:repeat(4,1fr)}
     }
     @media(max-width:400px){.logo{font-size:.95rem;gap:8px}.logo-i{width:28px;height:28px;font-size:.8rem}.lang-b{padding:5px 10px;font-size:.8rem}.input-s{padding:12px}.ex-b{padding:7px 8px;font-size:.75rem}.score-v{font-size:1.8rem}.spiral-chart-container{height:280px}}
   </style>
@@ -190,25 +195,10 @@
 
       <!-- Spiral Dynamics Section -->
       <div class="card spiral-section">
-        <div class="spiral-title" id="spiralTitle">🌀 Анализ по Спиральной Динамике</div>
-        <div class="spiral-desc" id="spiralDesc">Сравнение условий жизни по Спиральной Динамике</div>
+        <div class="spiral-title" id="spiralTitle">🌀 Spiral Dynamics: Population vs Bank</div>
+        <div class="spiral-desc" id="spiralDesc">Comparison of Life Conditions by Spiral Dynamics</div>
         <div class="spiral-chart-container"><canvas id="spiralChart"></canvas></div>
-        <div class="stage-grid">
-          <div class="stage-card population">
-            <div class="stage-card-title" id="popTitle">👥 Население</div>
-            <div class="stage-bar" id="popStages"></div>
-            <div class="dominant-stage" id="popDominant"></div>
-          </div>
-          <div class="stage-card bank">
-            <div class="stage-card-title" id="bankTitle">🏦 Банк</div>
-            <div class="stage-bar" id="bankStages"></div>
-            <div class="dominant-stage" id="bankDominant"></div>
-          </div>
-        </div>
-        <div id="gapAnalysis" class="gap-analysis">
-          <div class="gap-title" id="gapTitle">⚠️ Сравнение Население vs Банк</div>
-          <div class="gap-text" id="gapText"></div>
-        </div>
+        <div id="spiralDetails"></div>
       </div>
     </div>
 
@@ -241,13 +231,16 @@
         fRepo:"Репозиторий проекта:",capU:"млрд сомов",salU:"сомов",
         tHigh:"высокий",tMod:"умеренный",tCrit:"критичный",tLow:"низкий",tShare:"акционерам",
         cons:"Потребление",bus:"Бизнес",other:"Прочее",resultsTitle:"📊 Результаты анализа",
-        spiralTitle:"🌀 Анализ по Спиральной Динамике",
+        spiralTitle:"🌀 Spiral Dynamics: Население vs Банк",
         spiralDesc:"Сравнение условий жизни по Спиральной Динамике",
-        popTitle:"Население",bankTitle:"Банк",gapTitle:"⚠️ Сравнение Население vs Банк",
+        spiralLabels:['Бежевая','Фиолетовая','Красная','Синяя','Оранжевая','Зеленая','Желтая','Бирюзовая'],
         stages:{beige:"🟤 Бежевая",purple:"🟣 Фиолетовая",red:"🔴 Красная",blue:"🔵 Синяя",orange:"🟠 Оранжевая",green:"🟢 Зеленая",yellow:"🟡 Желтая",turquoise:"💎 Бирюзовая"},
-        spiralLabels:['🟤 Бежевая','🟣 Фиолетовая','🔴 Красная','🔵 Синяя','🟠 Оранжевая','🟢 Зеленая','🟡 Желтая','💎 Бирюзовая'],
         dominant:"Доминирующая стадия:",
-        gapText:"Банк работает на агрессивной Красной стадии (извлечение прибыли), в то время как население борется за выживание на переходе Бежевая-Красная. Это создает неустойчивую долговую спираль."
+        gapTitle:"⚠️ SPIRAL GAP ANALYSIS:",
+        recTitle:"💡 RECOMMENDATION:",
+        popText:"POPULATION LIFE CONDITIONS",
+        bankText:"BANK CULTURE",
+        stageMeaning:{beige:"Выживание",purple:"Традиции/Семья",red:"Неравенство/Борьба",blue:"Порядок/Образование",orange:"Достижения/Средний класс",green:"Сообщество/Равенство",yellow:"Гибкость/Адаптация",turquoise:"Холизм/Глобальное видение"}
       },
       en: {
         app:"Bank Welfare Analyzer",inpTitle:"Enter Bank Data",btnAnalyze:"🚀 Analyze",
@@ -271,13 +264,16 @@
         fRepo:"Project repository:",capU:"bln KGS",salU:"KGS",
         tHigh:"high",tMod:"moderate",tCrit:"critical",tLow:"low",tShare:"to shareholders",
         cons:"Consumption",bus:"Business",other:"Other",resultsTitle:"📊 Analysis Results",
-        spiralTitle:"🌀 Spiral Dynamics Analysis",
+        spiralTitle:"🌀 Spiral Dynamics: Population vs Bank",
         spiralDesc:"Comparison of Life Conditions by Spiral Dynamics",
-        popTitle:"Population",bankTitle:"Bank",gapTitle:"⚠️ Population vs Bank Comparison",
+        spiralLabels:['Beige','Purple','Red','Blue','Orange','Green','Yellow','Turquoise'],
         stages:{beige:"🟤 Beige",purple:"🟣 Purple",red:"🔴 Red",blue:"🔵 Blue",orange:"🟠 Orange",green:"🟢 Green",yellow:"🟡 Yellow",turquoise:"💎 Turquoise"},
-        spiralLabels:['🟤 Beige','🟣 Purple','🔴 Red',' Blue','🟠 Orange','🟢 Green','🟡 Yellow',' Turquoise'],
         dominant:"Dominant Stage:",
-        gapText:"Bank operates at aggressive Red stage (profit extraction) while population struggles at Beige-Red transition (survival). This creates unsustainable debt spiral."
+        gapTitle:"⚠️ SPIRAL GAP ANALYSIS:",
+        recTitle:"💡 RECOMMENDATION:",
+        popText:"POPULATION LIFE CONDITIONS",
+        bankText:"BANK CULTURE",
+        stageMeaning:{beige:"Survival",purple:"Traditional/Family",red:"Inequality/Survival",blue:"Order/Education",orange:"Achievement/Middle Class",green:"Community/Equality",yellow:"Flexible/Adaptive",turquoise:"Holistic/Global"}
       }
     };
 
@@ -295,7 +291,7 @@
       $('btnRU').classList.toggle('a',l==='ru');
       $('btnEN').classList.toggle('a',l==='en');
       Object.keys(tr[lang]).forEach(k=>{
-        if($(k) && k!=='stages' && k!=='spiralLabels') {
+        if($(k) && k!=='stages' && k!=='spiralLabels' && k!=='stageMeaning') {
           $(k).textContent=tr[lang][k];
         }
       });
@@ -303,17 +299,8 @@
       $('salUnit').textContent=tr[lang].salU;
       document.title=tr[lang].app;
       $('hTitle').textContent=tr[lang].app;
-      
-      if(chart){
-        chart.data.labels=[tr[lang].cons,tr[lang].bus,tr[lang].other];
-        chart.update();
-      }
-      if(spiralChart){
-        spiralChart.data.labels=tr[lang].spiralLabels;
-        spiralChart.data.datasets[0].label='👥 '+tr[lang].popTitle;
-        spiralChart.data.datasets[1].label='🏦 '+tr[lang].bankTitle;
-        spiralChart.update();
-      }
+      if(chart){chart.data.labels=[tr[lang].cons,tr[lang].bus,tr[lang].other];chart.update();}
+      if(spiralChart){spiralChart.data.labels=tr[lang].spiralLabels;spiralChart.update();}
       updateBadgeTexts();
       refresh();
     }
@@ -361,10 +348,34 @@
       $('resultsTitle').scrollIntoView({behavior:'smooth',block:'start'});
     }
 
+    function normalizeAndCap(obj, max=40){
+      let total=Object.values(obj).reduce((a,b)=>a+b,0);
+      if(total===0)return;
+      for(let k in obj) obj[k]=(obj[k]/total)*100;
+      let changed=true, iter=0;
+      while(changed && iter<5){
+        changed=false;iter++;
+        let sum=Object.values(obj).reduce((a,b)=>a+b,0);
+        let excess=0;
+        for(let k in obj){
+          if(obj[k]>max){excess+=obj[k]-max;obj[k]=max;changed=true;}
+        }
+        if(excess>0){
+          let keys=Object.keys(obj).filter(k=>obj[k]<max);
+          let subSum=keys.reduce((a,k)=>a+obj[k],0);
+          if(subSum>0){for(let k of keys)obj[k]+=excess*(obj[k]/subSum);}
+          else{let per=excess/Object.keys(obj).length;for(let k in obj)obj[k]+=per;}
+        }
+      }
+      let keys=Object.keys(obj), sum=0;
+      for(let k of keys){obj[k]=Math.round(obj[k]);sum+=obj[k];}
+      let diff=100-sum;
+      if(diff!==0){let target=keys.reduce((a,b)=>obj[a]>=obj[b]?a:b);obj[target]+=diff;}
+    }
+
     function calculateSpiralStages(data){
       const pop={beige:0,purple:0,red:0,blue:0,orange:0,green:0,yellow:0,turquoise:0};
       const bank={beige:0,purple:0,red:0,blue:0,orange:0,green:0,yellow:0,turquoise:0};
-      
       pop.beige=Math.min(40,data.povertyRate*1.2);
       pop.purple=Math.min(25,30-(data.gdpPerCapita/200));
       pop.red=Math.min(40,25+data.povertyRate*0.3);
@@ -373,7 +384,6 @@
       pop.green=Math.max(0,Math.min(20,100-data.povertyRate-40));
       pop.yellow=Math.min(15,data.ig>10?12:5);
       pop.turquoise=0;
-      
       const profitGap=data.pg/Math.max(data.ig,1);
       bank.beige=0;bank.purple=0;
       bank.red=Math.min(40,20+(profitGap>5?15:profitGap*3)+(data.cc>40?5:0));
@@ -382,21 +392,46 @@
       bank.green=Math.max(0,Math.min(20,100-data.di-(data.cc>40?15:0)));
       bank.yellow=Math.min(15,data.cb>25?10:3);
       bank.turquoise=0;
-      
-      normalizeTo100(pop);normalizeTo100(bank);
+      normalizeAndCap(pop);normalizeAndCap(bank);
       return{population:pop,bank};
     }
 
-    function normalizeTo100(obj){
-      const total=Object.values(obj).reduce((a,b)=>a+b,0);
-      if(total===0)return;
-      const keys=Object.keys(obj);
-      let sum=0;
-      for(let i=0;i<keys.length-1;i++){
-        obj[keys[i]]=Math.round(obj[keys[i]]/total*100);
-        sum+=obj[keys[i]];
-      }
-      obj[keys[keys.length-1]]=100-sum;
+    function renderDetailedAnalysis(data, population, bank){
+      const stages=['beige','purple','red','blue','orange','green','yellow','turquoise'];
+      const icons={beige:'🟤',purple:'🟣',red:'🔴',blue:'🔵',orange:'🟠',green:'🟢',yellow:'🟡',turquoise:'💎'};
+      const popD=stages.reduce((a,b)=>population[a]>population[b]?a:b);
+      const bankD=stages.reduce((a,b)=>bank[a]>bank[b]?a:b);
+      const t=tr[lang];
+      
+      let html=`<div class="detail-table"><div class="detail-title">📊 STAGE DISTRIBUTION (Total = 100%)</div>`;
+      
+      // Population Table
+      html+=`<div style="margin-bottom:12px;"><strong>👥 ${t.popText} (${data.co}):</strong>
+        <div class="stage-grid-detail">${stages.map(s=>`<div class="stage-cell stage-${s}">${icons[s]}<br>${population[s]}%</div>`).join('')}</div>
+        <div class="dominant-text">${t.dominant} ${icons[popD]} ${t.stages[popD]} (${population[popD]}%) - ${t.stageMeaning[popD]}</div></div>`;
+        
+      // Bank Table
+      html+=`<div><strong>🏦 ${t.bankText} (${data.bn}):</strong>
+        <div class="stage-grid-detail">${stages.map(s=>`<div class="stage-cell stage-${s}">${icons[s]}<br>${bank[s]}%</div>`).join('')}</div>
+        <div class="dominant-text">${t.dominant} ${icons[bankD]} ${t.stages[bankD]} (${bank[bankD]}%) - ${bankD==='red'?(lang==='ru'?'Агрессивное извлечение прибыли':'Aggressive Profit Extraction'):(lang==='ru'?'Развитие/Инновации':'Development/Innovation')}</div></div></div>`;
+        
+      // Gap Analysis
+      html+=`<div style="margin-top:16px;padding:14px;background:#fef2f2;border-radius:8px;border-left:4px solid var(--d);">
+        <strong>${t.gapTitle}</strong><br><br>
+        • Bank ${t.stages[bankD]} (${bank[bankD]}%) vs Population ${t.stages[popD]} (${population[popD]}%) = ${bank[bankD]-population[popD]>0?'+':''}${bank[bankD]-population[popD]}% gap<br>
+        • Bank extracts value at ${t.stages[bankD]} stage while population struggles at ${t.stages[popD]} transition<br>
+        • Population ${t.stages.purple} (${population.purple}%) shows traditional support, but Bank has ${bank.purple}% ${t.stages.purple}<br>
+        • Bank ${t.stages.blue} (${bank.blue}%) shows compliance, but serves ${t.stages.red} agenda</div>`;
+        
+      // Recommendation
+      html+=`<div style="margin-top:12px;padding:14px;background:#dcfce7;border-radius:8px;border-left:4px solid var(--s);">
+        <strong>${t.recTitle}</strong><br>
+        Bank should evolve from ${t.stages.red} to 🟠 Orange by:<br>
+        • Shifting from consumer loans (${data.cc}%) to business loans<br>
+        • Supporting entrepreneurship & economic development<br>
+        • Aligning profit growth with population income growth</div>`;
+        
+      $('spiralDetails').innerHTML=html;
     }
 
     function initSpiralChart(population,bank){
@@ -407,61 +442,12 @@
         data:{
           labels:tr[lang].spiralLabels,
           datasets:[
-            {
-              label:'👥 '+tr[lang].popTitle,
-              data:[population.beige,population.purple,population.red,population.blue,population.orange,population.green,population.yellow,population.turquoise],
-              borderColor:'#16a34a',
-              borderWidth:4,
-              pointBackgroundColor:'#16a34a',
-              pointRadius:6,
-              pointHoverRadius:8,
-              tension:0.4,
-              fill:false
-            },
-            {
-              label:'🏦 '+tr[lang].bankTitle,
-              data:[bank.beige,bank.purple,bank.red,bank.blue,bank.orange,bank.green,bank.yellow,bank.turquoise],
-              borderColor:'#dc2626',
-              borderWidth:4,
-              pointBackgroundColor:'#dc2626',
-              pointRadius:6,
-              pointHoverRadius:8,
-              tension:0.4,
-              fill:false
-            }
+            {label:'👥 Pop',data:[population.beige,population.purple,population.red,population.blue,population.orange,population.green,population.yellow,population.turquoise],borderColor:'#16a34a',borderWidth:4,pointBackgroundColor:'#16a34a',pointRadius:6,pointHoverRadius:8,tension:0.4,fill:false},
+            {label:'🏦 Bank',data:[bank.beige,bank.purple,bank.red,bank.blue,bank.orange,bank.green,bank.yellow,bank.turquoise],borderColor:'#dc2626',borderWidth:4,pointBackgroundColor:'#dc2626',pointRadius:6,pointHoverRadius:8,tension:0.4,fill:false}
           ]
         },
-        options:{
-          responsive:true,
-          maintainAspectRatio:false,
-          plugins:{
-            legend:{position:'top',labels:{usePointStyle:true,padding:15,font:{size:11}}},
-            tooltip:{mode:'index',intersect:false,callbacks:{label:c=>c.dataset.label+': '+c.parsed.y+'%'}}
-          },
-          scales:{y:{beginAtZero:true,max:45,ticks:{stepSize:10}},x:{grid:{display:false}}}
-        }
+        options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{usePointStyle:true,padding:15,font:{size:11}}},tooltip:{mode:'index',intersect:false,callbacks:{label:c=>c.dataset.label+': '+c.parsed.y+'%'}}},scales:{y:{beginAtZero:true,max:45,ticks:{stepSize:10}},x:{grid:{display:false}}}}
       });
-    }
-
-    function renderStageBars(population,bank){
-      const stages=['beige','purple','red','blue','orange','green','yellow','turquoise'];
-      const stageIcons={beige:'🟤',purple:'🟣',red:'🔴',blue:'🔵',orange:'🟠',green:'🟢',yellow:'🟡',turquoise:'💎'};
-      let popHTML='',bankHTML='';
-      stages.forEach(s=>{
-        if(population[s]>0)popHTML+=`<div class="stage-item stage-${s}">${stageIcons[s]} ${population[s]}%</div>`;
-        if(bank[s]>0)bankHTML+=`<div class="stage-item stage-${s}">${stageIcons[s]} ${bank[s]}%</div>`;
-      });
-      $('popStages').innerHTML=popHTML;$('bankStages').innerHTML=bankHTML;
-      const popD=stages.reduce((a,b)=>population[a]>population[b]?a:b);
-      const bankD=stages.reduce((a,b)=>bank[a]>bank[b]?a:b);
-      $('popDominant').innerHTML=`${tr[lang].dominant} ${stageIcons[popD]} ${tr[lang].stages[popD]} (${population[popD]}%)`;
-      $('bankDominant').innerHTML=`${tr[lang].dominant} ${stageIcons[bankD]} ${tr[lang].stages[bankD]} (${bank[bankD]}%)`;
-      
-      const gap=bank[bankD]-population[popD];
-      const gapEl=$('gapAnalysis'),gapText=$('gapText');
-      if(bankD==='red'&&population.red<25){gapEl.className='gap-analysis';gapText.innerHTML=`<strong>${tr[lang].gapTitle}</strong><br><br>• ${tr[lang].gapText}`;}
-      else if(gap<15){gapEl.className='gap-analysis success';gapText.innerHTML=`<strong>✅ ${lang==='ru'?'Сбалансированное развитие':'Balanced Development'}</strong><br><br>${lang==='ru'?'Банк и население находятся на близких стадиях развития':'Bank and population are at similar development stages'}`;}
-      else{gapEl.className='gap-analysis warning';gapText.innerHTML=`<strong>⚠️ ${lang==='ru'?'Требуется мониторинг':'Monitor Needed'}</strong><br><br>${lang==='ru'?'Есть разрыв между стадиями, но ситуация контролируема':'There is a stage gap, but the situation is manageable'}`;}
     }
 
     function refresh(d=null){
@@ -480,23 +466,12 @@
       
       if(!chart){
         const ctx=$('chart').getContext('2d');
-        chart=new Chart(ctx,{
-          type:'doughnut',
-          data:{
-            labels:[tr[lang].cons,tr[lang].bus,tr[lang].other],
-            datasets:[{data:[d.cc,d.cb,d.co2],backgroundColor:['#dc2626','#16a34a','#64748b'],borderWidth:0,spacing:2}]
-          },
-          options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{usePointStyle:true,padding:20,font:{size:11}}},tooltip:{callbacks:{label:c=>c.label+': '+c.parsed+'%'}}},cutout:'65%'}
-        });
-      }else{
-        chart.data.labels=[tr[lang].cons,tr[lang].bus,tr[lang].other];
-        chart.data.datasets[0].data=[d.cc,d.cb,d.co2];
-        chart.update();
-      }
+        chart=new Chart(ctx,{type:'doughnut',data:{labels:[tr[lang].cons,tr[lang].bus,tr[lang].other],datasets:[{data:[d.cc,d.cb,d.co2],backgroundColor:['#dc2626','#16a34a','#64748b'],borderWidth:0,spacing:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{usePointStyle:true,padding:20,font:{size:11}}},tooltip:{callbacks:{label:c=>c.label+': '+c.parsed+'%'}}},cutout:'65%'}});
+      }else{chart.data.labels=[tr[lang].cons,tr[lang].bus,tr[lang].other];chart.data.datasets[0].data=[d.cc,d.cb,d.co2];chart.update();}
       
       const spiral=calculateSpiralStages(d);
       initSpiralChart(spiral.population,spiral.bank);
-      renderStageBars(spiral.population,spiral.bank);
+      renderDetailedAnalysis(d,spiral.population,spiral.bank);
       
       const sc=calcScore(d);
       $('scoreVal').textContent=sc+'/100';

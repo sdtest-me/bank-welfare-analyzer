@@ -214,7 +214,7 @@ The gap between Bank and Population stages indicates systemic risk:
 ## 7. Technical Architecture
 
 - **Frontend**: Vanilla HTML5 / CSS3 / JavaScript (ES6+)
-- **Visualization**: Chart.js (Doughnut chart, Line chart with emoji markers)
+- **Visualization**: Chart.js (Doughnut chart, Line chart with colored point markers)
 - **Storage**: localStorage (last session persistence)
 - **Deploy**: GitHub Pages (static hosting)
 - **Responsive**: Mobile-first, CSS Grid/Flexbox
@@ -443,7 +443,7 @@ Repository: [github.com/sdtest-me/bank-welfare-analyzer](https://github.com/sdte
 ## 7. Техническая архитектура
 
 - **Frontend**: Vanilla HTML5 / CSS3 / JavaScript (ES6+)
-- **Визуализация**: Chart.js (Doughnut chart, Line chart with emoji markers)
+- **Визуализация**: Chart.js (Doughnut chart, Line chart with colored point markers)
 - **Хранение**: localStorage (сохранение последней сессии)
 - **Деплой**: GitHub Pages (статический хостинг)
 - **Адаптивность**: Mobile-first, CSS Grid/Flexbox

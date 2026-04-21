@@ -287,7 +287,7 @@
         spiralDesc:"Сравнение условий жизни населения и организационной культуры банка",
         popTitle:"👥 Условия жизни населения",
         bankTitle:"🏦 Культура банка",
-        gapTitle:"⚠️ Анализ разрыва по Спиральной Динамике",
+        gapTitle:"⚠️ Анализ разрыва спиралей",
         stages:{beige:"🟤 Бежевая",purple:"🟣 Фиолетовая",red:"🔴 Красная",blue:"🔵 Синяя",orange:"🟠 Оранжевая",green:"🟢 Зеленая",yellow:"🟡 Желтая",turquoise:"💎 Бирюзовая"},
         dominant:"Доминирующая стадия:",
         gapText:"Банк работает на агрессивной Красной стадии (извлечение прибыли), в то время как население борется за выживание на переходе Бежевая-Красная. Это создает неустойчивую долговую спираль."
@@ -411,8 +411,8 @@
       bank.green=Math.max(0,100-data.di-(data.cc>40?20:0));
       bank.yellow=Math.min(15,data.cb>30?12:5);
       bank.turquoise=0;
-      const popTotal=Object.values(population).reduce((a,b)=>a+b,0);
-      const bankTotal=Object.values(bank).reduce((a,b)=>a+b,0);
+      const popTotal=Object.values(population).reduce((a,b)=>a+b,0)||1;
+      const bankTotal=Object.values(bank).reduce((a,b)=>a+b,0)||1;
       Object.keys(population).forEach(k=>population[k]=Math.round(population[k]/popTotal*100));
       Object.keys(bank).forEach(k=>bank[k]=Math.round(bank[k]/bankTotal*100));
       return{population,bank};
@@ -428,7 +428,7 @@
           datasets:[
             {
               label:'👥 Population',
-               [population.beige,population.purple,population.red,population.blue,population.orange,population.green,population.yellow,population.turquoise],
+              data:[population.beige,population.purple,population.red,population.blue,population.orange,population.green,population.yellow,population.turquoise],
               borderColor:'#16a34a',
               backgroundColor:'rgba(22,163,74,0.1)',
               borderWidth:3,
@@ -440,7 +440,7 @@
             },
             {
               label:'🏦 Bank',
-               [bank.beige,bank.purple,bank.red,bank.blue,bank.orange,bank.green,bank.yellow,bank.turquoise],
+              data:[bank.beige,bank.purple,bank.red,bank.blue,bank.orange,bank.green,bank.yellow,bank.turquoise],
               borderColor:'#dc2626',
               backgroundColor:'rgba(220,38,38,0.1)',
               borderWidth:3,
@@ -505,6 +505,8 @@
       $('bGdp').className=`badge badge-${d.gd<3000?'w':d.gd<10000?'n':'s'}`;
       $('bDiv').className=`badge badge-${d.di>80?'w':'n'}`;
       updateBadgeTexts();
+      
+      // Initialize credit structure chart (FIXED SYNTAX)
       if(!chart){
         const ctx=$('chart').getContext('2d');
         chart=new Chart(ctx,{
@@ -512,7 +514,7 @@
           data:{
             labels:[tr[lang].cons,tr[lang].bus,tr[lang].other],
             datasets:[{
-               [d.cc,d.cb,d.co2],
+              data:[d.cc,d.cb,d.co2],
               backgroundColor:['#dc2626','#16a34a','#64748b'],
               borderWidth:0,
               spacing:2
@@ -533,9 +535,12 @@
         chart.data.datasets[0].data=[d.cc,d.cb,d.co2];
         chart.update();
       }
+      
+      // Calculate and render Spiral Dynamics
       const spiral=calculateSpiralStages(d);
       initSpiralChart(spiral.population,spiral.bank);
       renderStageBars(spiral.population,spiral.bank);
+      
       const sc=calcScore(d);
       $('scoreVal').textContent=sc+'/100';
       const sf=$('scoreFill');sf.style.width=sc+'%';

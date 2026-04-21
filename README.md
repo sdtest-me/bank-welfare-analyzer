@@ -73,16 +73,16 @@ The **Welfare Score** Index is calculated using a weighted sum of five factors. 
 
 ### 3.1 Overview
 
-Spiral Dynamics is a psychological and sociological model that describes the evolution of human value systems through 8 distinct stages (colors). In this application, we apply it to analyze:
+Spiral Dynamics theory is a psychological and sociological model that describes the evolution of human value systems through 8 distinct stages (colors). In this application, we apply it to analyze:
 
 1. **Population Life Conditions** - the dominant value systems based on living standards
 2. **Bank Organizational Culture** - the dominant value systems based on business practices
 
-### 3.2 Population Stage Calculation
+### 3.2 Population Spiral Dynamics Stage (vMEME) Calculation
 
 Population stages are calculated based on objective macroeconomic indicators. The sum of all 8 stages always equals **100%**, with no single stage exceeding **40%**.
 
-| Stage | Color | Key Indicators | Calculation Formula | Max % |
+| Stage (vMEME) | Color | Key Indicators | Calculation Formula | Max % |
 |-------|-------|----------------|---------------------|-------|
 | **Beige** | 🟤 | Survival, basic needs | If consumer loans > 40%: **40%**, else: `min(30, poverty_rate × 1.2)` | 40% |
 | **Purple** | 🟣 | Traditional, family bonds | `min(25, 30 − (GDP_per_capita / 200))` | 25% |
@@ -98,7 +98,7 @@ Population stages are calculated based on objective macroeconomic indicators. Th
 - No single stage exceeds 40%
 - Excess is redistributed proportionally to stages below the cap
 
-### 3.3 Bank Stage Calculation
+### 3.3 Bank Spiral Dynamics Stage (vMEME) Calculation
 
 Bank stages are calculated based on financial metrics and business practices. The sum of all 8 stages always equals **100%**, with no single stage exceeding **40%**.
 
@@ -117,7 +117,7 @@ Bank stages are calculated based on financial metrics and business practices. Th
 
 **Normalization**: Same as population - total = 100%, max per stage = 40%
 
-### 3.4 Data Sources for Spiral Dynamics Calculation
+### 3.4 Data Sources for Spiral Dynamics Stage (vMEME) Calculation
 
 | Indicator | Source | URL | Verification Method |
 |-----------|--------|-----|---------------------|
@@ -131,7 +131,7 @@ Bank stages are calculated based on financial metrics and business practices. Th
 | **Dividend Policy** | Bank Annual Report | [Eldik Bank - Investors](https://eldikbank.kg/investors/) | Shareholder meeting minutes |
 | **Interest Rates** | National Bank of Kyrgyzstan | [NBKR - Interest Rates](https://www.nbkr.kg/SITE/statistic/interest_rates/) | Weighted average rates |
 
-### 3.5 Spiral Gap Analysis
+### 3.5 Spiral Dynamics Stage (vMEME) Gap Analysis
 
 The gap between Bank and Population stages indicates systemic risk:
 
@@ -144,7 +144,7 @@ The gap between Bank and Population stages indicates systemic risk:
 **Example Interpretation**:
 - Bank Red (40%) vs Population Red (30%) = +10% gap → Bank extracts value at Red stage while population struggles at Beige-Red transition
 - Population Purple (20%) shows traditional family support systems, but Bank has 0% Purple = no community connection
-- Bank Blue (25%) shows compliance, but serves Red agenda
+- Bank Blue (25%) shows compliance, but serves the Red agenda
 
 ---
 
@@ -169,7 +169,7 @@ The gap between Bank and Population stages indicates systemic risk:
 ### Data Collection Methodology:
 
 1. **Bank Financials**: Extracted from mandatory reports published on NBKR website ("Bank Financial Statements" section).
-2. **Macroeconomic Data**: Sourced from official publications of National Statistical Committee (stat.kg), cross-checked with World Bank.
+2. **Macroeconomic Data**: Sourced from official publications of the National Statistical Committee (stat.kg), cross-checked with World Bank.
 3. **Credit Structure**: NBKR monthly microfinance reviews.
 4. **Ratings**: International agencies (Fitch, Moody's).
 5. **Interest Rates**: NBKR weighted average rates for household loans.
@@ -182,8 +182,8 @@ The gap between Bank and Population stages indicates systemic risk:
 
 | Score | What It Means | Recommended Actions |
 |-------|--------------|---------------------|
-| **0–39** 🔴 | Bank profits primarily from poverty lending. High rates and consumption loans create debt spiral. | Analyze client debt burden, monitor delinquency, regulator inquiry into portfolio structure |
-| **40–69** 🟡 | Moderate contribution. Risks exist, but bank partially funds real sector. | Regular monitoring, incentives for business lending |
+| **0–39** 🔴 | Bank profits primarily from poverty lending. High rates and consumption loans create a debt spiral. | Analyze client debt burden, monitor delinquency, regulator inquiry into portfolio structure |
+| **40–69** 🟡 | Moderate contribution. Risks exist, but the bank partially funds the real sector. | Regular monitoring, incentives for business lending |
 | **70–100** 🟢 | Bank supports economic development: low rates, focus on business loans, income growth outpaces bank profit. | Support, tax benefits, public recognition |
 
 ---
@@ -218,7 +218,7 @@ MIT License. Use for analysis, education, and public research.
 
 Repository: [github.com/sdtest-me/bank-welfare-analyzer](https://github.com/sdtest-me/bank-welfare-analyzer)
 
-> 💡 **Idea**: Banks should be evaluated not only by shareholder profit, but by their contribution to national welfare. This tool is the first step toward such assessment.
+> 💡 **Idea**: Banks should be evaluated not only by shareholder profit, but by their contribution to national welfare. This tool is the first step toward such an assessment.
 
 ---
 
@@ -289,12 +289,12 @@ Repository: [github.com/sdtest-me/bank-welfare-analyzer](https://github.com/sdte
 
 ### 3.1 Обзор
 
-Спиральная Динамика — это психологическая и социологическая модель, описывающая эволюцию человеческих ценностных систем через 8 различных стадий (цветов). В этом приложении мы применяем её для анализа:
+Спиральная Динамика — это психологическая и социологическая модель, описывающая эволюцию человеческих ценностных систем через 8 различных стадий (цветов) - цMEM-ов (от оригинального vMEME). В этом приложении мы применяем её для анализа:
 
-1. **Условий жизни населения** — доминирующие ценностные системы на основе уровня жизни
+1. **Условий жизни населения** — доминирующие ценностные на основе уровня жизни
 2. **Организационной культуры банка** — доминирующие ценностные системы на основе бизнес-практик
 
-### 3.2 Расчёт стадий для населения
+### 3.2 Расчёт стадий Спиральной Динамики (цMEM-ов) для населения
 
 Стадии населения рассчитываются на основе объективных макроэкономических показателей. Сумма всех 8 стадий всегда равна **100%**, ни одна стадия не превышает **40%**.
 
@@ -314,11 +314,11 @@ Repository: [github.com/sdtest-me/bank-welfare-analyzer](https://github.com/sdte
 - Ни одна стадия не превышает 40%
 - Избыток перераспределяется пропорционально стадиям ниже лимита
 
-### 3.3 Расчёт стадий для банка
+### 3.3 Расчёт стадий Спиральной Динамики (цMEM-ов) для банка
 
 Стадии банка рассчитываются на основе финансовых метрик и бизнес-практик. Сумма всех 8 стадий всегда равна **100%**, ни одна стадия не превышает **40%**.
 
-| Стадия | Цвет | Ключевые индикаторы | Формула расчёта | Макс % |
+| Стадия (цМЕМ) | Цвет | Ключевые индикаторы | Формула расчёта | Макс % |
 |--------|------|---------------------|-----------------|--------|
 | **Бежевая** | 🟤 | Выживание, близость к банкротству | `max(0, 100 − капитализация)` | 40% |
 | **Фиолетовая** | 🟣 | Семейный бизнес, кумовство | **Фиксировано: 0%** (редко применяется к формальным банкам) | 0% |
@@ -333,7 +333,7 @@ Repository: [github.com/sdtest-me/bank-welfare-analyzer](https://github.com/sdte
 
 **Нормализация**: Как и для населения — сумма = 100%, макс. на стадию = 40%
 
-### 3.4 Источники данных для расчёта Спиральной Динамики
+### 3.4 Источники данных для расчёта стадий Спиральной Динамики (цMEM-ов)
 
 | Показатель | Источник | URL | Метод верификации |
 |------------|----------|-----|-------------------|
@@ -347,7 +347,7 @@ Repository: [github.com/sdtest-me/bank-welfare-analyzer](https://github.com/sdte
 | **Политика дивидендов** | Годовой отчёт банка | [Eldik Bank - Инвесторам](https://eldikbank.kg/investors/) | Протоколы собраний акционеров |
 | **Процентные ставки** | Нацбанк КР | [НБКР - Процентные ставки](https://www.nbkr.kg/SITE/statistic/interest_rates/) | Средневзвешенные ставки |
 
-### 3.5 Анализ разрыва спиралей (Spiral Gap Analysis)
+### 3.5 Анализ разрыва стадий Спиральной Динамики (цMEM-ов)
 
 Разрыв между стадиями Банка и Населения указывает на системный риск:
 
@@ -358,9 +358,9 @@ Repository: [github.com/sdtest-me/bank-welfare-analyzer](https://github.com/sdte
 | 31%+ | Критическая экстракция | 🔴 Высокий |
 
 **Пример интерпретации**:
-- Банк Красная (40%) vs Население Красная (30%) = +10% разрыв → Банк извлекает ценность на Красной стадии, в то время как население борется на переходе Бежевая-Красная
-- Население Фиолетовая (20%) показывает традиционную семейную поддержку, но Банк имеет 0% Фиолетовая = нет связи с сообществом
-- Банк Синяя (25%) показывает соответствие, но служит Красной повестке
+- Банк в Красной стадии (40%) vs Население в Красной стадии (30%) = +10% разрыв → Банк извлекает ценность на Красной стадии, в то время как население борется на переходе Бежевая-Красная
+- Население в Фиолетовой стадии (20%) показывает традиционную семейную поддержку, но Банк имеет 0% в Фиолетовой стадии = нет связи с сообществом
+- Банк в Синей стадии (25%) показывает соответствие, но служит Красной повестке
 
 ---
 

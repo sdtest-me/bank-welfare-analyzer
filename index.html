@@ -193,10 +193,9 @@
         </div>
       </div>
 
-      <!-- Spiral Dynamics Section -->
       <div class="card spiral-section">
-        <div class="spiral-title" id="spiralTitle">🌀 Spiral Dynamics: Population vs Bank</div>
-        <div class="spiral-desc" id="spiralDesc">Comparison of Life Conditions by Spiral Dynamics</div>
+        <div class="spiral-title" id="spiralTitle">🌀 Spiral Dynamics: Население vs Банк</div>
+        <div class="spiral-desc" id="spiralDesc">Сравнение условий жизни по Спиральной Динамике</div>
         <div class="spiral-chart-container"><canvas id="spiralChart"></canvas></div>
         <div id="spiralDetails"></div>
       </div>
@@ -234,13 +233,15 @@
         spiralTitle:"🌀 Spiral Dynamics: Население vs Банк",
         spiralDesc:"Сравнение условий жизни по Спиральной Динамике",
         spiralLabels:['Бежевая','Фиолетовая','Красная','Синяя','Оранжевая','Зеленая','Желтая','Бирюзовая'],
-        stages:{beige:"🟤 Бежевая",purple:"🟣 Фиолетовая",red:"🔴 Красная",blue:"🔵 Синяя",orange:"🟠 Оранжевая",green:"🟢 Зеленая",yellow:"🟡 Желтая",turquoise:"💎 Бирюзовая"},
+        popChartLabel:"👥 Население", bankChartLabel:"🏦 Банк",
+        stages:{beige:"Бежевая",purple:"Фиолетовая",red:"Красная",blue:"Синяя",orange:"Оранжевая",green:"Зеленая",yellow:"Желтая",turquoise:"Бирюзовая"},
         dominant:"Доминирующая стадия:",
-        gapTitle:"⚠️ SPIRAL GAP ANALYSIS:",
-        recTitle:"💡 RECOMMENDATION:",
-        popText:"POPULATION LIFE CONDITIONS",
-        bankText:"BANK CULTURE",
-        stageMeaning:{beige:"Выживание",purple:"Традиции/Семья",red:"Неравенство/Борьба",blue:"Порядок/Образование",orange:"Достижения/Средний класс",green:"Сообщество/Равенство",yellow:"Гибкость/Адаптация",turquoise:"Холизм/Глобальное видение"}
+        detailTitle:"📊 РАСПРЕДЕЛЕНИЕ СТАДИЙ (Сумма = 100%)",
+        popText:"УСЛОВИЯ ЖИЗНИ НАСЕЛЕНИЯ",
+        bankText:"КУЛЬТУРА БАНКА",
+        gapTitle:"⚠️ АНАЛИЗ РАЗРЫВА (SPIRAL GAP):",
+        recTitle:"💡 РЕКОМЕНДАЦИЯ:",
+        stageMeaning:{beige:"Выживание",purple:"Традиции/Семья",red:"Неравенство/Борьба",blue:"Порядок/Дисциплина",orange:"Достижения/Средний класс",green:"Эмпатия/Взаимовыручка",yellow:"Гибкость/Адаптация",turquoise:"Холизм/Глобальное видение"}
       },
       en: {
         app:"Bank Welfare Analyzer",inpTitle:"Enter Bank Data",btnAnalyze:"🚀 Analyze",
@@ -251,7 +252,7 @@
         lCons:"Consumption Loans (%) *",lBus:"Business Loans (%) *",lOther:"Other Loans (%)",
         tBank:"Bank Metrics",lProfitG:"Profit Growth",lCap:"Capitalization",lDivP:"Dividends",lInt:"Average Interest Rate",
         tPop:"Population Welfare",lIncG:"Real Income Growth",lPovR:"Poverty Rate",lGdpC:"GDP per Capita",lSalA:"Average Salary",
-        tCred:"Credit Structure",credNote:"Microcredit  consumption, business, other",
+        tCred:"Credit Structure",credNote:"Microcredit: consumption, business, other",
         tScore:"Country Welfare Contribution Index",scoreDesc:"Composite score of the bank's real impact on the country's population living standards",
         tLowC:"Low contribution",tHighC:"High contribution",tWarn:"⚠️ Warning:",
         warnText:"Bank profit grows 16x faster than population income. High share of consumption loans indicates lending to poverty, not development.",
@@ -267,13 +268,15 @@
         spiralTitle:"🌀 Spiral Dynamics: Population vs Bank",
         spiralDesc:"Comparison of Life Conditions by Spiral Dynamics",
         spiralLabels:['Beige','Purple','Red','Blue','Orange','Green','Yellow','Turquoise'],
-        stages:{beige:"🟤 Beige",purple:"🟣 Purple",red:"🔴 Red",blue:"🔵 Blue",orange:"🟠 Orange",green:"🟢 Green",yellow:"🟡 Yellow",turquoise:"💎 Turquoise"},
+        popChartLabel:"👥 Population", bankChartLabel:"🏦 Bank",
+        stages:{beige:"Beige",purple:"Purple",red:"Red",blue:"Blue",orange:"Orange",green:"Green",yellow:"Yellow",turquoise:"Turquoise"},
         dominant:"Dominant Stage:",
-        gapTitle:"⚠️ SPIRAL GAP ANALYSIS:",
-        recTitle:"💡 RECOMMENDATION:",
+        detailTitle:"📊 STAGE DISTRIBUTION (Total = 100%)",
         popText:"POPULATION LIFE CONDITIONS",
         bankText:"BANK CULTURE",
-        stageMeaning:{beige:"Survival",purple:"Traditional/Family",red:"Inequality/Survival",blue:"Order/Education",orange:"Achievement/Middle Class",green:"Community/Equality",yellow:"Flexible/Adaptive",turquoise:"Holistic/Global"}
+        gapTitle:"⚠️ SPIRAL GAP ANALYSIS:",
+        recTitle:"💡 RECOMMENDATION:",
+        stageMeaning:{beige:"Survival",purple:"Traditional/Family",red:"Inequality/Rebellion",blue:"Order/Discipline",orange:"Achievement/Middle Class",green:"Empathy/Mutual Aid",yellow:"Flexible/Adaptive",turquoise:"Holistic/Global"}
       }
     };
 
@@ -300,7 +303,12 @@
       document.title=tr[lang].app;
       $('hTitle').textContent=tr[lang].app;
       if(chart){chart.data.labels=[tr[lang].cons,tr[lang].bus,tr[lang].other];chart.update();}
-      if(spiralChart){spiralChart.data.labels=tr[lang].spiralLabels;spiralChart.update();}
+      if(spiralChart){
+        spiralChart.data.labels=tr[lang].spiralLabels;
+        spiralChart.data.datasets[0].label=tr[lang].popChartLabel;
+        spiralChart.data.datasets[1].label=tr[lang].bankChartLabel;
+        spiralChart.update();
+      }
       updateBadgeTexts();
       refresh();
     }
@@ -376,23 +384,40 @@
     function calculateSpiralStages(data){
       const pop={beige:0,purple:0,red:0,blue:0,orange:0,green:0,yellow:0,turquoise:0};
       const bank={beige:0,purple:0,red:0,blue:0,orange:0,green:0,yellow:0,turquoise:0};
-      pop.beige=Math.min(40,data.povertyRate*1.2);
-      pop.purple=Math.min(25,30-(data.gdpPerCapita/200));
-      pop.red=Math.min(40,25+data.povertyRate*0.3);
-      pop.blue=Math.min(30,data.avgSalary/2000);
-      pop.orange=Math.min(30,data.gdpPerCapita/200);
-      pop.green=Math.max(0,Math.min(20,100-data.povertyRate-40));
-      pop.yellow=Math.min(15,data.ig>10?12:5);
-      pop.turquoise=0;
-      const profitGap=data.pg/Math.max(data.ig,1);
-      bank.beige=0;bank.purple=0;
-      bank.red=Math.min(40,20+(profitGap>5?15:profitGap*3)+(data.cc>40?5:0));
-      bank.blue=Math.min(30,20);
-      bank.orange=Math.min(30,data.cb*1+(profitGap<3?10:0));
-      bank.green=Math.max(0,Math.min(20,100-data.di-(data.cc>40?15:0)));
-      bank.yellow=Math.min(15,data.cb>25?10:3);
-      bank.turquoise=0;
-      normalizeAndCap(pop);normalizeAndCap(bank);
+      
+      if (data.cc > 40) {
+        pop.beige = 40; // Закредитованность = Выживание
+        pop.purple = Math.min(15, 15 - (data.gd / 300));
+        pop.red = 5;   // Низкий Красный (не бастуют, не грабят)
+        pop.blue = 25;  // Высокий Синий (платят долги, дисциплина)
+        pop.orange = Math.min(5, data.gd / 500);
+        pop.green = Math.min(15, (data.pr * 0.4) + 2); // Взаимовыручка
+        pop.yellow = 0;
+        pop.turquoise = 0;
+      } else {
+        pop.beige = Math.min(30, data.pr * 1.2);
+        pop.purple = Math.min(25, 30 - (data.gd / 200));
+        pop.red = Math.min(35, 20 + data.pr * 0.4);
+        pop.blue = 33;
+        pop.orange = Math.min(25, data.gd / 150);
+        pop.green = Math.min(20, data.pr * 0.5);
+        pop.yellow = Math.min(15, data.ig > 10 ? 12 : 5);
+        pop.turquoise = 0;
+      }
+
+      const profitGap = data.pg / Math.max(data.ig, 1);
+
+      bank.beige = data.cp < 10 ? Math.min(40, (10 - data.cp) * 10) : 0;
+      bank.purple = 0;
+      bank.red = Math.min(40, 20 + (profitGap > 5 ? 15 : profitGap * 3) + (data.cc > 40 ? 5 : 0));
+      bank.blue = Math.min(30, 20); 
+      bank.orange = Math.min(30, data.cb * 1 + (profitGap < 3 ? 10 : 0));
+      bank.green = Math.max(0, Math.min(20, 100 - data.di - (data.cc > 40 ? 15 : 0))); // 0% эмпатии
+      bank.yellow = Math.min(15, data.cb > 25 ? 10 : 3);
+      bank.turquoise = 0;
+
+      normalizeAndCap(pop);
+      normalizeAndCap(bank);
       return{population:pop,bank};
     }
 
@@ -402,34 +427,48 @@
       const popD=stages.reduce((a,b)=>population[a]>population[b]?a:b);
       const bankD=stages.reduce((a,b)=>bank[a]>bank[b]?a:b);
       const t=tr[lang];
+      const gapDiff = bank[bankD]-population[popD];
+      const gapSign = gapDiff > 0 ? '+' : '';
       
-      let html=`<div class="detail-table"><div class="detail-title">📊 STAGE DISTRIBUTION (Total = 100%)</div>`;
+      let html=`<div class="detail-table"><div class="detail-title">${t.detailTitle}</div>`;
       
-      // Population Table
       html+=`<div style="margin-bottom:12px;"><strong>👥 ${t.popText} (${data.co}):</strong>
         <div class="stage-grid-detail">${stages.map(s=>`<div class="stage-cell stage-${s}">${icons[s]}<br>${population[s]}%</div>`).join('')}</div>
         <div class="dominant-text">${t.dominant} ${icons[popD]} ${t.stages[popD]} (${population[popD]}%) - ${t.stageMeaning[popD]}</div></div>`;
         
-      // Bank Table
       html+=`<div><strong>🏦 ${t.bankText} (${data.bn}):</strong>
         <div class="stage-grid-detail">${stages.map(s=>`<div class="stage-cell stage-${s}">${icons[s]}<br>${bank[s]}%</div>`).join('')}</div>
         <div class="dominant-text">${t.dominant} ${icons[bankD]} ${t.stages[bankD]} (${bank[bankD]}%) - ${bankD==='red'?(lang==='ru'?'Агрессивное извлечение прибыли':'Aggressive Profit Extraction'):(lang==='ru'?'Развитие/Инновации':'Development/Innovation')}</div></div></div>`;
         
-      // Gap Analysis
-      html+=`<div style="margin-top:16px;padding:14px;background:#fef2f2;border-radius:8px;border-left:4px solid var(--d);">
-        <strong>${t.gapTitle}</strong><br><br>
-        • Bank ${t.stages[bankD]} (${bank[bankD]}%) vs Population ${t.stages[popD]} (${population[popD]}%) = ${bank[bankD]-population[popD]>0?'+':''}${bank[bankD]-population[popD]}% gap<br>
-        • Bank extracts value at ${t.stages[bankD]} stage while population struggles at ${t.stages[popD]} transition<br>
-        • Population ${t.stages.purple} (${population.purple}%) shows traditional support, but Bank has ${bank.purple}% ${t.stages.purple}<br>
-        • Bank ${t.stages.blue} (${bank.blue}%) shows compliance, but serves ${t.stages.red} agenda</div>`;
-        
-      // Recommendation
-      html+=`<div style="margin-top:12px;padding:14px;background:#dcfce7;border-radius:8px;border-left:4px solid var(--s);">
-        <strong>${t.recTitle}</strong><br>
-        Bank should evolve from ${t.stages.red} to 🟠 Orange by:<br>
-        • Shifting from consumer loans (${data.cc}%) to business loans<br>
-        • Supporting entrepreneurship & economic development<br>
-        • Aligning profit growth with population income growth</div>`;
+      if (lang === 'ru') {
+        html+=`<div style="margin-top:16px;padding:14px;background:#fef2f2;border-radius:8px;border-left:4px solid var(--d);">
+          <strong>${t.gapTitle}</strong><br><br>
+          • Банк ${icons[bankD]} ${t.stages[bankD]} (${bank[bankD]}%) vs Население ${icons[popD]} ${t.stages[popD]} (${population[popD]}%) = ${gapSign}${gapDiff}% разрыв<br>
+          • У населения низкий ${icons.red} ${t.stages.red} (${population.red}%) — нет бунтов, люди не грабят. Но у банка высокий ${t.stages.red} (${bank.red}%) — агрессивное выбивание долгов<br>
+          • У населения высокий ${icons.blue} ${t.stages.blue} (${population.blue}%) — дисциплинированно платят долги. Банк использует это для извлечения прибыли<br>
+          • Население ${icons.green} ${t.stages.green} (${population.green}%) — спасается взаимовыручкой. У Банка ${t.stages.green} = ${bank.green}% (нет эмпатии к должникам)</div>`;
+          
+        html+=`<div style="margin-top:12px;padding:14px;background:#dcfce7;border-radius:8px;border-left:4px solid var(--s);">
+          <strong>${t.recTitle}</strong><br>
+          Банку следует перейти от ${icons[bankD]} ${t.stages[bankD]} к 🟠 Оранжевой:<br>
+          • Переход от потребительских кредитов (${data.cc}%) к бизнес-кредитам<br>
+          • Поддержка предпринимательства и экономического развития<br>
+          • Синхронизация роста прибыли с ростом доходов населения</div>`;
+      } else {
+        html+=`<div style="margin-top:16px;padding:14px;background:#fef2f2;border-radius:8px;border-left:4px solid var(--d);">
+          <strong>${t.gapTitle}</strong><br><br>
+          • Bank ${icons[bankD]} ${t.stages[bankD]} (${bank[bankD]}%) vs Population ${icons[popD]} ${t.stages[popD]} (${population[popD]}%) = ${gapSign}${gapDiff}% gap<br>
+          • Population has low ${icons.red} ${t.stages.red} (${population.red}%) — no riots, no robberies. But Bank has high ${t.stages.red} (${bank.red}%) — aggressive debt collection<br>
+          • Population has high ${icons.blue} ${t.stages.blue} (${population.blue}%) — disciplined debt payers. Bank exploits this for profit<br>
+          • Population ${icons.green} ${t.stages.green} (${population.green}%) — survives through mutual aid. Bank ${t.stages.green} = ${bank.green}% (no empathy for debtors)</div>`;
+          
+        html+=`<div style="margin-top:12px;padding:14px;background:#dcfce7;border-radius:8px;border-left:4px solid var(--s);">
+          <strong>${t.recTitle}</strong><br>
+          Bank should evolve from ${icons[bankD]} ${t.stages[bankD]} to 🟠 Orange by:<br>
+          • Shifting from consumer loans (${data.cc}%) to business loans<br>
+          • Supporting entrepreneurship & economic development<br>
+          • Aligning profit growth with population income growth</div>`;
+      }
         
       $('spiralDetails').innerHTML=html;
     }
@@ -437,16 +476,54 @@
     function initSpiralChart(population,bank){
       if(spiralChart)spiralChart.destroy();
       const ctx=$('spiralChart').getContext('2d');
+      
       spiralChart=new Chart(ctx,{
         type:'line',
         data:{
           labels:tr[lang].spiralLabels,
           datasets:[
-            {label:'👥 Pop',data:[population.beige,population.purple,population.red,population.blue,population.orange,population.green,population.yellow,population.turquoise],borderColor:'#16a34a',borderWidth:4,pointBackgroundColor:'#16a34a',pointRadius:6,pointHoverRadius:8,tension:0.4,fill:false},
-            {label:'🏦 Bank',data:[bank.beige,bank.purple,bank.red,bank.blue,bank.orange,bank.green,bank.yellow,bank.turquoise],borderColor:'#dc2626',borderWidth:4,pointBackgroundColor:'#dc2626',pointRadius:6,pointHoverRadius:8,tension:0.4,fill:false}
+            {
+              label: tr[lang].popChartLabel, // Переведенная легенда
+              data:[population.beige,population.purple,population.red,population.blue,population.orange,population.green,population.yellow,population.turquoise],
+              borderColor:'#16a34a',
+              borderWidth:4,
+              pointBackgroundColor:'#16a34a',
+              pointRadius:6,
+              pointHoverRadius:8,
+              tension:0.4,
+              fill:false
+            },
+            {
+              label: tr[lang].bankChartLabel, // Переведенная легенда
+              data:[bank.beige,bank.purple,bank.red,bank.blue,bank.orange,bank.green,bank.yellow,bank.turquoise],
+              borderColor:'#dc2626',
+              borderWidth:4,
+              pointBackgroundColor:'#dc2626',
+              pointRadius:6,
+              pointHoverRadius:8,
+              tension:0.4,
+              fill:false
+            }
           ]
         },
-        options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{usePointStyle:true,padding:15,font:{size:11}}},tooltip:{mode:'index',intersect:false,callbacks:{label:c=>c.dataset.label+': '+c.parsed.y+'%'}}},scales:{y:{beginAtZero:true,max:45,ticks:{stepSize:10}},x:{grid:{display:false}}}}
+        options:{
+          responsive:true,
+          maintainAspectRatio:false,
+          plugins:{
+            legend:{position:'top',labels:{usePointStyle:true, padding:20, font:{size:12}}},
+            tooltip:{
+              mode:'index',
+              intersect:false,
+              callbacks:{
+                label: ctx => `${ctx.dataset.label}: ${ctx.parsed.y}%`
+              }
+            }
+          },
+          scales:{
+            y:{beginAtZero:true,max:45,ticks:{stepSize:10}},
+            x:{grid:{display:false}}
+          }
+        }
       });
     }
 

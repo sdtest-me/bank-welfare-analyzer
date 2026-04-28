@@ -6,19 +6,19 @@
   }
 
   function parseEsgSignal(esgText) {
-    if (!esgText || typeof esgText !== 'string') {
-      return { hasInput: false, claimsHighEsg: false };
-    }
+    const mapping = typeof window.mapValuesToBehavior === 'function'
+      ? window.mapValuesToBehavior(esgText)
+      : { hasInput: false, detectedStages: [], primaryStage: null, stageExpectations: {} };
 
-    const text = esgText.toLowerCase();
-    const keywords = [
-      'esg', 'sustainable', 'sustainability', 'green finance', 'inclusive', 'impact',
-      'ответствен', 'устойчив', 'зел', 'социальн', 'инклюзив'
-    ];
+    const detected = mapping.detectedStages || [];
+    const claimsHighEsg = detected.includes('green') || detected.includes('yellow') || detected.includes('turquoise');
 
     return {
-      hasInput: true,
-      claimsHighEsg: keywords.some((word) => text.includes(word))
+      hasInput: !!mapping.hasInput,
+      claimsHighEsg,
+      detectedStages: detected,
+      primaryStage: mapping.primaryStage,
+      stageExpectations: mapping.stageExpectations || {}
     };
   }
 
@@ -58,8 +58,8 @@
     else severity = 'low';
 
     const mismatchDescription = {
-      en: `Mismatch is ${severity}: bank dominant stage is ${bankDominant} (${bank[bankDominant] || 0}%) while population is ${popDominant} (${population[popDominant] || 0}%). Red pressure gap: ${Math.round(redGap)}pp, empathy gap: ${Math.round(greenGap)}pp.${esgSignal.hasInput ? (esgSignal.claimsHighEsg ? ' ESG messaging detected and checked against behavior.' : ' ESG text provided but no strong sustainability claim detected.') : ''}`,
-      ru: `Несоответствие ${severity === 'high' ? 'высокое' : severity === 'medium' ? 'среднее' : 'низкое'}: доминирующая стадия банка — ${bankDominant} (${bank[bankDominant] || 0}%), населения — ${popDominant} (${population[popDominant] || 0}%). Разрыв по Red: ${Math.round(redGap)} п.п., по эмпатии (Green): ${Math.round(greenGap)} п.п.${esgSignal.hasInput ? (esgSignal.claimsHighEsg ? ' Обнаружены ESG-заявления и сопоставлены с поведением.' : ' ESG-текст есть, но сильных заявлений об устойчивости не найдено.') : ''}`
+      en: `Mismatch is ${severity}: bank dominant stage is ${bankDominant} (${bank[bankDominant] || 0}%) while population is ${popDominant} (${population[popDominant] || 0}%). Red pressure gap: ${Math.round(redGap)}pp, empathy gap: ${Math.round(greenGap)}pp.${esgSignal.hasInput ? (esgSignal.claimsHighEsg ? ` ESG value stages detected: ${esgSignal.detectedStages.join(', ') || 'none'}. Expected behavior: ${esgSignal.primaryStage ? ((esgSignal.stageExpectations[esgSignal.primaryStage] || {}).en || 'not defined') : 'not defined'}` : ' ESG text provided but no strong sustainability claim detected.') : ''}`,
+      ru: `Несоответствие ${severity === 'high' ? 'высокое' : severity === 'medium' ? 'среднее' : 'низкое'}: доминирующая стадия банка — ${bankDominant} (${bank[bankDominant] || 0}%), населения — ${popDominant} (${population[popDominant] || 0}%). Разрыв по Red: ${Math.round(redGap)} п.п., по эмпатии (Green): ${Math.round(greenGap)} п.п.${esgSignal.hasInput ? (esgSignal.claimsHighEsg ? ` Обнаружены ценностные стадии ESG: ${esgSignal.detectedStages.join(', ') || 'нет'}. Ожидаемое поведение: ${esgSignal.primaryStage ? ((esgSignal.stageExpectations[esgSignal.primaryStage] || {}).ru || 'не определено') : 'не определено'}` : ' ESG-текст есть, но сильных заявлений об устойчивости не найдено.') : ''}`
     };
 
     return {

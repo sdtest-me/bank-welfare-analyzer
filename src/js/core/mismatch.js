@@ -215,10 +215,87 @@
       };
     }
 
+    function buildPredictiveImpact(primaryDriver) {
+      const stageGap = (bank[bankDominant] || 0) - (population[popDominant] || 0);
+      const tensionLevel = mismatchScore >= 0.67 ? 'high' : mismatchScore >= 0.34 ? 'medium' : 'low';
+      const stageContext = {
+        en: `Bank dominant stage ${bankDominant} (${bank[bankDominant] || 0}%) vs population ${popDominant} (${population[popDominant] || 0}%), gap ${Math.round(stageGap)}pp.`,
+        ru: `Доминирующая стадия банка ${bankDominant} (${bank[bankDominant] || 0}%) против населения ${popDominant} (${population[popDominant] || 0}%), разрыв ${Math.round(stageGap)} п.п.`
+      };
+      const driverImpact = {
+        redPressure: {
+          shortTerm: {
+            en: 'Higher repayment pressure and faster debt rollover among vulnerable households.',
+            ru: 'Рост давления на погашение и ускорение перекредитования у уязвимых домохозяйств.'
+          },
+          longTerm: {
+            en: 'Rising social resentment and weakening trust in formal finance channels.',
+            ru: 'Рост социального раздражения и снижение доверия к формальным финансовым каналам.'
+          }
+        },
+        empathyGap: {
+          shortTerm: {
+            en: 'More reliance on informal mutual aid to cover loan servicing shocks.',
+            ru: 'Усиление опоры на неформальную взаимопомощь для покрытия кредитных шоков.'
+          },
+          longTerm: {
+            en: 'Exclusion of fragile borrowers from healthy credit cycles and slower mobility.',
+            ru: 'Исключение хрупких заемщиков из здоровых кредитных циклов и замедление мобильности.'
+          }
+        },
+        stageMismatch: {
+          shortTerm: {
+            en: 'Policy communication friction: bank products fit bank culture better than social needs.',
+            ru: 'Трение в коммуникации: продукты банка лучше соответствуют культуре банка, чем нуждам общества.'
+          },
+          longTerm: {
+            en: 'Persistent institutional mismatch can lock the system into low-welfare credit patterns.',
+            ru: 'Устойчивое институциональное несоответствие закрепляет низко-благосостоянные кредитные паттерны.'
+          }
+        },
+        welfareScorePenalty: {
+          shortTerm: {
+            en: 'Current welfare baseline limits immediate inclusive impact of new lending.',
+            ru: 'Текущая база благосостояния ограничивает немедленный инклюзивный эффект нового кредитования.'
+          },
+          longTerm: {
+            en: 'Without welfare recovery, credit expansion risks amplifying inequality over time.',
+            ru: 'Без восстановления благосостояния расширение кредитования со временем усиливает неравенство.'
+          }
+        },
+        esgClaimMismatch: {
+          shortTerm: {
+            en: 'Credibility gap between ESG messaging and borrower experience may widen quickly.',
+            ru: 'Разрыв доверия между ESG-риторикой и опытом заемщиков может быстро расшириться.'
+          },
+          longTerm: {
+            en: 'Sustained claim-behavior inconsistency may erode brand legitimacy and reform capacity.',
+            ru: 'Длительное расхождение заявлений и поведения подрывает легитимность бренда и способность к реформам.'
+          }
+        }
+      };
+
+      const selected = driverImpact[primaryDriver] || driverImpact.stageMismatch;
+      const riskPrefix = tensionLevel === 'high'
+        ? { en: 'Near-term risk is elevated.', ru: 'Краткосрочный риск повышен.' }
+        : tensionLevel === 'medium'
+          ? { en: 'Near-term risk is manageable but active.', ru: 'Краткосрочный риск управляемый, но активный.' }
+          : { en: 'Near-term risk is limited under current inputs.', ru: 'Краткосрочный риск ограничен при текущих данных.' };
+
+      return {
+        shortTerm: {
+          en: `${riskPrefix.en} ${selected.shortTerm.en} ${stageContext.en}`,
+          ru: `${riskPrefix.ru} ${selected.shortTerm.ru} ${stageContext.ru}`
+        },
+        longTerm: selected.longTerm
+      };
+    }
+
     const driverInference = inferPrimaryDriver();
     const primaryDriver = driverInference.driver;
     const driverConfidence = driverInference.driverConfidence;
     const explanationText = buildExplanationText(primaryDriver, driverConfidence);
+    const predictiveImpact = buildPredictiveImpact(primaryDriver);
 
     const mismatchDescription = {
       en: `Mismatch is ${severity}: bank dominant stage is ${bankDominant} (${bank[bankDominant] || 0}%) while population is ${popDominant} (${population[popDominant] || 0}%). Red pressure gap: ${Math.round(redGap)}pp, empathy gap: ${Math.round(greenGap)}pp.${esgSignal.hasInput ? ` ESG mapping confidence: ${Math.round((esgSignal.confidence || 0) * 100)}%.` : ''}${esgSignal.hasInput ? (esgSignal.claimsHighEsg ? ` ESG value stages detected: ${esgSignal.detectedStages.join(', ') || 'none'}. Expected behavior: ${esgSignal.primaryStage ? ((esgSignal.stageExpectations[esgSignal.primaryStage] || {}).en || 'not defined') : 'not defined'}` : ' ESG text provided but no strong sustainability claim detected.') : ''}`,
@@ -233,6 +310,7 @@
       primaryDriver,
       driverConfidence,
       explanationText,
+      predictiveImpact,
       mismatchDescription
     };
   }

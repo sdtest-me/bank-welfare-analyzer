@@ -162,6 +162,24 @@
     $('mismatchVal').textContent = mismatch.mismatchScore.toFixed(2);
     $('mismatchRiskLevel').textContent = window.i18n.tr[window.i18n.lang].riskLevels[mismatch.riskLevel] || mismatch.riskLevel;
     $('mismatchDriver').textContent = window.i18n.tr[window.i18n.lang].driverLabels[mismatch.primaryDriver] || mismatch.primaryDriver;
+
+    const esgConfidence = Math.max(0, Math.min(1, mismatch.esgConfidence || 0));
+    const driverConfidence = Math.max(0, Math.min(1, mismatch.driverConfidence || 0));
+    const esgPct = Math.round(esgConfidence * 100);
+    const driverPct = Math.round(driverConfidence * 100);
+
+    $('esgConfidenceVal').textContent = `${esgPct}%`;
+    $('driverConfidenceVal').textContent = `${driverPct}%`;
+
+    const esgBar = $('esgConfidenceBar');
+    const driverBar = $('driverConfidenceBar');
+    esgBar.style.width = `${esgPct}%`;
+    driverBar.style.width = `${driverPct}%`;
+
+    const pickColor = pct => pct >= 75 ? 'var(--s)' : pct >= 45 ? 'var(--w)' : 'var(--d)';
+    esgBar.style.background = pickColor(esgPct);
+    driverBar.style.background = pickColor(driverPct);
+
     $('mismatchText').textContent = mismatch.explanationText[window.i18n.lang] || mismatch.explanationText.en;
     const gap=d.pg/Math.max(d.ig,0.1);
     const wb=$('warnBox'),wt=$('warnText');

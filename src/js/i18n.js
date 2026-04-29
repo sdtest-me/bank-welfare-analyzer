@@ -34,7 +34,7 @@
       gapTitle:"⚠️ АНАЛИЗ СПИРАЛЬНОГО РАЗРЫВА:",
       recTitle:"💡 РЕКОМЕНДАЦИЯ:",
       stageMeaning:{beige:"Выживание",purple:"Традиции/Семья",red:"Неравенство/Бунт",blue:"Порядок/Дисциплина",orange:"Достижение/Средний класс",green:"Эмпатия/Взаимопомощь",yellow:"Гибкость/Адаптация",turquoise:"Холизм/Глобальность"},
-      mismatchScoreLabel:"Mismatch индекс:", mismatchRiskLabel:"Уровень риска:", mismatchDriverLabel:"Главный драйвер:",
+      mismatchScoreLabel:"Mismatch индекс:", mismatchRiskLabel:"Уровень риска:", mismatchDriverLabel:"Главный драйвер:", esgConfidenceLabel:"Уверенность ESG:", driverConfidenceLabel:"Уверенность драйвера:",
       riskLevels:{low:"низкий",medium:"средний",high:"высокий"},
       driverLabels:{redPressure:"Давление Red",empathyGap:"Разрыв эмпатии",stageMismatch:"Структурный разрыв стадий",welfareScorePenalty:"Слабый welfare score",esgClaimMismatch:"Разрыв ESG-заявлений"}
     },
@@ -72,7 +72,7 @@
       gapTitle:"⚠️ SPIRAL GAP ANALYSIS:",
       recTitle:"💡 RECOMMENDATION:",
       stageMeaning:{beige:"Survival",purple:"Traditional/Family",red:"Inequality/Rebellion",blue:"Order/Discipline",orange:"Achievement/Middle Class",green:"Empathy/Mutual Aid",yellow:"Flexible/Adaptive",turquoise:"Holistic/Global"},
-      mismatchScoreLabel:"Mismatch score:", mismatchRiskLabel:"Risk level:", mismatchDriverLabel:"Primary driver:",
+      mismatchScoreLabel:"Mismatch score:", mismatchRiskLabel:"Risk level:", mismatchDriverLabel:"Primary driver:", esgConfidenceLabel:"ESG confidence:", driverConfidenceLabel:"Driver confidence:",
       riskLevels:{low:"low",medium:"medium",high:"high"},
       driverLabels:{redPressure:"Red pressure",empathyGap:"Empathy gap",stageMismatch:"Structural stage gap",welfareScorePenalty:"Low welfare score",esgClaimMismatch:"ESG claim mismatch"}
     }

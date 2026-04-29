@@ -94,6 +94,11 @@
     .stage-grid-detail{display:grid;grid-template-columns:repeat(8,1fr);gap:4px;text-align:center;font-size:.75rem;margin:8px 0}
     .stage-cell{padding:6px;background:#fff;border-radius:4px;font-weight:600}
     .dominant-text{margin-top:8px;font-weight:600;font-size:.9rem}
+    .confidence-row{display:grid;grid-template-columns:110px 1fr 42px;align-items:center;gap:8px}
+    .confidence-label{font-size:.78rem;color:var(--tm)}
+    .confidence-track{height:8px;background:var(--b);border-radius:999px;overflow:hidden}
+    .confidence-fill{height:100%;width:0%;background:var(--w);transition:width .35s ease, background .35s ease}
+    .confidence-val{font-size:.78rem;font-weight:600;color:var(--tm);text-align:right}
     @media(max-width:600px){
       body{padding:8px}header{padding:12px 14px;margin-bottom:12px}.logo{font-size:1rem}.logo-i{width:32px;height:32px;font-size:.85rem}.lang-b{padding:6px 12px;font-size:.85rem}.input-s{padding:14px;margin-bottom:12px;border-radius:10px}.input-h{flex-direction:column;align-items:flex-start;gap:8px;margin-bottom:14px}.sec-t{font-size:1.05rem;width:100%}.btn-p{width:100%;text-align:center;padding:13px 20px;font-size:1rem}.ex{padding:10px;margin-bottom:14px;border-radius:8px}.ex-label{width:100%;margin-bottom:6px;font-size:.8rem}.ex-b{flex:1;min-width:0;text-align:center;padding:8px 10px;font-size:.8rem}.form-g{grid-template-columns:1fr;gap:12px}.form-r{grid-template-columns:1fr;gap:10px}.form-gr input{padding:10px 12px;font-size:1rem}.res-t{font-size:1.05rem;margin-bottom:12px}.grid{grid-template-columns:1fr;gap:12px}.card{padding:14px;border-radius:10px}.card-t{font-size:1rem;margin-bottom:12px}.metric{flex-direction:column;align-items:flex-start;gap:4px;padding:8px 0}.metric-v{justify-content:flex-start;width:100%}.score-v{font-size:2.2rem}.score-l{font-size:.85rem}.chart-c{height:220px}.spiral-chart-container{height:320px}.stage-grid{grid-template-columns:1fr}.prob-i{padding:8px 0}.prob-i div:last-child{font-size:.85rem}.quest-i{font-size:.85rem;padding:8px 0}footer{padding:16px;font-size:.8rem}.stage-grid-detail{grid-template-columns:repeat(4,1fr)}
     }
@@ -178,7 +183,19 @@
           <div><strong id="mismatchScoreLabel">Mismatch score:</strong> <span id="mismatchVal">0.00</span></div>
           <div style="margin-top:4px;"><strong id="mismatchRiskLabel">Risk level:</strong> <span id="mismatchRiskLevel">-</span></div>
           <div style="margin-top:4px;"><strong id="mismatchDriverLabel">Primary driver:</strong> <span id="mismatchDriver">-</span></div>
-          <div id="mismatchText" style="margin-top:6px;font-size:.85rem;color:var(--tm)"></div>
+          <div style="margin-top:8px;display:grid;gap:6px;">
+            <div class="confidence-row">
+              <span class="confidence-label"><span id="esgConfidenceLabel">ESG confidence</span></span>
+              <div class="confidence-track"><div id="esgConfidenceBar" class="confidence-fill"></div></div>
+              <span id="esgConfidenceVal" class="confidence-val">0%</span>
+            </div>
+            <div class="confidence-row">
+              <span class="confidence-label"><span id="driverConfidenceLabel">Driver confidence</span></span>
+              <div class="confidence-track"><div id="driverConfidenceBar" class="confidence-fill"></div></div>
+              <span id="driverConfidenceVal" class="confidence-val">0%</span>
+            </div>
+          </div>
+          <div id="mismatchText" style="margin-top:8px;font-size:.85rem;color:var(--tm)"></div>
         </div>
       </div>
 

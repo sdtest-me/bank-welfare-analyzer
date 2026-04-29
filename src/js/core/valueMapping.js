@@ -1,4 +1,25 @@
 (function () {
+  const DEBUG_FLAG_KEY = '__BWA_DEBUG__';
+
+  function isDebugEnabled() {
+    if (typeof window === 'undefined') return false;
+    if (window[DEBUG_FLAG_KEY] === true) return true;
+    try {
+      return window.localStorage && window.localStorage.getItem(DEBUG_FLAG_KEY) === 'true';
+    } catch (error) {
+      return false;
+    }
+  }
+
+  function debugLog(message, payload) {
+    if (!isDebugEnabled()) return;
+    if (typeof payload === 'undefined') {
+      console.log('[valueMapping]', message);
+      return;
+    }
+    console.log('[valueMapping]', message, payload);
+  }
+
   const STAGE_EXPECTATIONS = {
     beige: {
       en: 'Preserve minimum stability and continuity of essential banking access.',
@@ -155,15 +176,18 @@
         const frequency = countOccurrences(text, entry.term);
         if (frequency > 0) {
           stageFrequencies[stage] = (stageFrequencies[stage] || 0) + frequency;
+          debugLog('keyword match', { stage, term: entry.term, frequency, weight: entry.weight });
         }
         return sum + (frequency * entry.weight);
       }, 0);
 
       stageScores[stage] = Number(weighted.toFixed(3));
+      debugLog('stage score', { stage, score: stageScores[stage], frequency: stageFrequencies[stage] || 0 });
     });
 
     const buzzwordFrequency = GENERIC_ESG_BUZZWORDS.reduce((sum, term) => sum + countOccurrences(text, term), 0);
     const buzzwordPenalty = Math.min(0.65, buzzwordFrequency * 0.08);
+    debugLog('penalty', { type: 'buzzword', buzzwordFrequency, buzzwordPenalty: Number(buzzwordPenalty.toFixed(3)) });
 
     const rankedStages = STAGES
       .map((stage) => ({ stage, score: stageScores[stage] }))
@@ -179,6 +203,15 @@
     const separation = topScore > 0 ? (topScore - secondScore) / topScore : 0;
     const evidence = 1 - Math.exp(-totalWeightedSignal / 6);
     const confidence = Math.max(0, Math.min(1, (0.45 * separation + 0.55 * evidence) - buzzwordPenalty));
+    debugLog('confidence calculation', {
+      topScore,
+      secondScore,
+      totalWeightedSignal: Number(totalWeightedSignal.toFixed(3)),
+      separation: Number(separation.toFixed(3)),
+      evidence: Number(evidence.toFixed(3)),
+      buzzwordPenalty: Number(buzzwordPenalty.toFixed(3)),
+      confidence: Number(confidence.toFixed(3))
+    });
 
     return {
       hasInput: true,
@@ -194,4 +227,16 @@
   }
 
   window.mapValuesToBehavior = mapValuesToBehavior;
+  window.setBwaDebug = function setBwaDebug(enabled) {
+    const normalized = !!enabled;
+    window[DEBUG_FLAG_KEY] = normalized;
+    try {
+      if (window.localStorage) {
+        window.localStorage.setItem(DEBUG_FLAG_KEY, String(normalized));
+      }
+    } catch (error) {
+      // no-op when storage is unavailable
+    }
+    return normalized;
+  };
 })();

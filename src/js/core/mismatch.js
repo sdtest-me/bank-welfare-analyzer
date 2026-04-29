@@ -1,5 +1,25 @@
 (function () {
   const STAGES = ['beige', 'purple', 'red', 'blue', 'orange', 'green', 'yellow', 'turquoise'];
+  const DEBUG_FLAG_KEY = '__BWA_DEBUG__';
+
+  function isDebugEnabled() {
+    if (typeof window === 'undefined') return false;
+    if (window[DEBUG_FLAG_KEY] === true) return true;
+    try {
+      return window.localStorage && window.localStorage.getItem(DEBUG_FLAG_KEY) === 'true';
+    } catch (error) {
+      return false;
+    }
+  }
+
+  function debugLog(message, payload) {
+    if (!isDebugEnabled()) return;
+    if (typeof payload === 'undefined') {
+      console.log('[mismatch]', message);
+      return;
+    }
+    console.log('[mismatch]', message, payload);
+  }
 
   function dominantStage(map) {
     return STAGES.reduce((maxStage, stage) => (map[stage] > map[maxStage] ? stage : maxStage), STAGES[0]);
@@ -44,6 +64,7 @@
     const esgSignal = parseEsgSignal(esgText);
     const claimsPenalty = esgSignal.claimsHighEsg && (bank.red || 0) >= 25 && (bank.green || 0) <= 10 ? 0.2 : 0;
     const scorePenalty = (100 - score) / 100;
+    debugLog('penalties', { claimsPenalty, scorePenalty: Number(scorePenalty.toFixed(3)) });
 
     const mismatchScore = clamp01(
       (redGap / 40) * 0.35 +
@@ -52,6 +73,19 @@
       scorePenalty * 0.15 +
       claimsPenalty
     );
+    debugLog('stage scores', {
+      populationDominant: popDominant,
+      bankDominant,
+      redGap: Number(redGap.toFixed(3)),
+      greenGap: Number(greenGap.toFixed(3)),
+      structuralGap: Number(structuralGap.toFixed(3)),
+      mismatchScore: Number(mismatchScore.toFixed(3))
+    });
+    debugLog('confidence calculation', {
+      esgConfidence: Number((esgSignal.confidence || 0).toFixed(3)),
+      claimsHighEsg: esgSignal.claimsHighEsg,
+      primaryStage: esgSignal.primaryStage || null
+    });
 
     let severity;
     if (mismatchScore >= 0.67) severity = 'high';

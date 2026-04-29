@@ -148,17 +148,18 @@
       window.chart=new Chart(ctx,{type:'doughnut',data:{labels:[window.i18n.tr[window.i18n.lang].cons,window.i18n.tr[window.i18n.lang].bus,window.i18n.tr[window.i18n.lang].other],datasets:[{data:[d.cc,d.cb,d.co2],backgroundColor:['#dc2626','#16a34a','#64748b'],borderWidth:0,spacing:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{usePointStyle:true,padding:20,font:{size:11}}},tooltip:{callbacks:{label:c=>c.label+': '+c.parsed+'%'}}},cutout:'65%'}});
     }else{window.chart.data.labels=[window.i18n.tr[window.i18n.lang].cons,window.i18n.tr[window.i18n.lang].bus,window.i18n.tr[window.i18n.lang].other];window.chart.data.datasets[0].data=[d.cc,d.cb,d.co2];window.chart.update();}
 
-    const spiral=window.calculateSpiralStages(d);
+    const esgInput = $('esgText') ? $('esgText').value : '';
+    const analysis = window.analyzeBank({ ...d, esgText: esgInput });
+    const spiral=analysis.spiral;
     initSpiralChart(spiral.population,spiral.bank);
     renderDetailedAnalysis(d,spiral.population,spiral.bank);
 
-    const sc=window.calcScore(d);
+    const sc=analysis.score;
     $('scoreVal').textContent=sc+'/100';
     const sf=$('scoreFill');sf.style.width=sc+'%';
     sf.style.background=sc<40?'var(--d)':sc<70?'var(--w)':'var(--s)';
 
-    const esgInput = $('esgText') ? $('esgText').value : '';
-    const mismatch = window.calculateMismatch({ score: sc, spiral }, esgInput);
+    const mismatch = analysis.mismatch;
     $('mismatchVal').textContent = mismatch.mismatchScore.toFixed(2);
     $('mismatchRiskLevel').textContent = window.i18n.tr[window.i18n.lang].riskLevels[mismatch.riskLevel] || mismatch.riskLevel;
     $('mismatchDriver').textContent = window.i18n.tr[window.i18n.lang].driverLabels[mismatch.primaryDriver] || mismatch.primaryDriver;

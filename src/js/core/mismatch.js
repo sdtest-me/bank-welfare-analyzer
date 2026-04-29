@@ -215,7 +215,27 @@
       };
     }
 
-    function buildPredictiveImpact(primaryDriver) {
+    function confidenceTone(driverConfidence) {
+      const combined = clamp01(((esgSignal.confidence || 0) + (driverConfidence || 0)) / 2);
+      if (combined >= 0.75) {
+        return {
+          qualifier: { en: 'is likely to', ru: 'с высокой вероятностью может' },
+          context: { en: 'Signal confidence is relatively high for this scenario.', ru: 'Уверенность сигнала относительно высокая для этого сценария.' }
+        };
+      }
+      if (combined >= 0.45) {
+        return {
+          qualifier: { en: 'may', ru: 'может' },
+          context: { en: 'Signal confidence is moderate, so outcomes are uncertain.', ru: 'Уверенность сигнала средняя, поэтому исходы неопределенны.' }
+        };
+      }
+      return {
+        qualifier: { en: 'could potentially', ru: 'потенциально может' },
+        context: { en: 'Signal confidence is limited, so treat this as an early warning.', ru: 'Уверенность сигнала ограниченная, воспринимайте это как ранний сигнал.' }
+      };
+    }
+
+    function buildPredictiveImpact(primaryDriver, driverConfidence) {
       const stageGap = (bank[bankDominant] || 0) - (population[popDominant] || 0);
       const tensionLevel = mismatchScore >= 0.67 ? 'high' : mismatchScore >= 0.34 ? 'medium' : 'low';
       const stageContext = {
@@ -225,38 +245,38 @@
       const driverImpact = {
         redPressure: {
           shortTerm: {
-            en: 'Higher repayment pressure and faster debt rollover among vulnerable households.',
-            ru: 'Рост давления на погашение и ускорение перекредитования у уязвимых домохозяйств.'
+            en: 'higher repayment pressure and faster debt rollover among vulnerable households',
+            ru: 'рост давления на погашение и ускорение перекредитования у уязвимых домохозяйств'
           },
           longTerm: {
-            en: 'Rising social resentment and weakening trust in formal finance channels.',
-            ru: 'Рост социального раздражения и снижение доверия к формальным финансовым каналам.'
+            en: 'rising social resentment and weaker trust in formal finance channels',
+            ru: 'рост социального раздражения и снижение доверия к формальным финансовым каналам'
           }
         },
         empathyGap: {
           shortTerm: {
-            en: 'More reliance on informal mutual aid to cover loan servicing shocks.',
-            ru: 'Усиление опоры на неформальную взаимопомощь для покрытия кредитных шоков.'
+            en: 'more reliance on informal mutual aid to cover loan-servicing shocks',
+            ru: 'усиление опоры на неформальную взаимопомощь для покрытия кредитных шоков'
           },
           longTerm: {
-            en: 'Exclusion of fragile borrowers from healthy credit cycles and slower mobility.',
-            ru: 'Исключение хрупких заемщиков из здоровых кредитных циклов и замедление мобильности.'
+            en: 'exclusion of fragile borrowers from healthy credit cycles and slower mobility',
+            ru: 'исключение хрупких заемщиков из здоровых кредитных циклов и замедление мобильности'
           }
         },
         stageMismatch: {
           shortTerm: {
-            en: 'Policy communication friction: bank products fit bank culture better than social needs.',
-            ru: 'Трение в коммуникации: продукты банка лучше соответствуют культуре банка, чем нуждам общества.'
+            en: 'policy communication friction: bank products fit bank culture better than social needs',
+            ru: 'трение в коммуникации: продукты банка лучше соответствуют культуре банка, чем нуждам общества'
           },
           longTerm: {
-            en: 'Persistent institutional mismatch can lock the system into low-welfare credit patterns.',
-            ru: 'Устойчивое институциональное несоответствие закрепляет низко-благосостоянные кредитные паттерны.'
+            en: 'persistent institutional mismatch that can lock the system into low-welfare credit patterns',
+            ru: 'устойчивое институциональное несоответствие, закрепляющее низко-благосостоянные кредитные паттерны'
           }
         },
         welfareScorePenalty: {
           shortTerm: {
-            en: 'Current welfare baseline limits immediate inclusive impact of new lending.',
-            ru: 'Текущая база благосостояния ограничивает немедленный инклюзивный эффект нового кредитования.'
+            en: 'current welfare baseline limiting immediate inclusive impact of new lending',
+            ru: 'текущая база благосостояния, ограничивающая немедленный инклюзивный эффект нового кредитования'
           },
           longTerm: {
             en: 'Without welfare recovery, credit expansion risks amplifying inequality over time.',
@@ -276,18 +296,22 @@
       };
 
       const selected = driverImpact[primaryDriver] || driverImpact.stageMismatch;
+      const tone = confidenceTone(driverConfidence);
       const riskPrefix = tensionLevel === 'high'
-        ? { en: 'Near-term risk is elevated.', ru: 'Краткосрочный риск повышен.' }
+        ? { en: 'Near-term risk is likely elevated.', ru: 'Краткосрочный риск, вероятно, повышен.' }
         : tensionLevel === 'medium'
-          ? { en: 'Near-term risk is manageable but active.', ru: 'Краткосрочный риск управляемый, но активный.' }
-          : { en: 'Near-term risk is limited under current inputs.', ru: 'Краткосрочный риск ограничен при текущих данных.' };
+          ? { en: 'Near-term risk may be manageable but active.', ru: 'Краткосрочный риск может быть управляемым, но активным.' }
+          : { en: 'Near-term risk could be limited under current inputs.', ru: 'Краткосрочный риск может быть ограничен при текущих данных.' };
 
       return {
         shortTerm: {
-          en: `${riskPrefix.en} ${selected.shortTerm.en} ${stageContext.en}`,
-          ru: `${riskPrefix.ru} ${selected.shortTerm.ru} ${stageContext.ru}`
+          en: `${riskPrefix.en} This scenario ${tone.qualifier.en} lead to ${selected.shortTerm.en}. ${tone.context.en} ${stageContext.en}`,
+          ru: `${riskPrefix.ru} Этот сценарий ${tone.qualifier.ru} привести к следующему: ${selected.shortTerm.ru}. ${tone.context.ru} ${stageContext.ru}`
         },
-        longTerm: selected.longTerm
+        longTerm: {
+          en: `Over time, this scenario ${tone.qualifier.en} contribute to ${selected.longTerm.en} ${tone.context.en} ${stageContext.en}`,
+          ru: `Со временем этот сценарий ${tone.qualifier.ru} привести к следующему: ${selected.longTerm.ru} ${tone.context.ru} ${stageContext.ru}`
+        }
       };
     }
 
@@ -295,7 +319,7 @@
     const primaryDriver = driverInference.driver;
     const driverConfidence = driverInference.driverConfidence;
     const explanationText = buildExplanationText(primaryDriver, driverConfidence);
-    const predictiveImpact = buildPredictiveImpact(primaryDriver);
+    const predictiveImpact = buildPredictiveImpact(primaryDriver, driverConfidence);
 
     const mismatchDescription = {
       en: `Mismatch is ${severity}: bank dominant stage is ${bankDominant} (${bank[bankDominant] || 0}%) while population is ${popDominant} (${population[popDominant] || 0}%). Red pressure gap: ${Math.round(redGap)}pp, empathy gap: ${Math.round(greenGap)}pp.${esgSignal.hasInput ? ` ESG mapping confidence: ${Math.round((esgSignal.confidence || 0) * 100)}%.` : ''}${esgSignal.hasInput ? (esgSignal.claimsHighEsg ? ` ESG value stages detected: ${esgSignal.detectedStages.join(', ') || 'none'}. Expected behavior: ${esgSignal.primaryStage ? ((esgSignal.stageExpectations[esgSignal.primaryStage] || {}).en || 'not defined') : 'not defined'}` : ' ESG text provided but no strong sustainability claim detected.') : ''}`,

@@ -34,43 +34,105 @@
     }
   };
 
-  const VALUE_KEYWORDS = {
+  const STAGE_KEYWORDS = {
     green: [
-      'esg', 'sustainable', 'sustainability', 'green finance', 'inclusive', 'impact',
-      'ответствен', 'устойчив', 'зел', 'социальн', 'инклюзив',
-      'climate', 'decarbon', 'equity', 'diversity', 'community'
+      { term: 'inclusive', weight: 1.3 },
+      { term: 'impact', weight: 1.15 },
+      { term: 'equity', weight: 1.15 },
+      { term: 'diversity', weight: 1.1 },
+      { term: 'community', weight: 1.0 },
+      { term: 'decarbon', weight: 1.35 },
+      { term: 'climate', weight: 1.3 },
+      { term: 'ответствен', weight: 1.1 },
+      { term: 'инклюзив', weight: 1.3 }
     ],
     turquoise: [
-      'net zero', 'biodiversity', 'regenerative', 'circular economy', 'long-term resilience',
-      'экосистем', 'биоразнообраз', 'долгосроч', 'циркулярн', 'регенератив'
+      { term: 'net zero', weight: 1.65 },
+      { term: 'biodiversity', weight: 1.45 },
+      { term: 'regenerative', weight: 1.5 },
+      { term: 'circular economy', weight: 1.45 },
+      { term: 'long-term resilience', weight: 1.35 },
+      { term: 'экосистем', weight: 1.35 },
+      { term: 'биоразнообраз', weight: 1.4 },
+      { term: 'циркулярн', weight: 1.35 },
+      { term: 'регенератив', weight: 1.45 }
     ],
     yellow: [
-      'systemic', 'holistic', 'portfolio balance', 'adaptive',
-      'системн', 'целостн', 'адаптив', 'баланс рисков'
+      { term: 'systemic', weight: 1.25 },
+      { term: 'holistic', weight: 1.2 },
+      { term: 'portfolio balance', weight: 1.2 },
+      { term: 'adaptive', weight: 1.2 },
+      { term: 'системн', weight: 1.2 },
+      { term: 'целостн', weight: 1.2 },
+      { term: 'адаптив', weight: 1.2 },
+      { term: 'баланс рисков', weight: 1.25 }
     ],
     orange: [
-      'innovation', 'entrepreneurship', 'productivity', 'growth', 'efficiency',
-      'инновац', 'предприним', 'производител', 'рост', 'эффектив'
+      { term: 'innovation', weight: 1.25 },
+      { term: 'entrepreneurship', weight: 1.2 },
+      { term: 'productivity', weight: 1.2 },
+      { term: 'growth', weight: 1.15 },
+      { term: 'efficiency', weight: 1.1 },
+      { term: 'инновац', weight: 1.2 },
+      { term: 'предприним', weight: 1.15 },
+      { term: 'производител', weight: 1.1 },
+      { term: 'рост', weight: 1.05 },
+      { term: 'эффектив', weight: 1.1 }
     ],
     blue: [
-      'compliance', 'governance', 'policy', 'regulation', 'transparency',
-      'комплаенс', 'управлен', 'регулирован', 'политик', 'прозрач'
+      { term: 'compliance', weight: 1.35 },
+      { term: 'governance', weight: 1.25 },
+      { term: 'policy', weight: 1.15 },
+      { term: 'regulation', weight: 1.2 },
+      { term: 'transparency', weight: 1.15 },
+      { term: 'комплаенс', weight: 1.35 },
+      { term: 'управлен', weight: 1.2 },
+      { term: 'регулирован', weight: 1.2 },
+      { term: 'политик', weight: 1.1 },
+      { term: 'прозрач', weight: 1.15 }
     ],
     purple: [
-      'local tradition', 'community trust', 'mutual support',
-      'традиц', 'общин', 'взаимопомощ', 'довер'
+      { term: 'local tradition', weight: 1.3 },
+      { term: 'community trust', weight: 1.35 },
+      { term: 'mutual support', weight: 1.3 },
+      { term: 'традиц', weight: 1.25 },
+      { term: 'общин', weight: 1.2 },
+      { term: 'взаимопомощ', weight: 1.3 },
+      { term: 'довер', weight: 1.2 }
     ],
     red: [
-      'aggressive collection', 'dominance', 'hard recovery',
-      'агрессивн взыскан', 'доминирован', 'жестк взыскан'
+      { term: 'aggressive collection', weight: 1.5 },
+      { term: 'dominance', weight: 1.3 },
+      { term: 'hard recovery', weight: 1.45 },
+      { term: 'агрессивн взыскан', weight: 1.5 },
+      { term: 'доминирован', weight: 1.3 },
+      { term: 'жестк взыскан', weight: 1.45 }
     ],
     beige: [
-      'basic access', 'survival', 'essential services',
-      'базов доступ', 'выживан', 'базов услуг'
+      { term: 'basic access', weight: 1.2 },
+      { term: 'survival', weight: 1.25 },
+      { term: 'essential services', weight: 1.2 },
+      { term: 'базов доступ', weight: 1.2 },
+      { term: 'выживан', weight: 1.25 },
+      { term: 'базов услуг', weight: 1.2 }
     ]
   };
 
+  const GENERIC_ESG_BUZZWORDS = ['esg', 'sustainable', 'sustainability', 'green finance', 'устойчив', 'зел', 'социальн'];
   const STAGES = ['beige', 'purple', 'red', 'blue', 'orange', 'green', 'yellow', 'turquoise'];
+
+  function countOccurrences(text, keyword) {
+    if (!keyword) return 0;
+    let fromIndex = 0;
+    let count = 0;
+    while (fromIndex < text.length) {
+      const foundIndex = text.indexOf(keyword, fromIndex);
+      if (foundIndex === -1) break;
+      count += 1;
+      fromIndex = foundIndex + keyword.length;
+    }
+    return count;
+  }
 
   function mapValuesToBehavior(esgText) {
     if (!esgText || typeof esgText !== 'string') {
@@ -78,22 +140,55 @@
         hasInput: false,
         detectedStages: [],
         primaryStage: null,
+        confidence: 0,
+        stageScores: {},
         stageExpectations: STAGE_EXPECTATIONS
       };
     }
 
     const text = esgText.toLowerCase();
-    const detectedStages = STAGES.filter((stage) => {
-      const words = VALUE_KEYWORDS[stage] || [];
-      return words.some((word) => text.includes(word));
+    const stageScores = {};
+    const stageFrequencies = {};
+
+    STAGES.forEach((stage) => {
+      const weighted = (STAGE_KEYWORDS[stage] || []).reduce((sum, entry) => {
+        const frequency = countOccurrences(text, entry.term);
+        if (frequency > 0) {
+          stageFrequencies[stage] = (stageFrequencies[stage] || 0) + frequency;
+        }
+        return sum + (frequency * entry.weight);
+      }, 0);
+
+      stageScores[stage] = Number(weighted.toFixed(3));
     });
 
-    const primaryStage = detectedStages.length ? detectedStages[detectedStages.length - 1] : null;
+    const buzzwordFrequency = GENERIC_ESG_BUZZWORDS.reduce((sum, term) => sum + countOccurrences(text, term), 0);
+    const buzzwordPenalty = Math.min(0.65, buzzwordFrequency * 0.08);
+
+    const rankedStages = STAGES
+      .map((stage) => ({ stage, score: stageScores[stage] }))
+      .filter((entry) => entry.score > 0)
+      .sort((a, b) => b.score - a.score);
+
+    const detectedStages = rankedStages.map((entry) => entry.stage);
+    const primaryStage = detectedStages.length ? detectedStages[0] : null;
+
+    const topScore = rankedStages.length ? rankedStages[0].score : 0;
+    const secondScore = rankedStages.length > 1 ? rankedStages[1].score : 0;
+    const totalWeightedSignal = rankedStages.reduce((sum, entry) => sum + entry.score, 0);
+    const separation = topScore > 0 ? (topScore - secondScore) / topScore : 0;
+    const evidence = 1 - Math.exp(-totalWeightedSignal / 6);
+    const confidence = Math.max(0, Math.min(1, (0.45 * separation + 0.55 * evidence) - buzzwordPenalty));
 
     return {
       hasInput: true,
       detectedStages,
       primaryStage,
+      confidence: Number(confidence.toFixed(3)),
+      stageScores,
+      stageFrequencies,
+      buzzwordFrequency,
+      buzzwordPenalty: Number(buzzwordPenalty.toFixed(3)),
       stageExpectations: STAGE_EXPECTATIONS
     };
   }

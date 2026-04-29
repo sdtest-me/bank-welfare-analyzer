@@ -99,6 +99,16 @@
     .confidence-track{height:8px;background:var(--b);border-radius:999px;overflow:hidden}
     .confidence-fill{height:100%;width:0%;background:var(--w);transition:width .35s ease, background .35s ease}
     .confidence-val{font-size:.78rem;font-weight:600;color:var(--tm);text-align:right}
+
+    .leaderboard-section{margin-top:16px}
+    .leaderboard-input{width:100%;min-height:120px;padding:11px 13px;border:1px solid var(--b);border-radius:8px;background:var(--ib);font-size:.9rem;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;resize:vertical}
+    .leaderboard-note{font-size:.82rem;color:var(--tm);margin-top:6px}
+    .leaderboard-list{display:grid;gap:10px;margin-top:12px}
+    .leaderboard-item{padding:12px;background:var(--ib);border-radius:8px;border:1px solid var(--b)}
+    .leaderboard-head{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:.92rem}
+    .leaderboard-rank{font-weight:700;color:var(--p)}
+    .leaderboard-meta{display:flex;gap:12px;flex-wrap:wrap;font-size:.85rem;color:var(--tm);margin-top:6px}
+    .leaderboard-explain{margin-top:6px;font-size:.85rem;color:var(--t)}
     @media(max-width:600px){
       body{padding:8px}header{padding:12px 14px;margin-bottom:12px}.logo{font-size:1rem}.logo-i{width:32px;height:32px;font-size:.85rem}.lang-b{padding:6px 12px;font-size:.85rem}.input-s{padding:14px;margin-bottom:12px;border-radius:10px}.input-h{flex-direction:column;align-items:flex-start;gap:8px;margin-bottom:14px}.sec-t{font-size:1.05rem;width:100%}.btn-p{width:100%;text-align:center;padding:13px 20px;font-size:1rem}.ex{padding:10px;margin-bottom:14px;border-radius:8px}.ex-label{width:100%;margin-bottom:6px;font-size:.8rem}.ex-b{flex:1;min-width:0;text-align:center;padding:8px 10px;font-size:.8rem}.form-g{grid-template-columns:1fr;gap:12px}.form-r{grid-template-columns:1fr;gap:10px}.form-gr input{padding:10px 12px;font-size:1rem}.res-t{font-size:1.05rem;margin-bottom:12px}.grid{grid-template-columns:1fr;gap:12px}.card{padding:14px;border-radius:10px}.card-t{font-size:1rem;margin-bottom:12px}.metric{flex-direction:column;align-items:flex-start;gap:4px;padding:8px 0}.metric-v{justify-content:flex-start;width:100%}.score-v{font-size:2.2rem}.score-l{font-size:.85rem}.chart-c{height:220px}.spiral-chart-container{height:320px}.stage-grid{grid-template-columns:1fr}.prob-i{padding:8px 0}.prob-i div:last-child{font-size:.85rem}.quest-i{font-size:.85rem;padding:8px 0}footer{padding:16px;font-size:.8rem}.stage-grid-detail{grid-template-columns:repeat(4,1fr)}
     }
@@ -232,6 +242,21 @@
         <div id="spiralDetails"></div>
       </div>
     </div>
+
+
+      <div class="card leaderboard-section">
+        <div class="card-t" id="rankTitle">🏁 Рейтинг банков</div>
+        <div class="form-gr">
+          <label id="rankInputLabel">Массив банков (JSON или по одной JSON-строке)</label>
+          <textarea id="rankInput" class="leaderboard-input" placeholder='[{"bn":"Bank A","pg":30,"ig":10,"cc":40,"cb":35,"co2":25}]'></textarea>
+          <div class="leaderboard-note" id="rankInputHint">Поддерживается JSON-массив или несколько строк JSON (один банк на строку).</div>
+        </div>
+        <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;">
+          <button class="btn-p" onclick="doRankBanks()" id="btnRank">📋 Построить рейтинг</button>
+        </div>
+        <div id="rankError" class="leaderboard-note" style="color:var(--d);display:none;margin-top:10px;"></div>
+        <div id="rankList" class="leaderboard-list"></div>
+      </div>
 
     <footer>
       <p><span id="fRepo">Репозиторий проекта:</span> <a href="https://github.com/sdtest-me/bank-welfare-analyzer" target="_blank">github.com/sdtest-me/bank-welfare-analyzer</a></p>

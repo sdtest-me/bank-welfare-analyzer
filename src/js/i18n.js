@@ -36,7 +36,9 @@
       stageMeaning:{beige:"Выживание",purple:"Традиции/Семья",red:"Неравенство/Бунт",blue:"Порядок/Дисциплина",orange:"Достижение/Средний класс",green:"Эмпатия/Взаимопомощь",yellow:"Гибкость/Адаптация",turquoise:"Холизм/Глобальность"},
       mismatchScoreLabel:"Mismatch индекс:", mismatchRiskLabel:"Уровень риска:", mismatchDriverLabel:"Главный драйвер:", esgConfidenceLabel:"Уверенность ESG:", driverConfidenceLabel:"Уверенность драйвера:", shortTermLabel:"Краткосрочное последствие:", longTermLabel:"Долгосрочное последствие:", predictiveDisclaimer:"⚠️ Сценарный прогноз: это ориентировочная оценка, а не гарантированный результат.",
       riskLevels:{low:"низкий",medium:"средний",high:"высокий"},
-      driverLabels:{redPressure:"Давление Red",empathyGap:"Разрыв эмпатии",stageMismatch:"Структурный разрыв стадий",welfareScorePenalty:"Слабый welfare score",esgClaimMismatch:"Разрыв ESG-заявлений"}
+
+      driverLabels:{redPressure:"Давление Red",empathyGap:"Разрыв эмпатии",stageMismatch:"Структурный разрыв стадий",welfareScorePenalty:"Слабый welfare score",esgClaimMismatch:"Разрыв ESG-заявлений"},
+      rankTitle:"🏁 Рейтинг банков",rankInputLabel:"Массив банков (JSON или по одной JSON-строке)",rankInputHint:"Поддерживается JSON-массив или несколько строк JSON (один банк на строку).",btnRank:"📋 Построить рейтинг",rankRisk:"Риск",rankMismatch:"Mismatch",rankEmpty:"Добавьте хотя бы один банк для сравнения.",rankParseErr:"Не удалось прочитать ввод. Используйте JSON-массив или JSON по строкам."
     },
     en: {
       app:"Bank Welfare Analyzer",inpTitle:"Bank Input Data",btnAnalyze:"🚀 Analyze",
@@ -74,7 +76,9 @@
       stageMeaning:{beige:"Survival",purple:"Traditional/Family",red:"Inequality/Rebellion",blue:"Order/Discipline",orange:"Achievement/Middle Class",green:"Empathy/Mutual Aid",yellow:"Flexible/Adaptive",turquoise:"Holistic/Global"},
       mismatchScoreLabel:"Mismatch score:", mismatchRiskLabel:"Risk level:", mismatchDriverLabel:"Primary driver:", esgConfidenceLabel:"ESG confidence:", driverConfidenceLabel:"Driver confidence:", shortTermLabel:"Short-term consequence:", longTermLabel:"Long-term consequence:", predictiveDisclaimer:"⚠️ Scenario-based projection: indicative only, not a guaranteed outcome.",
       riskLevels:{low:"low",medium:"medium",high:"high"},
-      driverLabels:{redPressure:"Red pressure",empathyGap:"Empathy gap",stageMismatch:"Structural stage gap",welfareScorePenalty:"Low welfare score",esgClaimMismatch:"ESG claim mismatch"}
+
+      driverLabels:{redPressure:"Red pressure",empathyGap:"Empathy gap",stageMismatch:"Structural stage gap",welfareScorePenalty:"Low welfare score",esgClaimMismatch:"ESG claim mismatch"},
+      rankTitle:"🏁 Bank Ranking",rankInputLabel:"Bank array input (JSON or one JSON object per line)",rankInputHint:"Supports a JSON array or newline-delimited JSON (one bank per line).",btnRank:"📋 Build ranking",rankRisk:"Risk",rankMismatch:"Mismatch",rankEmpty:"Add at least one bank to compare.",rankParseErr:"Cannot parse input. Use a JSON array or one JSON object per line."
     }
   };
 

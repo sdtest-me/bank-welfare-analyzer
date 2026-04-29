@@ -34,6 +34,64 @@
     };
   }
 
+
+  function parseBanksInput(raw){
+    const text=(raw||'').trim();
+    if(!text) return [];
+
+    if(text.startsWith('[')){
+      const parsed=JSON.parse(text);
+      return Array.isArray(parsed)?parsed:[];
+    }
+
+    return text
+      .split(/\n+/)
+      .map(line=>line.trim())
+      .filter(Boolean)
+      .map(line=>JSON.parse(line));
+  }
+
+  function doRankBanks(){
+    const input=$('rankInput');
+    const err=$('rankError');
+    const list=$('rankList');
+    const t=window.i18n.tr[window.i18n.lang];
+    err.style.display='none';
+    err.textContent='';
+
+    try{
+      const banks=parseBanksInput(input.value);
+      if(!banks.length){
+        list.innerHTML='';
+        err.textContent=t.rankEmpty;
+        err.style.display='block';
+        return;
+      }
+
+      const ranked=window.analyzeMultipleBanks(banks);
+      list.innerHTML=ranked.map(item=>{
+        const name=(item.data&&item.data.bn)||'Unknown';
+        const risk=t.riskLevels[item.mismatch.riskLevel]||item.mismatch.riskLevel;
+        const snippet=(item.mismatch.explanationText && (item.mismatch.explanationText[window.i18n.lang]||item.mismatch.explanationText.en)) || '-';
+        return `<div class="leaderboard-item">
+          <div class="leaderboard-head">
+            <span class="leaderboard-rank">#${item.rank}</span>
+            <strong>${name}</strong>
+          </div>
+          <div class="leaderboard-meta">
+            <span>${t.rankRisk}: <strong>${risk}</strong></span>
+            <span>${t.rankMismatch}: <strong>${item.mismatch.mismatchScore.toFixed(2)}</strong></span>
+          </div>
+          <div class="leaderboard-explain">${snippet}</div>
+        </div>`;
+      }).join('');
+    }catch(e){
+      list.innerHTML='';
+      err.textContent=t.rankParseErr;
+      err.style.display='block';
+    }
+  }
+
   function doAnalyze(){
     const d=getData();
     const hasData=d.pg>0||d.ig>0||d.cc>0;
@@ -206,9 +264,13 @@
     window.setLang('en');
     showRes();
     ['creditConsumption','creditBusiness','creditOther'].forEach(id=>$(id).addEventListener('change',fixCredit));
+    if ($('rankInput')) {
+      $('rankInput').value = JSON.stringify([{ bn: 'Eldik Bank', pg: 208, ig: 12.9, cc: 53, cb: 20, co2: 27, pr: 25.7, im: 17, ix: 32 }, { bn: 'Balanced Bank', pg: 24, ig: 14, cc: 28, cb: 52, co2: 20, pr: 12, im: 9, ix: 14 }], null, 2);
+    }
   });
 
   window.refresh = refresh;
   window.loadEx = loadEx;
   window.doAnalyze = doAnalyze;
+  window.doRankBanks = doRankBanks;
 })();

@@ -171,7 +171,7 @@
       };
     }
 
-    function buildExplanationText(primaryDriver) {
+    function buildExplanationText(primaryDriver, driverConfidence) {
       const confidencePct = Math.round((esgSignal.confidence || 0) * 100);
       const labels = {
         redPressure: {
@@ -196,6 +196,13 @@
         }
       };
 
+      const uncertaintyBand = (esgSignal.confidence + driverConfidence) / 2;
+      const uncertaintyText = uncertaintyBand >= 0.75
+        ? { en: 'Uncertainty: low.', ru: 'Неопределенность: низкая.' }
+        : uncertaintyBand >= 0.45
+          ? { en: 'Uncertainty: medium.', ru: 'Неопределенность: средняя.' }
+          : { en: 'Uncertainty: high.', ru: 'Неопределенность: высокая.' };
+
       const riskText = severity === 'high'
         ? { en: 'High risk of extractive mismatch.', ru: 'Высокий риск экстрактивного несоответствия.' }
         : severity === 'medium'
@@ -203,15 +210,15 @@
           : { en: 'Low mismatch risk under current inputs.', ru: 'Низкий риск несоответствия при текущих данных.' };
 
       return {
-        en: `${riskText.en} Main reason: ${labels[primaryDriver].en} Mismatch score ${mismatchScore.toFixed(2)}. ESG confidence ${confidencePct}%. Dominant stages: bank ${bankDominant}, population ${popDominant}.`,
-        ru: `${riskText.ru} Главная причина: ${labels[primaryDriver].ru} Индекс несоответствия ${mismatchScore.toFixed(2)}. Уверенность ESG ${confidencePct}%. Доминирующие стадии: банк ${bankDominant}, население ${popDominant}.`
+        en: `${riskText.en} ${uncertaintyText.en} Main reason: ${labels[primaryDriver].en} Mismatch score ${mismatchScore.toFixed(2)}. ESG confidence ${confidencePct}%. Driver confidence ${Math.round(driverConfidence * 100)}%. Dominant stages: bank ${bankDominant}, population ${popDominant}.`,
+        ru: `${riskText.ru} ${uncertaintyText.ru} Главная причина: ${labels[primaryDriver].ru} Индекс несоответствия ${mismatchScore.toFixed(2)}. Уверенность ESG ${confidencePct}%. Уверенность драйвера ${Math.round(driverConfidence * 100)}%. Доминирующие стадии: банк ${bankDominant}, население ${popDominant}.`
       };
     }
 
     const driverInference = inferPrimaryDriver();
     const primaryDriver = driverInference.driver;
     const driverConfidence = driverInference.driverConfidence;
-    const explanationText = buildExplanationText(primaryDriver);
+    const explanationText = buildExplanationText(primaryDriver, driverConfidence);
 
     const mismatchDescription = {
       en: `Mismatch is ${severity}: bank dominant stage is ${bankDominant} (${bank[bankDominant] || 0}%) while population is ${popDominant} (${population[popDominant] || 0}%). Red pressure gap: ${Math.round(redGap)}pp, empathy gap: ${Math.round(greenGap)}pp.${esgSignal.hasInput ? ` ESG mapping confidence: ${Math.round((esgSignal.confidence || 0) * 100)}%.` : ''}${esgSignal.hasInput ? (esgSignal.claimsHighEsg ? ` ESG value stages detected: ${esgSignal.detectedStages.join(', ') || 'none'}. Expected behavior: ${esgSignal.primaryStage ? ((esgSignal.stageExpectations[esgSignal.primaryStage] || {}).en || 'not defined') : 'not defined'}` : ' ESG text provided but no strong sustainability claim detected.') : ''}`,

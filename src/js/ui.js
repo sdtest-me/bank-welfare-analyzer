@@ -181,6 +181,11 @@
     driverBar.style.background = pickColor(driverPct);
 
     $('mismatchText').textContent = mismatch.explanationText[window.i18n.lang] || mismatch.explanationText.en;
+    const predictive = mismatch.predictiveImpact || {};
+    const shortTerm = predictive.shortTerm ? (predictive.shortTerm[window.i18n.lang] || predictive.shortTerm.en) : '-';
+    const longTerm = predictive.longTerm ? (predictive.longTerm[window.i18n.lang] || predictive.longTerm.en) : '-';
+    $('mismatchShortTerm').textContent = shortTerm;
+    $('mismatchLongTerm').textContent = longTerm;
     const gap=d.pg/Math.max(d.ig,0.1);
     const wb=$('warnBox'),wt=$('warnText');
     if(gap>5&&d.cc>40){wb.style.background='#fef2f2';wb.style.color='var(--d)';wt.textContent=window.i18n.lang==='ru'?`Прибыль банка растёт в ${Math.round(gap)} раз быстрее доходов населения. Высокая доля потребительских кредитов (${d.cc}%) указывает на кредитование бедности, а не развития.`:`Bank profit grows ${Math.round(gap)}x faster than population income. High share of consumption loans (${d.cc}%) indicates lending to poverty, not development.`;}

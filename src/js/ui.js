@@ -160,7 +160,9 @@
     const esgInput = $('esgText') ? $('esgText').value : '';
     const mismatch = window.calculateMismatch({ score: sc, spiral }, esgInput);
     $('mismatchVal').textContent = mismatch.mismatchScore.toFixed(2);
-    $('mismatchText').textContent = mismatch.mismatchDescription[window.i18n.lang] || mismatch.mismatchDescription.en;
+    $('mismatchRiskLevel').textContent = window.i18n.tr[window.i18n.lang].riskLevels[mismatch.riskLevel] || mismatch.riskLevel;
+    $('mismatchDriver').textContent = window.i18n.tr[window.i18n.lang].driverLabels[mismatch.primaryDriver] || mismatch.primaryDriver;
+    $('mismatchText').textContent = mismatch.explanationText[window.i18n.lang] || mismatch.explanationText.en;
     const gap=d.pg/Math.max(d.ig,0.1);
     const wb=$('warnBox'),wt=$('warnText');
     if(gap>5&&d.cc>40){wb.style.background='#fef2f2';wb.style.color='var(--d)';wt.textContent=window.i18n.lang==='ru'?`Прибыль банка растёт в ${Math.round(gap)} раз быстрее доходов населения. Высокая доля потребительских кредитов (${d.cc}%) указывает на кредитование бедности, а не развития.`:`Bank profit grows ${Math.round(gap)}x faster than population income. High share of consumption loans (${d.cc}%) indicates lending to poverty, not development.`;}

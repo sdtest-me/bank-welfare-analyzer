@@ -47,6 +47,10 @@
     return Math.max(0, Math.min(1, value));
   }
 
+  function clamp(value, min, max) {
+    return Math.max(min, Math.min(max, value));
+  }
+
   function calculateMismatch(scoringOutput, esgText) {
     const safeOutput = scoringOutput || {};
     const score = typeof safeOutput.score === 'number' ? safeOutput.score : 0;
@@ -87,21 +91,84 @@
       primaryStage: esgSignal.primaryStage || null
     });
 
-    let severity;
-    if (mismatchScore >= 0.67) severity = 'high';
-    else if (mismatchScore >= 0.34) severity = 'medium';
-    else severity = 'low';
+    function calculateAdjustedRiskLevel() {
+      const confidence = clamp01(esgSignal.confidence || 0);
+      const confidenceCentering = confidence - 0.5;
+
+      const highThreshold = clamp(0.67 - confidenceCentering * 0.12, 0.55, 0.78);
+      const mediumThreshold = clamp(0.34 - confidenceCentering * 0.08, 0.22, 0.48);
+
+      let level;
+      if (mismatchScore >= highThreshold) level = 'high';
+      else if (mismatchScore >= mediumThreshold) level = 'medium';
+      else level = 'low';
+
+      return {
+        level,
+        thresholds: {
+          high: highThreshold,
+          medium: mediumThreshold
+        }
+      };
+    }
+
+    const adjustedRisk = calculateAdjustedRiskLevel();
+    const severity = adjustedRisk.level;
 
     function inferPrimaryDriver() {
+      const confidence = clamp01(esgSignal.confidence || 0);
+      const confidenceFactor = 0.6 + confidence * 0.8;
+      const ambiguityFloor = 0.085;
       const scoreFactors = {
-        redPressure: (redGap / 40) * 0.35,
-        empathyGap: (greenGap / 40) * 0.25,
-        stageMismatch: (structuralGap / 100) * 0.25,
-        welfareScorePenalty: scorePenalty * 0.15,
-        esgClaimMismatch: claimsPenalty
+        redPressure: {
+          score: (redGap / 40) * 0.35,
+          signal: redGap / 40,
+          confidenceWeight: 1
+        },
+        empathyGap: {
+          score: (greenGap / 40) * 0.25,
+          signal: greenGap / 40,
+          confidenceWeight: 1
+        },
+        stageMismatch: {
+          score: (structuralGap / 100) * 0.25,
+          signal: structuralGap / 100,
+          confidenceWeight: 0.9
+        },
+        welfareScorePenalty: {
+          score: scorePenalty * 0.15,
+          signal: scorePenalty,
+          confidenceWeight: 0.8
+        },
+        esgClaimMismatch: {
+          score: claimsPenalty,
+          signal: claimsPenalty / 0.2,
+          confidenceWeight: 0.5 + confidence * 0.9
+        }
       };
-      const topFactor = Object.entries(scoreFactors).reduce((max, item) => (item[1] > max[1] ? item : max), ['redPressure', 0]);
-      return topFactor[0];
+
+      const weightedFactors = Object.entries(scoreFactors).map(([name, factor]) => ({
+        name,
+        weightedScore: factor.score * factor.signal * confidenceFactor * factor.confidenceWeight,
+        rawScore: factor.score
+      }));
+      weightedFactors.sort((a, b) => b.weightedScore - a.weightedScore);
+
+      const top = weightedFactors[0];
+      const second = weightedFactors[1];
+      const margin = top.weightedScore - (second ? second.weightedScore : 0);
+
+      if (top.weightedScore < ambiguityFloor || margin < ambiguityFloor * 0.35) {
+        return {
+          driver: 'stageMismatch',
+          driverConfidence: clamp01((top.weightedScore + margin) / (ambiguityFloor * 2))
+        };
+      }
+
+      return {
+        driver: top.name,
+        driverConfidence: clamp01(top.weightedScore / (top.rawScore + ambiguityFloor))
+      };
     }
 
     function buildExplanationText(primaryDriver) {
@@ -141,7 +208,9 @@
       };
     }
 
-    const primaryDriver = inferPrimaryDriver();
+    const driverInference = inferPrimaryDriver();
+    const primaryDriver = driverInference.driver;
+    const driverConfidence = driverInference.driverConfidence;
     const explanationText = buildExplanationText(primaryDriver);
 
     const mismatchDescription = {
@@ -153,7 +222,9 @@
       mismatchScore,
       esgConfidence: esgSignal.confidence || 0,
       riskLevel: severity,
+      adjustedRiskLevel: severity,
       primaryDriver,
+      driverConfidence,
       explanationText,
       mismatchDescription
     };

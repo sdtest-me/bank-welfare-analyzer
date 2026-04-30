@@ -38,6 +38,41 @@
       riskLevels:{low:"низкий",medium:"средний",high:"высокий"},
 
       driverLabels:{redPressure:"Давление Red",empathyGap:"Разрыв эмпатии",stageMismatch:"Структурный разрыв стадий",welfareScorePenalty:"Слабый welfare score",esgClaimMismatch:"Разрыв ESG-заявлений"},
+      recommendationTexts:{
+        bankDominantRedRu:"Агрессивное извлечение прибыли",
+        bankDominantOtherRu:"Развитие/Инновации",
+        bankDominantRedEn:"Aggressive Profit Extraction",
+        bankDominantOtherEn:"Development/Innovation",
+        transitionTarget:"🟠 Оранжевая",
+        gapBullets:{
+          ru:[
+            "У населения низкий {redIcon} {redStage} ({populationRed}%) — нет бунтов, люди не грабят. Но у банка высокий {bankRedStage} ({bankRed}%) — агрессивное выбивание долгов",
+            "У населения высокий {blueIcon} {blueStage} ({populationBlue}%) — дисциплинированно платят долги. Банк использует это для извлечения прибыли",
+            "Население {greenIcon} {greenStage} ({populationGreen}%) — спасается взаимовыручкой. У Банка {bankGreenStage} = {bankGreen}% (нет эмпатии к должникам)"
+          ],
+          en:[
+            "Population has low {redIcon} {redStage} ({populationRed}%) — no riots, no robberies. But Bank has high {bankRedStage} ({bankRed}%) — aggressive debt collection",
+            "Population has high {blueIcon} {blueStage} ({populationBlue}%) — disciplined debt payers. Bank exploits this for profit",
+            "Population {greenIcon} {greenStage} ({populationGreen}%) — survives through mutual aid. Bank {bankGreenStage} = {bankGreen}% (no empathy for debtors)"
+          ]
+        },
+        recommendationIntro:{
+          ru:"Банку следует перейти от {bankIcon} {bankStage} к {transitionTarget}:",
+          en:"Bank should evolve from {bankIcon} {bankStage} to {transitionTarget} by:"
+        },
+        recommendationBullets:{
+          ru:[
+            "Переход от потребительских кредитов ({creditConsumption}%) к бизнес-кредитам",
+            "Поддержка предпринимательства и экономического развития",
+            "Синхронизация роста прибыли с ростом доходов населения"
+          ],
+          en:[
+            "Shifting from consumer loans ({creditConsumption}%) to business loans",
+            "Supporting entrepreneurship & economic development",
+            "Aligning profit growth with population income growth"
+          ]
+        }
+      },
       rankTitle:"🏁 Рейтинг банков",rankInputLabel:"Массив банков (JSON или по одной JSON-строке)",rankInputHint:"Поддерживается JSON-массив или несколько строк JSON (один банк на строку).",btnRank:"📋 Построить рейтинг",rankRisk:"Риск",rankMismatch:"Mismatch",rankEmpty:"Добавьте хотя бы один банк для сравнения.",rankParseErr:"Не удалось прочитать ввод. Используйте JSON-массив или JSON по строкам."
     },
     en: {
@@ -78,6 +113,41 @@
       riskLevels:{low:"low",medium:"medium",high:"high"},
 
       driverLabels:{redPressure:"Red pressure",empathyGap:"Empathy gap",stageMismatch:"Structural stage gap",welfareScorePenalty:"Low welfare score",esgClaimMismatch:"ESG claim mismatch"},
+      recommendationTexts:{
+        bankDominantRedRu:"Агрессивное извлечение прибыли",
+        bankDominantOtherRu:"Развитие/Инновации",
+        bankDominantRedEn:"Aggressive Profit Extraction",
+        bankDominantOtherEn:"Development/Innovation",
+        transitionTarget:"🟠 Orange",
+        gapBullets:{
+          ru:[
+            "У населения низкий {redIcon} {redStage} ({populationRed}%) — нет бунтов, люди не грабят. Но у банка высокий {bankRedStage} ({bankRed}%) — агрессивное выбивание долгов",
+            "У населения высокий {blueIcon} {blueStage} ({populationBlue}%) — дисциплинированно платят долги. Банк использует это для извлечения прибыли",
+            "Население {greenIcon} {greenStage} ({populationGreen}%) — спасается взаимовыручкой. У Банка {bankGreenStage} = {bankGreen}% (нет эмпатии к должникам)"
+          ],
+          en:[
+            "Population has low {redIcon} {redStage} ({populationRed}%) — no riots, no robberies. But Bank has high {bankRedStage} ({bankRed}%) — aggressive debt collection",
+            "Population has high {blueIcon} {blueStage} ({populationBlue}%) — disciplined debt payers. Bank exploits this for profit",
+            "Population {greenIcon} {greenStage} ({populationGreen}%) — survives through mutual aid. Bank {bankGreenStage} = {bankGreen}% (no empathy for debtors)"
+          ]
+        },
+        recommendationIntro:{
+          ru:"Банку следует перейти от {bankIcon} {bankStage} к {transitionTarget}:",
+          en:"Bank should evolve from {bankIcon} {bankStage} to {transitionTarget} by:"
+        },
+        recommendationBullets:{
+          ru:[
+            "Переход от потребительских кредитов ({creditConsumption}%) к бизнес-кредитам",
+            "Поддержка предпринимательства и экономического развития",
+            "Синхронизация роста прибыли с ростом доходов населения"
+          ],
+          en:[
+            "Shifting from consumer loans ({creditConsumption}%) to business loans",
+            "Supporting entrepreneurship & economic development",
+            "Aligning profit growth with population income growth"
+          ]
+        }
+      },
       rankTitle:"🏁 Bank Ranking",rankInputLabel:"Bank array input (JSON or one JSON object per line)",rankInputHint:"Supports a JSON array or newline-delimited JSON (one bank per line).",btnRank:"📋 Build ranking",rankRisk:"Risk",rankMismatch:"Mismatch",rankEmpty:"Add at least one bank to compare.",rankParseErr:"Cannot parse input. Use a JSON array or one JSON object per line."
     }
   };
@@ -120,6 +190,11 @@
   function fmtPct(v){return (v>=0?'+':'')+v+'%';}
   function fmtNum(v){return v.toLocaleString(lang==='ru'?'ru-RU':'en-US');}
 
-  window.i18n = { tr, get lang(){ return lang; }, setLang, updateBadgeTexts, fmtPct, fmtNum };
+  function translate(key){
+    return tr[lang][key];
+  }
+
+  window.i18n = { tr, get lang(){ return lang; }, setLang, updateBadgeTexts, fmtPct, fmtNum, translate };
+  window.tr = translate;
   window.setLang = setLang;
 })();

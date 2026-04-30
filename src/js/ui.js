@@ -103,6 +103,42 @@
     $('resultsTitle').scrollIntoView({behavior:'smooth',block:'start'});
   }
 
+  function generateRecommendations(context){
+    const lang = window.i18n.lang;
+    const t = window.tr('recommendationTexts') || {};
+    const bankDominantText = context.bankD === 'red'
+      ? (lang === 'ru' ? t.bankDominantRedRu : t.bankDominantRedEn)
+      : (lang === 'ru' ? t.bankDominantOtherRu : t.bankDominantOtherEn);
+
+    const tokens = {
+      redIcon: context.icons.red,
+      redStage: context.stages.red,
+      populationRed: context.population.red,
+      bankRedStage: context.stages.red,
+      bankRed: context.bank.red,
+      blueIcon: context.icons.blue,
+      blueStage: context.stages.blue,
+      populationBlue: context.population.blue,
+      greenIcon: context.icons.green,
+      greenStage: context.stages.green,
+      populationGreen: context.population.green,
+      bankGreenStage: context.stages.green,
+      bankGreen: context.bank.green,
+      bankIcon: context.icons[context.bankD],
+      bankStage: context.stages[context.bankD],
+      transitionTarget: t.transitionTarget,
+      creditConsumption: context.data.cc
+    };
+
+    const applyTokens = template => template.replace(/\{(\w+)\}/g, (_, key) => tokens[key]);
+    return {
+      bankDominantText,
+      gapBullets: ((t.gapBullets || {})[lang] || []).map(applyTokens),
+      recommendationIntro: applyTokens(((t.recommendationIntro || {})[lang]) || ''),
+      recommendationBullets: ((t.recommendationBullets || {})[lang] || []).map(applyTokens)
+    };
+  }
+
   function renderDetailedAnalysis(data, population, bank){
     const stages=['beige','purple','red','blue','orange','green','yellow','turquoise'];
     const icons={beige:'🟤',purple:'🟣',red:'🔴',blue:'🔵',orange:'🟠',green:'🟢',yellow:'🟡',turquoise:'💎'};
@@ -118,39 +154,24 @@
       <div class="stage-grid-detail">${stages.map(s=>`<div class="stage-cell stage-${s}">${icons[s]}<br>${population[s]}%</div>`).join('')}</div>
       <div class="dominant-text">${t.dominant} ${icons[popD]} ${t.stages[popD]} (${population[popD]}%) - ${t.stageMeaning[popD]}</div></div>`;
 
+    const rec = generateRecommendations({ data, population, bank, bankD, icons, stages: t.stages });
+
     html+=`<div><strong>🏦 ${t.bankText} (${data.bn}):</strong>
       <div class="stage-grid-detail">${stages.map(s=>`<div class="stage-cell stage-${s}">${icons[s]}<br>${bank[s]}%</div>`).join('')}</div>
-      <div class="dominant-text">${t.dominant} ${icons[bankD]} ${t.stages[bankD]} (${bank[bankD]}%) - ${bankD==='red'?(window.i18n.lang==='ru'?'Агрессивное извлечение прибыли':'Aggressive Profit Extraction'):(window.i18n.lang==='ru'?'Развитие/Инновации':'Development/Innovation')}</div></div></div>`;
+      <div class="dominant-text">${t.dominant} ${icons[bankD]} ${t.stages[bankD]} (${bank[bankD]}%) - ${rec.bankDominantText}</div></div></div>`;
 
-    if (window.i18n.lang === 'ru') {
-      html+=`<div style="margin-top:16px;padding:14px;background:#fef2f2;border-radius:8px;border-left:4px solid var(--d);">
-        <strong>${t.gapTitle}</strong><br><br>
-        • Банк ${icons[bankD]} ${t.stages[bankD]} (${bank[bankD]}%) vs Население ${icons[popD]} ${t.stages[popD]} (${population[popD]}%) = ${gapSign}${gapDiff}% разрыв<br>
-        • У населения низкий ${icons.red} ${t.stages.red} (${population.red}%) — нет бунтов, люди не грабят. Но у банка высокий ${t.stages.red} (${bank.red}%) — агрессивное выбивание долгов<br>
-        • У населения высокий ${icons.blue} ${t.stages.blue} (${population.blue}%) — дисциплинированно платят долги. Банк использует это для извлечения прибыли<br>
-        • Население ${icons.green} ${t.stages.green} (${population.green}%) — спасается взаимовыручкой. У Банка ${t.stages.green} = ${bank.green}% (нет эмпатии к должникам)</div>`;
+    const popVsBank = window.i18n.lang === 'ru'
+      ? `Банк ${icons[bankD]} ${t.stages[bankD]} (${bank[bankD]}%) vs Население ${icons[popD]} ${t.stages[popD]} (${population[popD]}%) = ${gapSign}${gapDiff}% разрыв`
+      : `Bank ${icons[bankD]} ${t.stages[bankD]} (${bank[bankD]}%) vs Population ${icons[popD]} ${t.stages[popD]} (${population[popD]}%) = ${gapSign}${gapDiff}% gap`;
+    html+=`<div style="margin-top:16px;padding:14px;background:#fef2f2;border-radius:8px;border-left:4px solid var(--d);">
+      <strong>${t.gapTitle}</strong><br><br>
+      • ${popVsBank}<br>
+      ${rec.gapBullets.map(line=>`• ${line}<br>`).join('')}</div>`;
 
-      html+=`<div style="margin-top:12px;padding:14px;background:#dcfce7;border-radius:8px;border-left:4px solid var(--s);">
-        <strong>${t.recTitle}</strong><br>
-        Банку следует перейти от ${icons[bankD]} ${t.stages[bankD]} к 🟠 Оранжевой:<br>
-        • Переход от потребительских кредитов (${data.cc}%) к бизнес-кредитам<br>
-        • Поддержка предпринимательства и экономического развития<br>
-        • Синхронизация роста прибыли с ростом доходов населения</div>`;
-    } else {
-      html+=`<div style="margin-top:16px;padding:14px;background:#fef2f2;border-radius:8px;border-left:4px solid var(--d);">
-        <strong>${t.gapTitle}</strong><br><br>
-        • Bank ${icons[bankD]} ${t.stages[bankD]} (${bank[bankD]}%) vs Population ${icons[popD]} ${t.stages[popD]} (${population[popD]}%) = ${gapSign}${gapDiff}% gap<br>
-        • Population has low ${icons.red} ${t.stages.red} (${population.red}%) — no riots, no robberies. But Bank has high ${t.stages.red} (${bank.red}%) — aggressive debt collection<br>
-        • Population has high ${icons.blue} ${t.stages.blue} (${population.blue}%) — disciplined debt payers. Bank exploits this for profit<br>
-        • Population ${icons.green} ${t.stages.green} (${population.green}%) — survives through mutual aid. Bank ${t.stages.green} = ${bank.green}% (no empathy for debtors)</div>`;
-
-      html+=`<div style="margin-top:12px;padding:14px;background:#dcfce7;border-radius:8px;border-left:4px solid var(--s);">
-        <strong>${t.recTitle}</strong><br>
-        Bank should evolve from ${icons[bankD]} ${t.stages[bankD]} to 🟠 Orange by:<br>
-        • Shifting from consumer loans (${data.cc}%) to business loans<br>
-        • Supporting entrepreneurship & economic development<br>
-        • Aligning profit growth with population income growth</div>`;
-    }
+    html+=`<div style="margin-top:12px;padding:14px;background:#dcfce7;border-radius:8px;border-left:4px solid var(--s);">
+      <strong>${t.recTitle}</strong><br>
+      ${rec.recommendationIntro}<br>
+      ${rec.recommendationBullets.map(line=>`• ${line}<br>`).join('')}</div>`;
 
     $('spiralDetails').innerHTML=html;
   }

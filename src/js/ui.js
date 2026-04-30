@@ -73,6 +73,14 @@
         const name=(item.data&&item.data.bn)||'Unknown';
         const risk=t.riskLevels[item.mismatch.riskLevel]||item.mismatch.riskLevel;
         const snippet=(item.mismatch.explanationText && (item.mismatch.explanationText[window.i18n.lang]||item.mismatch.explanationText.en)) || '-';
+        const rec=typeof window.generateRecommendations==='function' ? window.generateRecommendations(item) : null;
+        const shortActions=rec&&Array.isArray(rec.shortTermActions)&&rec.shortTermActions.length
+          ? `<ul style="margin:6px 0 0 18px;">${rec.shortTermActions.map(a=>`<li>${a}</li>`).join('')}</ul>`
+          : '<div>-</div>';
+        const strategy=rec&&rec.strategicShift&&rec.strategicShift.recommendation ? rec.strategicShift.recommendation : '-';
+        const mitigation=rec&&Array.isArray(rec.riskMitigation)&&rec.riskMitigation.length
+          ? `<ul style="margin:6px 0 0 18px;">${rec.riskMitigation.map(a=>`<li>${a}</li>`).join('')}</ul>`
+          : '<div>-</div>';
         return `<div class="leaderboard-item">
           <div class="leaderboard-head">
             <span class="leaderboard-rank">#${item.rank}</span>
@@ -83,6 +91,9 @@
             <span>${t.rankMismatch}: <strong>${item.mismatch.mismatchScore.toFixed(2)}</strong></span>
           </div>
           <div class="leaderboard-explain">${snippet}</div>
+          <div class="leaderboard-explain" style="margin-top:8px;"><strong>Short-term actions</strong>${shortActions}</div>
+          <div class="leaderboard-explain" style="margin-top:8px;"><strong>Strategic shift</strong><div style="margin-top:4px;">${strategy}</div></div>
+          <div class="leaderboard-explain" style="margin-top:8px;"><strong>Risk mitigation</strong>${mitigation}</div>
         </div>`;
       }).join('');
     }catch(e){

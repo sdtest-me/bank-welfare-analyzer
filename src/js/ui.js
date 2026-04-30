@@ -73,6 +73,17 @@
         const name=(item.data&&item.data.bn)||'Unknown';
         const risk=t.riskLevels[item.mismatch.riskLevel]||item.mismatch.riskLevel;
         const snippet=(item.mismatch.explanationText && (item.mismatch.explanationText[window.i18n.lang]||item.mismatch.explanationText.en)) || '-';
+        const impact=typeof window.calculateImpact==='function' ? window.calculateImpact(item) : null;
+        const impactRisk=impact ? (t[impact.reputationalRiskKey] || impact.reputationalRiskKey) : '-';
+        const stageGapText=impact
+          ? `${t.stages[impact.stageGaps.bankDominant] || impact.stageGaps.bankDominant} vs ${t.stages[impact.stageGaps.populationDominant] || impact.stageGaps.populationDominant} (${impact.stageGaps.dominantGap >= 0 ? '+' : ''}${impact.stageGaps.dominantGap}pp)`
+          : '-';
+        const impactShort=impact && impact.prediction && impact.prediction.shortTerm
+          ? (impact.prediction.shortTerm[window.i18n.lang] || impact.prediction.shortTerm.en || '-')
+          : '-';
+        const impactLong=impact && impact.prediction && impact.prediction.longTerm
+          ? (impact.prediction.longTerm[window.i18n.lang] || impact.prediction.longTerm.en || '-')
+          : '-';
         const rec=typeof window.generateRecommendations==='function' ? window.generateRecommendations(item) : null;
         const shortActions=rec&&Array.isArray(rec.shortTermActions)&&rec.shortTermActions.length
           ? `<ul style="margin:6px 0 0 18px;">${rec.shortTermActions.map(a=>`<li>${a}</li>`).join('')}</ul>`
@@ -89,8 +100,16 @@
           <div class="leaderboard-meta">
             <span>${t.rankRisk}: <strong>${risk}</strong></span>
             <span>${t.rankMismatch}: <strong>${item.mismatch.mismatchScore.toFixed(2)}</strong></span>
+            <span>${t.rankImpactIndex}: <strong>${impact ? impact.impactIndex : '-'}/100</strong></span>
           </div>
           <div class="leaderboard-explain">${snippet}</div>
+          <div class="leaderboard-explain" style="margin-top:8px;">
+            <strong>${t.rankImpactTitle}</strong>
+            <div style="margin-top:4px;">${t.rankReputationRisk}: <strong>${impactRisk}</strong></div>
+            <div style="margin-top:4px;">${t.rankStageGap}: ${stageGapText}</div>
+            <div style="margin-top:6px;"><strong>${t.rankShortTermImpact}</strong><div style="margin-top:2px;">${impactShort}</div></div>
+            <div style="margin-top:6px;"><strong>${t.rankLongTermImpact}</strong><div style="margin-top:2px;">${impactLong}</div></div>
+          </div>
           <div class="leaderboard-explain" style="margin-top:8px;"><strong>Short-term actions</strong>${shortActions}</div>
           <div class="leaderboard-explain" style="margin-top:8px;"><strong>Strategic shift</strong><div style="margin-top:4px;">${strategy}</div></div>
           <div class="leaderboard-explain" style="margin-top:8px;"><strong>Risk mitigation</strong>${mitigation}</div>

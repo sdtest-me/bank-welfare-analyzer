@@ -73,7 +73,7 @@
           ]
         }
       },
-      rankTitle:"🏁 Рейтинг банков",rankInputLabel:"Массив банков (JSON или по одной JSON-строке)",rankInputHint:"Поддерживается JSON-массив или несколько строк JSON (один банк на строку).",btnRank:"📋 Построить рейтинг",rankRisk:"Риск",rankMismatch:"Mismatch",rankEmpty:"Добавьте хотя бы один банк для сравнения.",rankParseErr:"Не удалось прочитать ввод. Используйте JSON-массив или JSON по строкам."
+      rankTitle:"🏁 Рейтинг банков",rankInputLabel:"Массив банков (JSON или по одной JSON-строке)",rankInputHint:"Поддерживается JSON-массив или несколько строк JSON (один банк на строку).",btnRank:"📋 Построить рейтинг",rankRisk:"Риск",rankMismatch:"Mismatch",rankEmpty:"Добавьте хотя бы один банк для сравнения.",rankParseErr:"Не удалось прочитать ввод. Используйте JSON-массив или JSON по строкам.",rankImpactTitle:"Real-world impact",rankImpactIndex:"Impact index",rankReputationRisk:"Reputational risk",rankStageGap:"Stage gap",rankShortTermImpact:"Short-term impact",rankLongTermImpact:"Long-term impact",impactRiskLow:"низкий",impactRiskMedium:"средний",impactRiskHigh:"высокий"
     },
     en: {
       app:"Bank Welfare Analyzer",inpTitle:"Bank Input Data",btnAnalyze:"🚀 Analyze",
@@ -148,7 +148,7 @@
           ]
         }
       },
-      rankTitle:"🏁 Bank Ranking",rankInputLabel:"Bank array input (JSON or one JSON object per line)",rankInputHint:"Supports a JSON array or newline-delimited JSON (one bank per line).",btnRank:"📋 Build ranking",rankRisk:"Risk",rankMismatch:"Mismatch",rankEmpty:"Add at least one bank to compare.",rankParseErr:"Cannot parse input. Use a JSON array or one JSON object per line."
+      rankTitle:"🏁 Bank Ranking",rankInputLabel:"Bank array input (JSON or one JSON object per line)",rankInputHint:"Supports a JSON array or newline-delimited JSON (one bank per line).",btnRank:"📋 Build ranking",rankRisk:"Risk",rankMismatch:"Mismatch",rankEmpty:"Add at least one bank to compare.",rankParseErr:"Cannot parse input. Use a JSON array or one JSON object per line.",rankImpactTitle:"Real-world impact",rankImpactIndex:"Impact index",rankReputationRisk:"Reputational risk",rankStageGap:"Stage gap",rankShortTermImpact:"Short-term impact",rankLongTermImpact:"Long-term impact",impactRiskLow:"low",impactRiskMedium:"medium",impactRiskHigh:"high"
     }
   };
 

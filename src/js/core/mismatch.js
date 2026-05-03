@@ -64,18 +64,27 @@
     const redGap = Math.max(0, (bank.red || 0) - (population.red || 0));
     const greenGap = Math.max(0, (population.green || 0) - (bank.green || 0));
     const structuralGap = STAGES.reduce((sum, stage) => sum + Math.abs((bank[stage] || 0) - (population[stage] || 0)), 0) / 2;
+    const stageGap = Math.abs((bank[bankDominant] || 0) - (population[popDominant] || 0));
 
     const esgSignal = parseEsgSignal(esgText);
     const claimsPenalty = esgSignal.claimsHighEsg && (bank.red || 0) >= 25 && (bank.green || 0) <= 10 ? 0.2 : 0;
     const scorePenalty = (100 - score) / 100;
     debugLog('penalties', { claimsPenalty, scorePenalty: Number(scorePenalty.toFixed(3)) });
 
+    const baseStagePressure = (redGap / 40) * 0.4 + (greenGap / 40) * 0.3;
+    const structuralPressure = (structuralGap / 100) * 0.2;
+    const scorePressure = scorePenalty * 0.1;
+
+    const heavyGapBoost = clamp01(((redGap + greenGap + stageGap) / 120) ** 1.4);
+    const spreadFactor = clamp01(((structuralGap / 100) + (stageGap / 50)) / 2);
+
     const mismatchScore = clamp01(
-      (redGap / 40) * 0.35 +
-      (greenGap / 40) * 0.25 +
-      (structuralGap / 100) * 0.25 +
-      scorePenalty * 0.15 +
-      claimsPenalty
+      baseStagePressure +
+      structuralPressure +
+      scorePressure +
+      claimsPenalty +
+      heavyGapBoost * 0.14 +
+      spreadFactor * 0.08
     );
     debugLog('stage scores', {
       populationDominant: popDominant,
@@ -83,6 +92,9 @@
       redGap: Number(redGap.toFixed(3)),
       greenGap: Number(greenGap.toFixed(3)),
       structuralGap: Number(structuralGap.toFixed(3)),
+      dominantStageGap: Number(stageGap.toFixed(3)),
+      heavyGapBoost: Number(heavyGapBoost.toFixed(3)),
+      spreadFactor: Number(spreadFactor.toFixed(3)),
       mismatchScore: Number(mismatchScore.toFixed(3))
     });
     debugLog('confidence calculation', {
@@ -121,24 +133,24 @@
       const ambiguityFloor = 0.085;
       const scoreFactors = {
         redPressure: {
-          score: (redGap / 40) * 0.35,
+          score: (redGap / 40) * 0.4,
           signal: redGap / 40,
-          confidenceWeight: 1
+          confidenceWeight: 1.05
         },
         empathyGap: {
-          score: (greenGap / 40) * 0.25,
+          score: (greenGap / 40) * 0.3,
           signal: greenGap / 40,
           confidenceWeight: 1
         },
         stageMismatch: {
-          score: (structuralGap / 100) * 0.25,
-          signal: structuralGap / 100,
-          confidenceWeight: 0.9
+          score: (structuralGap / 100) * 0.2 + (stageGap / 50) * 0.08,
+          signal: clamp01(((structuralGap / 100) + (stageGap / 50)) / 2),
+          confidenceWeight: 0.95
         },
         welfareScorePenalty: {
-          score: scorePenalty * 0.15,
+          score: scorePenalty * 0.1,
           signal: scorePenalty,
-          confidenceWeight: 0.8
+          confidenceWeight: 0.75
         },
         esgClaimMismatch: {
           score: claimsPenalty,
@@ -236,11 +248,11 @@
     }
 
     function buildPredictiveImpact(primaryDriver, driverConfidence) {
-      const stageGap = (bank[bankDominant] || 0) - (population[popDominant] || 0);
+      const stageGapSigned = (bank[bankDominant] || 0) - (population[popDominant] || 0);
       const tensionLevel = mismatchScore >= 0.67 ? 'high' : mismatchScore >= 0.34 ? 'medium' : 'low';
       const stageContext = {
-        en: `Bank dominant stage ${bankDominant} (${bank[bankDominant] || 0}%) vs population ${popDominant} (${population[popDominant] || 0}%), gap ${Math.round(stageGap)}pp.`,
-        ru: `Доминирующая стадия банка ${bankDominant} (${bank[bankDominant] || 0}%) против населения ${popDominant} (${population[popDominant] || 0}%), разрыв ${Math.round(stageGap)} п.п.`
+        en: `Bank dominant stage ${bankDominant} (${bank[bankDominant] || 0}%) vs population ${popDominant} (${population[popDominant] || 0}%), gap ${Math.round(stageGapSigned)}pp.`,
+        ru: `Доминирующая стадия банка ${bankDominant} (${bank[bankDominant] || 0}%) против населения ${popDominant} (${population[popDominant] || 0}%), разрыв ${Math.round(stageGapSigned)} п.п.`
       };
       const driverImpact = {
         redPressure: {

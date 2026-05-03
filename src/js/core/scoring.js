@@ -24,6 +24,12 @@
   }
 
   function calculateSpiralStages(data){
+    const safeData = {
+      ...data,
+      cp: Number.isFinite(data.cp) ? data.cp : 50,
+      di: Number.isFinite(data.di) ? data.di : 50,
+      co2: Number.isFinite(data.co2) ? data.co2 : 50,
+    };
     const pop={beige:0,purple:0,red:0,blue:0,orange:0,green:0,yellow:0,turquoise:0};
     const bank={beige:0,purple:0,red:0,blue:0,orange:0,green:0,yellow:0,turquoise:0};
 
@@ -49,17 +55,17 @@
 
     const profitGap = data.pg / Math.max(data.ig, 1);
     const interestSpread = Math.max(0, data.ix - data.im);
-    const capitalDiscipline = Math.max(0, Math.min(35, (data.cp * 0.22) + ((100 - data.di) * 0.18)));
-    const welfareSignal = Math.max(0, (data.ig * 1.4) + ((100 - data.pr) * 0.25) + ((100 - data.co2) * 0.16));
+    const capitalDiscipline = Math.max(0, Math.min(35, (safeData.cp * 0.22) + ((100 - safeData.di) * 0.18)));
+    const welfareSignal = Math.max(0, (data.ig * 1.4) + ((100 - data.pr) * 0.25) + ((100 - safeData.co2) * 0.16));
 
-    bank.beige = data.cp < 10 ? Math.min(28, (10 - data.cp) * 7) : 1;
-    bank.purple = Math.min(11, Math.max(2, 5 + (data.cp < 12 ? 2 : 0) - (data.cb > 35 ? 2 : 0)));
+    bank.beige = safeData.cp < 10 ? Math.min(28, (10 - safeData.cp) * 7) : 1;
+    bank.purple = Math.min(11, Math.max(2, 5 + (safeData.cp < 12 ? 2 : 0) - (data.cb > 35 ? 2 : 0)));
 
     // Stage-specific drivers with competitive amplification to create decisive peaks when signals are strong.
     const redSignal = Math.max(0, (data.cc * 0.95) + (interestSpread * 2.4) + (profitGap * 3.2) - (data.cb * 0.4) - (data.ig * 0.5));
     const orangeSignal = Math.max(0, (data.pg * 0.45) + (data.cb * 1.28) + (profitGap < 3 ? 8 : 3) - (data.cc * 0.4));
-    const blueSignal = Math.max(0, (capitalDiscipline * 2.2) + (data.cp > 35 ? 11 : 4) - (interestSpread * 0.75));
-    const greenSignal = Math.max(0, (welfareSignal * 1.5) + (data.ig * 1.35) + ((100 - data.di) * 0.3) - (data.cc * 0.45));
+    const blueSignal = Math.max(0, (capitalDiscipline * 2.2) + (safeData.cp > 35 ? 11 : 4) - (interestSpread * 0.75));
+    const greenSignal = Math.max(0, (welfareSignal * 1.5) + (data.ig * 1.35) + ((100 - safeData.di) * 0.3) - (data.cc * 0.45));
 
     const competitivePower = 1.7;
     bank.red = Math.min(38, Math.max(6, Math.pow(redSignal / 20, competitivePower) * 10 + 6));

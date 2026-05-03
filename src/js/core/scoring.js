@@ -49,14 +49,19 @@
 
     const profitGap = data.pg / Math.max(data.ig, 1);
 
-    bank.beige = data.cp < 10 ? Math.min(40, (10 - data.cp) * 10) : 0;
-    bank.purple = 0;
-    bank.red = Math.min(40, 20 + (profitGap > 5 ? 15 : profitGap * 3) + (data.cc > 40 ? 5 : 0));
-    bank.blue = Math.min(30, 20);
-    bank.orange = Math.min(30, data.cb * 1 + (profitGap < 3 ? 10 : 0));
-    bank.green = Math.max(0, Math.min(20, 100 - data.di - (data.cc > 40 ? 15 : 0)));
-    bank.yellow = Math.min(15, data.cb > 25 ? 10 : 3);
-    bank.turquoise = 0;
+    bank.beige = data.cp < 10 ? Math.min(30, (10 - data.cp) * 8) : 2;
+    bank.purple = Math.min(12, Math.max(2, 6 + (data.cp < 12 ? 3 : 0) - (data.cb > 30 ? 2 : 0)));
+
+    // Keep Red meaningful, but avoid single-stage collapse by balancing with Blue/Orange/Green.
+    const redBase = 14 + (profitGap > 5 ? 10 : profitGap * 2.2) + (data.cc > 40 ? 4 : 0);
+    const diversificationBias = (data.cb > 25 ? 3 : 0) + (data.ig > 8 ? 2 : 0);
+    bank.red = Math.min(34, Math.max(8, redBase - diversificationBias));
+
+    bank.blue = Math.min(28, Math.max(12, 14 + (data.cc > 40 ? 4 : 0) + (data.cp < 10 ? 3 : 0)));
+    bank.orange = Math.min(30, Math.max(10, (data.cb * 0.8) + (profitGap < 3 ? 9 : 5)));
+    bank.green = Math.min(24, Math.max(8, 16 + (data.di < 35 ? 4 : 0) - (data.cc > 40 ? 5 : 0)));
+    bank.yellow = Math.min(18, Math.max(5, (data.cb > 25 ? 9 : 6) + (data.ig > 10 ? 2 : 0)));
+    bank.turquoise = Math.min(8, Math.max(1, data.ig > 12 ? 4 : 2));
 
     normalizeAndCap(pop);
     normalizeAndCap(bank);

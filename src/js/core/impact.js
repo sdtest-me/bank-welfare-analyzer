@@ -12,6 +12,13 @@
     const spiral = safeResult.spiral || {};
     const prediction = mismatch.predictiveImpact || {};
 
+    const baseImpact =
+      Number.isFinite(safeResult.welfareIndex)
+        ? safeResult.welfareIndex
+        : Number.isFinite(safeResult.score)
+          ? safeResult.score
+          : 50;
+
     const mismatchScore = Number.isFinite(mismatch.mismatchScore) ? mismatch.mismatchScore : 1;
     const riskLevel = typeof mismatch.riskLevel === 'string' ? mismatch.riskLevel : 'high';
 

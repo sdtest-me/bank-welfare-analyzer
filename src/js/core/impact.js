@@ -1,6 +1,11 @@
 (function () {
   const STAGES = ['beige', 'purple', 'red', 'blue', 'orange', 'green', 'yellow', 'turquoise'];
 
+
+  function toFinite(value) {
+    return Number.isFinite(value) ? value : 0;
+  }
+
   function dominantStage(stageMap) {
     const safeMap = stageMap || {};
     return STAGES.reduce((best, stage) => ((safeMap[stage] || 0) > (safeMap[best] || 0) ? stage : best), STAGES[0]);
@@ -20,6 +25,8 @@
         : 50;
 
     const mismatchScore = Number.isFinite(mismatch.mismatchScore) ? mismatch.mismatchScore : 1;
+    const safeMismatch = Math.max(0, Math.min(1, toFinite(mismatchScore)));
+    const heavyMismatch = Math.pow(safeMismatch, 1.4);
     const riskLevel = typeof mismatch.riskLevel === 'string' ? mismatch.riskLevel : 'high';
 
     const bank = spiral.bank || {};
@@ -34,7 +41,7 @@
     const redPenalty = (bank.red || 0) > 25 ? 0.15 : 0;
     const dominantGapPenalty = Math.min(Math.abs(dominantGap) / 40, 1);
     const penalty = Math.min(0.9,
-      0.6 * mismatchScore +
+      0.6 * heavyMismatch +
       0.25 * dominantGapPenalty +
       0.15 * redPenalty
     );

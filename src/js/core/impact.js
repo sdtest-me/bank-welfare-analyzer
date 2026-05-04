@@ -26,7 +26,7 @@
 
     const mismatchScore = Number.isFinite(mismatch.mismatchScore) ? mismatch.mismatchScore : 1;
     const safeMismatch = Math.max(0, Math.min(1, toFinite(mismatchScore)));
-    const heavyMismatch = Math.pow(safeMismatch, 1.4);
+    const heavyMismatch = Math.pow(safeMismatch, 1.5);
     const riskLevel = typeof mismatch.riskLevel === 'string' ? mismatch.riskLevel : 'high';
 
     const bank = spiral.bank || {};
@@ -40,14 +40,17 @@
     const structuralGap = STAGES.reduce((sum, stage) => sum + Math.abs((bank[stage] || 0) - (population[stage] || 0)), 0) / 2;
     const redPenalty = (bank.red || 0) > 25 ? 0.15 : 0;
     const dominantGapPenalty = Math.min(Math.abs(dominantGap) / 40, 1);
+    const structuralGapPenalty = Math.min(structuralGap / 100, 1);
     const penalty = Math.min(0.9,
       0.6 * heavyMismatch +
       0.25 * dominantGapPenalty +
-      0.15 * redPenalty
+      0.15 * redPenalty +
+      0.11 * structuralGapPenalty
     );
+    const mismatchPressure = safeMismatch > 0.30 ? 0.9 : 1;
 
     const impactIndex = Math.max(0, Math.min(100,
-      Math.round(baseImpact * (1 - penalty))
+      Math.round(baseImpact * (1 - penalty) * mismatchPressure)
     ));
 
     let reputationalRiskKey = 'impactRiskLow';

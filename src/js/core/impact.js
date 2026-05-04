@@ -31,9 +31,16 @@
     const redGap = Math.max(0, (bank.red || 0) - (population.red || 0));
     const greenGap = Math.max(0, (population.green || 0) - (bank.green || 0));
     const structuralGap = STAGES.reduce((sum, stage) => sum + Math.abs((bank[stage] || 0) - (population[stage] || 0)), 0) / 2;
+    const redPenalty = (bank.red || 0) > 25 ? 0.15 : 0;
+    const dominantGapPenalty = Math.min(Math.abs(dominantGap) / 40, 1);
+    const penalty = Math.min(0.9,
+      0.6 * mismatchScore +
+      0.25 * dominantGapPenalty +
+      0.15 * redPenalty
+    );
 
     const impactIndex = Math.max(0, Math.min(100,
-      Math.round((mismatchScore * 65 + Math.min(structuralGap, 100) / 100 * 25 + Math.min(Math.abs(dominantGap), 40) / 40 * 10) * 100)
+      Math.round(baseImpact * (1 - penalty))
     ));
 
     let reputationalRiskKey = 'impactRiskLow';

@@ -51,6 +51,38 @@
       .map(line=>JSON.parse(line));
   }
 
+
+  function riskLevelFromImpactIndex(impactIndex){
+    if(impactIndex < 50) return 'high';
+    if(impactIndex < 70) return 'medium';
+    return 'low';
+  }
+
+  function applyFinalRiskOverride(analysis){
+    if(!analysis || typeof window.calculateImpact!=='function') return { analysis, impact:null };
+    const impact=window.calculateImpact(analysis);
+    const mismatch=analysis.mismatch||{};
+    const finalRisk=riskLevelFromImpactIndex(impact.impactIndex);
+
+    mismatch.riskLevel=finalRisk;
+    mismatch.adjustedRiskLevel=finalRisk;
+    impact.reputationalRiskKey=finalRisk==='high' ? 'impactRiskHigh' : finalRisk==='medium' ? 'impactRiskMedium' : 'impactRiskLow';
+
+    if(impact.impactIndex < 60 && mismatch.explanationText){
+      if(typeof mismatch.explanationText.en==='string'){
+        mismatch.explanationText.en=mismatch.explanationText.en
+          .replace('Low mismatch risk under current inputs.', 'Structural misalignment risk present.');
+      }
+      if(typeof mismatch.explanationText.ru==='string'){
+        mismatch.explanationText.ru=mismatch.explanationText.ru
+          .replace('Низкий риск несоответствия при текущих данных.', 'Присутствует риск структурного несоответствия.');
+      }
+    }
+
+    analysis.mismatch=mismatch;
+    return { analysis, impact };
+  }
+
   function doRankBanks(){
     const input=$('rankInput');
     const err=$('rankError');
@@ -68,12 +100,15 @@
         return;
       }
 
-      const ranked=window.analyzeMultipleBanks(banks);
+      const ranked=window.analyzeMultipleBanks(banks).map(item=>{
+        const overridden=applyFinalRiskOverride(item);
+        return { ...item, mismatch: overridden.analysis.mismatch, _impact: overridden.impact };
+      });
       list.innerHTML=ranked.map(item=>{
         const name=(item.data&&item.data.bn)||'Unknown';
         const risk=t.riskLevels[item.mismatch.riskLevel]||item.mismatch.riskLevel;
         const snippet=(item.mismatch.explanationText && (item.mismatch.explanationText[window.i18n.lang]||item.mismatch.explanationText.en)) || '-';
-        const impact=typeof window.calculateImpact==='function' ? window.calculateImpact(item) : null;
+        const impact=item._impact;
         const impactRisk=impact ? (t[impact.reputationalRiskKey] || impact.reputationalRiskKey) : '-';
         const stageGapText=impact
           ? `${t.stages[impact.stageGaps.bankDominant] || impact.stageGaps.bankDominant} vs ${t.stages[impact.stageGaps.populationDominant] || impact.stageGaps.populationDominant} (${impact.stageGaps.dominantGap >= 0 ? '+' : ''}${impact.stageGaps.dominantGap}pp)`
@@ -268,7 +303,8 @@
     const sf=$('scoreFill');sf.style.width=sc+'%';
     sf.style.background=sc<40?'var(--d)':sc<70?'var(--w)':'var(--s)';
 
-    const mismatch = analysis.mismatch;
+    const finalized=applyFinalRiskOverride(analysis);
+    const mismatch = finalized.analysis.mismatch;
     $('mismatchVal').textContent = mismatch.mismatchScore.toFixed(2);
     $('mismatchRiskLevel').textContent = window.i18n.tr[window.i18n.lang].riskLevels[mismatch.riskLevel] || mismatch.riskLevel;
     $('mismatchDriver').textContent = window.i18n.tr[window.i18n.lang].driverLabels[mismatch.primaryDriver] || mismatch.primaryDriver;

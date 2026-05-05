@@ -47,9 +47,6 @@
     return Math.max(0, Math.min(1, value));
   }
 
-  function clamp(value, min, max) {
-    return Math.max(min, Math.min(max, value));
-  }
 
   function calculateMismatch(scoringOutput, esgText) {
     const safeOutput = scoringOutput || {};
@@ -103,24 +100,44 @@
       primaryStage: esgSignal.primaryStage || null
     });
 
-    function calculateAdjustedRiskLevel() {
-      const confidence = clamp01(esgSignal.confidence || 0);
-      const confidenceCentering = confidence - 0.5;
+    function calculateImpactIndexForRisk() {
+      const baseImpact = score;
+      const safeMismatch = clamp01(mismatchScore);
+      const heavyMismatch = Math.pow(safeMismatch, 1.4);
+      const dominantGap = (bank[bankDominant] || 0) - (population[popDominant] || 0);
+      const redPenalty = (bank.red || 0) > 25 ? 0.15 : 0;
+      const dominantGapPenalty = Math.min(Math.abs(dominantGap) / 40, 1);
+      const penalty = Math.min(0.9,
+        0.6 * heavyMismatch +
+        0.25 * dominantGapPenalty +
+        0.15 * redPenalty
+      );
+      const mismatchPressure = safeMismatch > 0.30 ? 0.9 : 1;
 
-      const highThreshold = clamp(0.67 - confidenceCentering * 0.12, 0.55, 0.78);
-      const mediumThreshold = clamp(0.34 - confidenceCentering * 0.08, 0.22, 0.48);
+      return Math.max(0, Math.min(100,
+        Math.round(baseImpact * (1 - penalty) * mismatchPressure)
+      ));
+    }
+
+    function calculateAdjustedRiskLevel() {
+      const impactIndex = calculateImpactIndexForRisk();
 
       let level;
-      if (mismatchScore >= highThreshold) level = 'high';
-      else if (mismatchScore >= mediumThreshold) level = 'medium';
-      else level = 'low';
+      if (impactIndex > 70) level = 'low';
+      else if (impactIndex >= 50) level = 'medium';
+      else level = 'high';
+
+      if (level === 'low' && (mismatchScore > 0.35 || impactIndex < 60)) {
+        level = 'medium';
+      }
 
       return {
         level,
         thresholds: {
-          high: highThreshold,
-          medium: mediumThreshold
-        }
+          high: 49,
+          medium: 70
+        },
+        impactIndex
       };
     }
 
@@ -195,8 +212,8 @@
           ru: 'Население сильнее опирается на взаимопомощь, чем банк проявляет эмпатию.'
         },
         stageMismatch: {
-          en: 'Bank and population value-stage profiles are structurally misaligned.',
-          ru: 'Профили ценностных стадий банка и населения структурно не совпадают.'
+          en: 'Bank and population value-stage profiles show deep structural misalignment across stages.',
+          ru: 'Профили ценностных стадий банка и населения демонстрируют глубокое структурное рассогласование.'
         },
         welfareScorePenalty: {
           en: 'Core welfare indicators reduce trust in inclusive impact.',
@@ -219,7 +236,7 @@
         ? { en: 'High risk of extractive mismatch.', ru: 'Высокий риск экстрактивного несоответствия.' }
         : severity === 'medium'
           ? { en: 'Moderate misalignment risk that needs monitoring.', ru: 'Умеренный риск несоответствия, требуется мониторинг.' }
-          : { en: 'Low mismatch risk under current inputs.', ru: 'Низкий риск несоответствия при текущих данных.' };
+          : { en: 'Current indicators suggest limited immediate mismatch exposure.', ru: 'Текущие индикаторы указывают на ограниченную немедленную экспозицию несоответствия.' };
 
       return {
         en: `${riskText.en} ${uncertaintyText.en} Main reason: ${labels[primaryDriver].en} Mismatch score ${mismatchScore.toFixed(2)}. ESG confidence ${confidencePct}%. Driver confidence ${Math.round(driverConfidence * 100)}%. Dominant stages: bank ${bankDominant}, population ${popDominant}.`,

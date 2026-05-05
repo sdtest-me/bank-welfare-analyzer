@@ -40,6 +40,17 @@
       purple: 'Transition from tradition-driven patterns to transparent, data-backed lending governance.'
     };
 
+    const impactIndex = Number((safeResult.impact || {}).impactIndex);
+    const hasImpact = Number.isFinite(impactIndex);
+
+    const tieredStrategicRecommendation = !hasImpact
+      ? 'Maintain a balanced transition posture until impact data is available, then align actions to measured borrower outcomes.'
+      : impactIndex > 70
+        ? 'Stable alignment detected: reinforce current strategy with disciplined monitoring and incremental borrower-outcome improvements.'
+        : impactIndex >= 50
+          ? 'Transitional alignment detected: prioritize targeted portfolio adjustments to improve welfare alignment and execution consistency.'
+          : 'Structural risk detected: execute a structural-risk correction plan focused on affordability, governance, and stage-realignment.';
+
     const riskMitigation = [];
     if (esgAlignmentGap >= 20) {
       riskMitigation.push('High ESG alignment gap detected: institute quarterly audit of promised ESG outcomes vs borrower experience.');
@@ -63,7 +74,7 @@
       strategicShift: {
         dominantBankStage: bankDominant,
         dominantPopulationStage: populationDominant,
-        recommendation: strategicByStage[bankDominant] || strategicByStage.orange
+        recommendation: `${strategicByStage[bankDominant] || strategicByStage.orange} ${tieredStrategicRecommendation}`
       },
       riskMitigation
     };

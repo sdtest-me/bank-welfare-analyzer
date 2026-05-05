@@ -57,9 +57,6 @@
         analyzed: toComparableResult(result)
       }))
       .sort((a, b) => {
-        const riskDelta = riskPriority[a.analyzed.mismatch.riskLevel] - riskPriority[b.analyzed.mismatch.riskLevel];
-        if (riskDelta !== 0) return riskDelta;
-
         const aImpact = Number(a.analyzed.impact && a.analyzed.impact.impactIndex);
         const bImpact = Number(b.analyzed.impact && b.analyzed.impact.impactIndex);
         const safeAImpact = Number.isFinite(aImpact) ? aImpact : 0;
@@ -69,6 +66,9 @@
 
         const mismatchDelta = a.analyzed.mismatch.mismatchScore - b.analyzed.mismatch.mismatchScore;
         if (mismatchDelta !== 0) return mismatchDelta;
+
+        const riskDelta = riskPriority[a.analyzed.mismatch.riskLevel] - riskPriority[b.analyzed.mismatch.riskLevel];
+        if (riskDelta !== 0) return riskDelta;
 
         return a.originalIndex - b.originalIndex;
       })

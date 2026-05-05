@@ -16,6 +16,8 @@
     const bankDominant = dominantStage(bank);
     const populationDominant = dominantStage(population);
     const driver = mismatch.primaryDriver || 'stageMismatch';
+    const impact = typeof window.calculateImpact === 'function' ? window.calculateImpact(safeResult) : null;
+    const impactIndex = impact && Number.isFinite(impact.impactIndex) ? impact.impactIndex : null;
 
     const redGap = Math.max(0, (bank.red || 0) - (population.red || 0));
     const greenGap = Math.max(0, (population.green || 0) - (bank.green || 0));
@@ -28,6 +30,12 @@
       welfareScorePenalty: 'Stabilize core welfare-sensitive indicators by easing effective borrowing costs and reducing extractive terms.',
       esgClaimMismatch: 'Close the ESG trust gap: align public ESG claims with measurable borrower-level practices and disclosures.'
     };
+
+    const impactTierAction = impactIndex > 70
+      ? 'Preserve stable alignment with quarterly calibration of borrower outcomes and product fit.'
+      : impactIndex >= 50
+        ? 'Treat current alignment as transitional: run monthly correction cycles on affordability, communication, and collections behavior.'
+        : 'Activate structural-risk response: redesign portfolio incentives and governance before additional expansion.';
 
     const strategicByStage = {
       red: 'Shift from Red-dominant extraction to Orange/Green value creation through productive lending and inclusive growth targets.',
@@ -58,12 +66,12 @@
     return {
       shortTermActions: [
         shortTermByDriver[driver] || shortTermByDriver.stageMismatch,
-        `Primary mismatch driver to address first: ${driver}.`
+        `Primary mismatch driver to address first: ${driver}. ${impactTierAction}`
       ],
       strategicShift: {
         dominantBankStage: bankDominant,
         dominantPopulationStage: populationDominant,
-        recommendation: strategicByStage[bankDominant] || strategicByStage.orange
+        recommendation: `${strategicByStage[bankDominant] || strategicByStage.orange} ${impactTierAction}`
       },
       riskMitigation
     };

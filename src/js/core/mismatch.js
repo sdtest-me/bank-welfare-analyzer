@@ -260,89 +260,94 @@
       }
       return {
         qualifier: { en: 'could potentially', ru: 'потенциально может' },
-        context: { en: 'Signal confidence is limited, so treat this as an early warning.', ru: 'Уверенность сигнала ограниченная, воспринимайте это как ранний сигнал.' }
+        context: { en: 'Signal confidence is limited, so treat this as a provisional signal.', ru: 'Уверенность сигнала ограниченная, воспринимайте это как предварительный сигнал.' }
       };
     }
 
     function buildPredictiveImpact(primaryDriver, driverConfidence) {
       const stageGapSigned = (bank[bankDominant] || 0) - (population[popDominant] || 0);
-      const tensionLevel = mismatchScore >= 0.67 ? 'high' : mismatchScore >= 0.34 ? 'medium' : 'low';
+      const impactIndex = adjustedRisk.impactIndex;
+      const dominantGapAbs = Math.abs(stageGapSigned);
+      const structuralGapValue = structuralGap;
       const stageContext = {
         en: `Bank dominant stage ${bankDominant} (${bank[bankDominant] || 0}%) vs population ${popDominant} (${population[popDominant] || 0}%), gap ${Math.round(stageGapSigned)}pp.`,
         ru: `Доминирующая стадия банка ${bankDominant} (${bank[bankDominant] || 0}%) против населения ${popDominant} (${population[popDominant] || 0}%), разрыв ${Math.round(stageGapSigned)} п.п.`
       };
+
+      const stabilityTone = impactIndex > 70
+        ? {
+          shortTerm: { en: 'Current signals suggest stable alignment with manageable stress pockets.', ru: 'Текущие сигналы указывают на устойчивое выравнивание с управляемыми зонами стресса.' },
+          longTerm: { en: 'The trajectory is broadly stable if corrective discipline is maintained.', ru: 'Траектория в целом устойчива при сохранении корректирующей дисциплины.' }
+        }
+        : impactIndex >= 50
+          ? {
+            shortTerm: { en: 'Signals indicate a transitional and somewhat unstable alignment period.', ru: 'Сигналы показывают переходный и частично нестабильный период выравнивания.' },
+            longTerm: { en: 'Without calibration, transitional instability can harden into persistent drag.', ru: 'Без калибровки переходная нестабильность может закрепиться как постоянное ограничение.' }
+          }
+          : {
+            shortTerm: { en: 'Signals point to structural risk and active welfare-pressure transmission.', ru: 'Сигналы указывают на структурный риск и активную передачу давления на благосостояние.' },
+            longTerm: { en: 'Structural risk can compound into entrenched exclusion and trust erosion.', ru: 'Структурный риск может накапливаться в закрепленное исключение и эрозию доверия.' }
+          };
+
+      const driverNarratives = [];
+      if (dominantGapAbs >= 15) {
+        driverNarratives.push({
+          shortTerm: { en: 'Cultural and power misalignment is visible in frontline lending interactions.', ru: 'Культурное и силовое несоответствие заметно во фронтальных взаимодействиях кредитования.' },
+          longTerm: { en: 'If left unresolved, cultural-power distance can weaken institutional legitimacy.', ru: 'Если не устранить, культурно-силовая дистанция может ослабить институциональную легитимность.' }
+        });
+      }
+      if (structuralGapValue >= 24) {
+        driverNarratives.push({
+          shortTerm: { en: 'Systemic misalignment across stages is already reducing policy fit.', ru: 'Системное несоответствие между стадиями уже снижает соответствие политик контексту.' },
+          longTerm: { en: 'Persistent systemic misalignment may lock credit strategy into low-adaptation cycles.', ru: 'Длительное системное несоответствие может зафиксировать кредитную стратегию в циклах низкой адаптации.' }
+        });
+      }
+      if (mismatchScore > 0.35) {
+        driverNarratives.push({
+          shortTerm: { en: 'Behavioral friction is increasing execution cost across borrower journeys.', ru: 'Поведенческое трение повышает стоимость исполнения на пути заемщика.' },
+          longTerm: { en: 'Repeated behavioral friction can depress repayment culture and cooperative trust.', ru: 'Повторяющееся поведенческое трение может ослабить культуру возврата и кооперативное доверие.' }
+        });
+      }
+
       const driverImpact = {
         redPressure: {
-          shortTerm: {
-            en: 'higher repayment pressure and faster debt rollover among vulnerable households',
-            ru: 'рост давления на погашение и ускорение перекредитования у уязвимых домохозяйств'
-          },
-          longTerm: {
-            en: 'rising social resentment and weaker trust in formal finance channels',
-            ru: 'рост социального раздражения и снижение доверия к формальным финансовым каналам'
-          }
+          shortTerm: { en: 'Repayment pressure is likely to intensify among vulnerable households.', ru: 'Давление на погашение, вероятно, усилится у уязвимых домохозяйств.' },
+          longTerm: { en: 'Sustained pressure can convert financial strain into social backlash.', ru: 'Устойчивое давление может превратить финансовое напряжение в социальную ответную реакцию.' }
         },
         empathyGap: {
-          shortTerm: {
-            en: 'more reliance on informal mutual aid to cover loan-servicing shocks',
-            ru: 'усиление опоры на неформальную взаимопомощь для покрытия кредитных шоков'
-          },
-          longTerm: {
-            en: 'exclusion of fragile borrowers from healthy credit cycles and slower mobility',
-            ru: 'исключение хрупких заемщиков из здоровых кредитных циклов и замедление мобильности'
-          }
+          shortTerm: { en: 'Borrowers may shift toward informal coping channels during shocks.', ru: 'Заемщики могут смещаться к неформальным каналам адаптации во время шоков.' },
+          longTerm: { en: 'Fragile segments may be excluded from healthy credit mobility pathways.', ru: 'Хрупкие сегменты могут быть исключены из здоровых траекторий кредитной мобильности.' }
         },
         stageMismatch: {
-          shortTerm: {
-            en: 'policy communication friction: bank products fit bank culture better than social needs',
-            ru: 'трение в коммуникации: продукты банка лучше соответствуют культуре банка, чем нуждам общества'
-          },
-          longTerm: {
-            en: 'persistent institutional mismatch that can lock the system into low-welfare credit patterns',
-            ru: 'устойчивое институциональное несоответствие, закрепляющее низко-благосостоянные кредитные паттерны'
-          }
+          shortTerm: { en: 'Product logic and social context are diverging in implementation.', ru: 'Логика продуктов и социальный контекст расходятся в реализации.' },
+          longTerm: { en: 'Institutional mismatch may normalize low-welfare lending equilibrium.', ru: 'Институциональное несоответствие может нормализовать низко-благосостоянное кредитное равновесие.' }
         },
         welfareScorePenalty: {
-          shortTerm: {
-            en: 'current welfare baseline limiting immediate inclusive impact of new lending',
-            ru: 'текущая база благосостояния, ограничивающая немедленный инклюзивный эффект нового кредитования'
-          },
-          longTerm: {
-            en: 'Without welfare recovery, credit expansion risks amplifying inequality over time.',
-            ru: 'Без восстановления благосостояния расширение кредитования со временем усиливает неравенство.'
-          }
+          shortTerm: { en: 'Weak welfare baseline is constraining inclusive impact of new credit.', ru: 'Слабая база благосостояния ограничивает инклюзивный эффект нового кредита.' },
+          longTerm: { en: 'Without welfare recovery, credit growth may amplify inequality dynamics.', ru: 'Без восстановления благосостояния рост кредита может усилить динамику неравенства.' }
         },
         esgClaimMismatch: {
-          shortTerm: {
-            en: 'Credibility gap between ESG messaging and borrower experience may widen quickly.',
-            ru: 'Разрыв доверия между ESG-риторикой и опытом заемщиков может быстро расшириться.'
-          },
-          longTerm: {
-            en: 'Sustained claim-behavior inconsistency may erode brand legitimacy and reform capacity.',
-            ru: 'Длительное расхождение заявлений и поведения подрывает легитимность бренда и способность к реформам.'
-          }
+          shortTerm: { en: 'Credibility tension between ESG messaging and borrower experience can widen.', ru: 'Напряжение доверия между ESG-коммуникацией и опытом заемщика может расширяться.' },
+          longTerm: { en: 'Claim-behavior divergence may erode reform capacity and brand trust.', ru: 'Расхождение заявлений и поведения может подорвать реформаторский потенциал и доверие к бренду.' }
         }
       };
 
       const selected = driverImpact[primaryDriver] || driverImpact.stageMismatch;
       const tone = confidenceTone(driverConfidence);
-      const riskPrefix = tensionLevel === 'high'
-        ? { en: 'Near-term risk is likely elevated.', ru: 'Краткосрочный риск, вероятно, повышен.' }
-        : tensionLevel === 'medium'
-          ? { en: 'Near-term risk may be manageable but active.', ru: 'Краткосрочный риск может быть управляемым, но активным.' }
-          : { en: 'Near-term risk could be limited under current inputs.', ru: 'Краткосрочный риск может быть ограничен при текущих данных.' };
+      const driverOverlay = driverNarratives[0] || null;
 
       return {
         shortTerm: {
-          en: `${riskPrefix.en} This scenario ${tone.qualifier.en} lead to ${selected.shortTerm.en}. ${tone.context.en} ${stageContext.en}`,
-          ru: `${riskPrefix.ru} Этот сценарий ${tone.qualifier.ru} привести к следующему: ${selected.shortTerm.ru}. ${tone.context.ru} ${stageContext.ru}`
+          en: `${stabilityTone.shortTerm.en} ${selected.shortTerm.en}${driverOverlay ? ` ${driverOverlay.shortTerm.en}` : ''} ${tone.context.en} ${stageContext.en}`,
+          ru: `${stabilityTone.shortTerm.ru} ${selected.shortTerm.ru}${driverOverlay ? ` ${driverOverlay.shortTerm.ru}` : ''} ${tone.context.ru} ${stageContext.ru}`
         },
         longTerm: {
-          en: `Over time, this scenario ${tone.qualifier.en} contribute to ${selected.longTerm.en} ${tone.context.en} ${stageContext.en}`,
-          ru: `Со временем этот сценарий ${tone.qualifier.ru} привести к следующему: ${selected.longTerm.ru} ${tone.context.ru} ${stageContext.ru}`
+          en: `${stabilityTone.longTerm.en} ${selected.longTerm.en}${driverOverlay ? ` ${driverOverlay.longTerm.en}` : ''} ${tone.context.en} ${stageContext.en}`,
+          ru: `${stabilityTone.longTerm.ru} ${selected.longTerm.ru}${driverOverlay ? ` ${driverOverlay.longTerm.ru}` : ''} ${tone.context.ru} ${stageContext.ru}`
         }
       };
     }
+
 
     const driverInference = inferPrimaryDriver();
     const primaryDriver = driverInference.driver;

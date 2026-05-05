@@ -24,6 +24,7 @@
         ? safeResult.score
         : 50;
 
+    const hasMismatch = Number.isFinite(result?.mismatchScore);
     const mismatchScore = Number.isFinite(mismatch.mismatchScore) ? mismatch.mismatchScore : 1;
     const safeMismatch = Math.max(0, Math.min(1, toFinite(mismatchScore)));
     const heavyMismatch = Math.pow(safeMismatch, 1.4);
@@ -46,8 +47,11 @@
       0.15 * redPenalty
     );
 
+    const mismatchPressure =
+      hasMismatch && safeMismatch > 0.30 ? 0.9 : 1;
+
     const impactIndex = Math.max(0, Math.min(100,
-      Math.round(baseImpact * (1 - penalty))
+      Math.round(baseImpact * (1 - penalty) * mismatchPressure)
     ));
 
     let reputationalRiskKey = 'impactRiskLow';

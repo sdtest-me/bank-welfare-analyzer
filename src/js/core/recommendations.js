@@ -42,10 +42,10 @@
 
     const rawImpact = (safeResult.impact || {}).impactIndex;
 
-const impactIndex =
-  rawImpact === null || rawImpact === undefined || rawImpact === ''
-    ? null
-    : Number(rawImpact);
+    const impactIndex =
+      rawImpact === null || rawImpact === undefined || rawImpact === ''
+        ? null
+        : Number(rawImpact);
     const hasImpact = Number.isFinite(impactIndex);
 
     const tieredStrategicRecommendation = !hasImpact

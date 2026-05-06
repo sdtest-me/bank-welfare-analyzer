@@ -40,7 +40,12 @@
       purple: 'Transition from tradition-driven patterns to transparent, data-backed lending governance.'
     };
 
-    const impactIndex = Number((safeResult.impact || {}).impactIndex);
+    const rawImpact = (safeResult.impact || {}).impactIndex;
+
+const impactIndex =
+  rawImpact === null || rawImpact === undefined || rawImpact === ''
+    ? null
+    : Number(rawImpact);
     const hasImpact = Number.isFinite(impactIndex);
 
     const tieredStrategicRecommendation = !hasImpact

@@ -1,8 +1,7 @@
-````markdown
 # Bank Welfare Analyzer — Architecture Specification
 
-Version: v1  
-Status: Active  
+Version: v2
+Status: Active
 Repository: `sdtest-me/bank-welfare-analyzer`
 
 ---
@@ -29,475 +28,333 @@ The architecture is intentionally modular even when deployed as a static fronten
 
 ---
 
-## 2. Core System Layers
+## 2. Core Analytical Engines
 
-The system consists of five analytical layers:
+The system is built around five interdependent layers that execute in sequence. Each layer depends on the outputs of the previous one; the Calibration System operates across all layers to prevent drift.
 
-| Layer | Purpose |
-|---|---|
-| Scoring Engine | Calculates welfare-oriented baseline metrics |
-| Mismatch Engine | Detects structural misalignment between bank and population |
-| Impact Engine | Produces decision-grade impact estimation |
-| Narrative Engine | Converts analytical outputs into human-readable strategic interpretation |
-| Calibration System | Stabilizes model behavior and prevents drift |
+| Engine | Input | Output | Role |
+|---|---|---|---|
+| Scoring Engine | Raw economic indicators | `welfareScore` 0–100 | Baseline welfare evaluation of the bank |
+| Mismatch Engine | vMeme stage distributions (bank + population) | `mismatchScore` 0–1, `stageGap` | Structural divergence between bank behavior and population conditions |
+| Impact Engine | `welfareScore`, `mismatchScore`, ESG quality, confidence | `impactIndex` 0–100, tier | Unified decision-grade metric combining performance and alignment |
+| Narrative Engine | All engine outputs + dominant stage pair | Text explanations, recommendations | Translates analytical outputs into interpretable strategic language |
+| Calibration System | All engine outputs | Adjusted score distributions | Prevents compression, repetition, and drift across the full pipeline |
 
 ---
 
 ## 3. Scoring Engine
 
-## Purpose
+Produces the baseline welfare score (`score: 0–100`) and Spiral Dynamics stage distributions for both bank and population. These two outputs are the foundation for all downstream engines.
 
-The Scoring Engine produces the baseline welfare-oriented evaluation of a bank.
+### Outputs
 
-It converts raw economic indicators into normalized analytical signals.
-
----
-
-## Inputs
-
-Typical inputs:
-
-- bank profit growth
-- population income growth
-- poverty rate
-- business loan share
-- consumer loan share
-- dividend payout ratio
-- average interest rate
-- ESG indicators
-- capital adequacy
-- GDP per capita
-
----
-
-## Primary Output
-
-```text
-welfareScore: 0–100
-````
-
----
-
-## Design Principles
-
-### 1. Welfare-first
-
-The engine prioritizes:
-
-* borrower outcomes,
-* productive lending,
-* systemic stability,
-
-instead of shareholder profitability alone.
-
----
-
-### 2. Penalty-based logic
-
-The score decreases when:
-
-* extractive lending rises,
-* consumer debt dominates,
-* inequality increases,
-* ESG credibility weakens.
-
----
-
-### 3. Normalization
-
-All intermediate values are normalized before aggregation.
-
-This prevents:
-
-* single-variable domination,
-* runaway weighting,
-* unstable outputs.
-
----
-
-## Key Functions
-
-Typical functions:
-
-```text
-calcScore()
-normalizeMetric()
-calculateESGAlignment()
+```
+score: 0–100          (welfare score, via calcScore())
+spiral.bank{}         (stage distribution, via calculateSpiralStages())
+spiral.population{}   (stage distribution, via calculateSpiralStages())
 ```
 
----
+### Input Variables
 
-## Failure Handling
+| Variable | Meaning |
+|---|---|
+| `pg` | Bank profit growth (%) |
+| `ig` | Population income growth (%) |
+| `cc` | Consumer credit concentration (%) |
+| `pr` | Poverty rate (%) |
+| `cb` | Business loan share (%) |
+| `im` | Average deposit rate (%) |
+| `ix` | Average lending rate (%) |
+| `di` | Dividend payout ratio (%) |
+| `cp` | Capital adequacy ratio (%) |
+| `co2` | ESG/CO₂ proxy (0–100) |
 
-The engine must:
+### Welfare Score Formula (`calcScore`)
 
-* reject NaN propagation,
-* clamp invalid ranges,
-* handle missing values explicitly,
-* expose uncertainty when inputs are incomplete.
+```javascript
+gap = pg / max(ig, 0.1)
+gf  = max(0, 100 − gap × 3)         // profit-income gap factor  — weight 0.30
+cf  = 100 − cc                        // consumer credit factor    — weight 0.25
+pf  = 100 − pr                        // poverty factor            — weight 0.20
+ar  = (im + ix) / 2
+inf = max(0, 100 − (ar − 10) × 2)    // interest rate factor      — weight 0.15
+df  = 100 − di × 0.5                  // dividend factor           — weight 0.10
+
+score = clamp(round(gf×0.30 + cf×0.25 + pf×0.20 + inf×0.15 + df×0.10), 0, 100)
+```
+
+### Stage Distribution (`calculateSpiralStages`)
+
+Stage distributions are computed as signal-driven formulas, not fixed weights. Each stage signal is a function of input variables; signals are then normalized so that each distribution (bank and population) sums to 100%.
+
+**Normalization:** `normalizeAndCap(obj, max=40)` — iterative redistribution ensuring no single stage exceeds 40%, with integer rounding and remainder correction.
+
+**Population:** Branches on `cc > 40` (high consumer credit concentration) vs. general case. Key drivers: `pr` (poverty rate), `gd` (GDP per capita), `ig` (income growth).
+
+**Bank:** Stage signals are computed competitively with `competitivePower = 1.7`:
+
+```javascript
+redSignal    = cc×0.95 + interestSpread×2.4 + profitGap×3.2 − cb×0.4 − ig×0.5
+orangeSignal = pg×0.45 + cb×1.28 + (profitGap < 3 ? 8 : 3) − cc×0.4
+blueSignal   = capitalDiscipline×2.2 + (cp > 35 ? 11 : 4) − interestSpread×0.75
+greenSignal  = welfareSignal×1.5 + ig×1.35 + (100−di)×0.3 − cc×0.45
+
+bank.red    = clamp(pow(redSignal/20,    1.7) × 10 + 6,  6, 38)
+bank.orange = clamp(pow(orangeSignal/25, 1.7) × 10 + 4,  6, 35)
+bank.blue   = clamp(pow(blueSignal/21,   1.7) × 10 + 5,  7, 37)
+bank.green  = clamp(pow(greenSignal/24,  1.7) × 10 + 5,  6, 37)
+```
+
+### Design Principles
+
+**Welfare-first:** The score penalizes extractive profit gaps, high consumer debt concentration, poverty, and excessive dividends — not just raw profitability.
+
+**Competitive stage dynamics:** Bank stage signals compete against each other with a power amplifier (`1.7`), creating decisive peaks rather than flat distributions.
+
+### Key Functions
+
+```
+calcScore(data)
+calculateSpiralStages(data)
+normalizeAndCap(obj, max=40)
+```
 
 ---
 
 ## 4. Mismatch Engine
 
-## Purpose
+The system's central diagnostic layer. Measures structural divergence between the bank behavioral profile and population life conditions. Takes `score` and `spiral` from the Scoring Engine plus optional ESG text as input.
 
-The Mismatch Engine measures structural divergence between:
+### Mismatch Score Formula (`calculateMismatch`)
 
-* bank behavioral profile,
-* population life conditions.
+```javascript
+redGap       = max(0, bank.red − population.red)
+greenGap     = max(0, population.green − bank.green)
+structuralGap = Σ |bank[s] − population[s]| / 2   // over all 8 stages
+stageGap     = |bank[bankDominant] − population[popDominant]|
 
-This is the system’s central diagnostic layer.
+claimsPenalty = (esgClaimsHigh && bank.red ≥ 25 && bank.green ≤ 10) ? 0.2 : 0
+scorePenalty  = (100 − score) / 100
 
----
+baseStagePressure = (redGap/40)×0.4 + (greenGap/40)×0.3
+structuralPressure = (structuralGap/100)×0.2
+scorePressure      = scorePenalty×0.1
+heavyGapBoost      = clamp01(((redGap + greenGap + stageGap) / 120) ^ 1.4)
+spreadFactor       = clamp01(((structuralGap/100) + (stageGap/50)) / 2)
 
-## Conceptual Basis
-
-The model uses Spiral Dynamics-inspired stage distributions.
-
-The engine compares:
-
-```text
-bankStages[]
-vs
-populationStages[]
+mismatchScore = clamp01(
+  baseStagePressure + structuralPressure + scorePressure
+  + claimsPenalty + heavyGapBoost×0.14 + spreadFactor×0.08
+)
 ```
 
----
+### Output
 
-## Main Output
-
-```text
-mismatchScore: 0.00–1.00
+```
+mismatchScore: 0.000–1.000   (3 decimal places)
+riskLevel: 'low' | 'medium' | 'high'
+primaryDriver: 'redPressure' | 'empathyGap' | 'stageMismatch' | 'welfareScorePenalty' | 'esgClaimMismatch'
+driverConfidence: 0–1
+explanationText: { en, ru }
+predictiveImpact: { shortTerm: { en, ru }, longTerm: { en, ru } }
 ```
 
----
+### Risk Level Assignment
 
-## Interpretation
+Risk level is derived from `impactIndex` (computed internally):
 
-| Range     | Interpretation        |
-| --------- | --------------------- |
-| 0.00–0.15 | Strong alignment      |
-| 0.16–0.35 | Transitional mismatch |
-| 0.36–1.00 | Structural mismatch   |
+```
+impactIndex > 70  → 'low'
+impactIndex ≥ 50  → 'medium'
+impactIndex < 50  → 'high'
 
----
-
-## Dominant Stage Analysis
-
-The engine identifies:
-
-* dominant bank stage,
-* dominant population stage,
-* stage gap,
-* direction of pressure.
-
-Example:
-
-```text
-Bank: RED
-Population: BEIGE
+// Override: low → medium if mismatchScore > 0.35 or impactIndex < 60
 ```
 
-This represents extractive asymmetry.
+Tension level for narrative branching:
 
----
-
-## Structural Logic
-
-Mismatch is not purely numerical.
-
-The engine also evaluates:
-
-* stage incompatibility,
-* social pressure asymmetry,
-* institutional friction,
-* welfare sustainability.
-
----
-
-## Important Constraint
-
-Stage distributions must:
-
-```text
-sum = 100%
+```
+mismatchScore ≥ 0.67 → 'high'
+mismatchScore ≥ 0.34 → 'medium'
+otherwise             → 'low'
 ```
 
-and remain normalized after all transformations.
+### Interpretation
+
+| mismatchScore | riskLevel | Interpretation |
+|---|---|---|
+| < 0.34 | low | Limited immediate mismatch exposure |
+| 0.34–0.66 | medium | Moderate misalignment, active monitoring required |
+| ≥ 0.67 | high | High risk of extractive mismatch |
+
+### Dominant Stage Analysis
+
+The engine identifies `bankDominant` and `populationDominant` (argmax of each distribution), then computes `redGap`, `greenGap`, and `structuralGap` as the primary diagnostic signals. The `primaryDriver` is inferred by ranking five weighted factor scores; if the margin between top and second driver is below the ambiguity floor (`0.085`), the engine defaults to `stageMismatch`.
+
+### ESG Signal Integration
+
+When ESG text is provided, `mapValuesToBehavior()` maps it to detected vMeme stages. If the bank claims high ESG stages (green/yellow/turquoise) but has `bank.red ≥ 25` and `bank.green ≤ 10`, a `claimsPenalty = 0.2` is added to the mismatch score.
+
+### Key Functions
+
+```
+calculateMismatch(scoringOutput, esgText)
+parseEsgSignal(esgText)
+inferPrimaryDriver()
+buildExplanationText(primaryDriver, driverConfidence)
+buildPredictiveImpact(primaryDriver, driverConfidence)
+```
 
 ---
 
 ## 5. Impact Engine
 
-## Purpose
+Combines welfare performance and structural alignment into a single decision-grade metric (`impactIndex`). Takes the full result object from `analyzeBank()` — including `welfareIndex` / `score`, `mismatch`, and `spiral` — as input.
 
-The Impact Engine converts:
+### Output
 
-* welfare score,
-* mismatch score,
-* ESG quality,
-* confidence signals,
-
-into a unified strategic impact metric.
-
----
-
-## Main Output
-
-```text
+```
 impactIndex: 0–100
+reputationalRiskKey: 'impactRiskLow' | 'impactRiskMedium' | 'impactRiskHigh'
+stageGaps: { bankDominant, populationDominant, dominantGap, redGap, greenGap, structuralGap }
+prediction: { shortTerm, longTerm }
 ```
 
----
+### Impact Index Formula (`calculateImpact`)
 
-## Why It Exists
+```javascript
+baseImpact   = welfareIndex ?? score ?? 50
+safeMismatch = clamp(mismatchScore, 0, 1)
+heavyMismatch = pow(safeMismatch, 1.4)
 
-The welfare score alone was insufficient because:
+redPenalty        = bank.red > 25 ? 0.15 : 0
+dominantGapPenalty = min(|dominantGap| / 40, 1)
 
-* banks could score moderately while remaining structurally extractive,
-* mismatch risk was underweighted,
-* narratives became inconsistent.
+penalty = min(0.9,
+  0.6 × heavyMismatch +
+  0.25 × dominantGapPenalty +
+  0.15 × redPenalty
+)
 
-The Impact Engine resolves this.
+mismatchPressure = (mismatchScore > 0.30) ? 0.9 : 1.0
 
----
-
-## Impact Philosophy
-
-Impact represents:
-
-```text
-real-world structural effect
+impactIndex = clamp(round(baseImpact × (1 − penalty) × mismatchPressure), 0, 100)
 ```
 
-not cosmetic ESG performance.
+### Strategic Tiers
 
----
+| impactIndex | Tier | riskLevel |
+|---|---|---|
+| > 70 | Stable alignment | low |
+| 50–70 | Transitional alignment | medium |
+| < 50 | Structural risk | high |
 
-## Inputs
+### Reputational Risk Assignment
 
-The engine combines:
+```
+riskLevel = 'high'   OR  mismatchScore ≥ 0.67  OR  redGap ≥ 18  → impactRiskHigh
+riskLevel = 'medium' OR  mismatchScore ≥ 0.34  OR  redGap ≥ 10  OR  greenGap ≥ 10  → impactRiskMedium
+otherwise → impactRiskLow
+```
 
-* welfareScore
-* mismatchScore
-* ESG alignment
-* dominant stage asymmetry
-* confidence modifiers
-* risk pressure multipliers
+### Critical Design Rules
 
----
+1. The penalty is dominated by `heavyMismatch` (weight 0.6) — high mismatch compresses impact even with strong welfare scores.
+2. `bank.red > 25` triggers an additional flat penalty of 0.15, making extractive-dominant banks structurally disadvantaged.
+3. `mismatchPressure = 0.9` applies a global 10% compression once `mismatchScore > 0.30`.
+4. `baseImpact` falls back to `score` if `welfareIndex` is absent, and to `50` if both are missing — ensuring no null inflation.
 
-## Strategic Tiers
+### Key Functions
 
-| Impact Index | Tier                   |
-| ------------ | ---------------------- |
-| 70–100       | Stable alignment       |
-| 50–69        | Transitional alignment |
-| 0–49         | Structural risk        |
-
----
-
-## Critical Design Rule
-
-Low mismatch alone cannot produce high impact.
-
-Likewise:
-
-high welfare without social alignment cannot produce stable impact.
-
----
-
-## Failure Protection
-
-The engine must:
-
-* clamp mismatch before exponentiation,
-* prevent null coercion,
-* expose uncertainty,
-* avoid fallback escalation caused by missing values.
+```
+calculateImpact(result)
+dominantStage(stageMap)
+```
 
 ---
 
 ## 6. Narrative Engine
 
-## Purpose
+Transforms analytical outputs into readable explanations, strategic interpretations, and actionable recommendations. Without narratives, users cannot interpret scores quickly, analytical trust collapses, and the platform's decision-grade value proposition weakens.
 
-The Narrative Engine transforms analytical outputs into:
-
-* readable explanations,
-* strategic interpretations,
-* actionable recommendations.
-
----
-
-## Why It Matters
-
-Without narratives:
-
-* users cannot interpret outputs quickly,
-* analytical trust collapses,
-* conversion potential weakens.
-
-The Narrative Engine is therefore both:
-
-* analytical,
-* and commercial.
-
----
+The Narrative Engine is both an analytical layer and a user-facing communication layer. It is the primary surface through which the system's institutional diagnostics become legible to regulators, ESG analysts, and decision-makers.
 
 ## 7. Narrative Architecture
 
-The narrative system consists of:
+| Layer | Purpose |
+|---|---|
+| Risk Narrative | Explains the nature and source of institutional danger |
+| Impact Narrative | Describes the social effect on population welfare |
+| Recommendation Layer | Suggests concrete strategic actions for the institution |
+| Strategic Shift Layer | Describes the transformation direction required for realignment |
+| Mitigation Layer | Identifies paths to reduce systemic risk without full structural change |
 
-| Layer                 | Purpose                            |
-| --------------------- | ---------------------------------- |
-| Risk Narrative        | Explains institutional danger      |
-| Impact Narrative      | Explains social effect             |
-| Recommendation Layer  | Suggests actions                   |
-| Strategic Shift Layer | Describes transformation direction |
-| Mitigation Layer      | Reduces systemic risk              |
+Narrative text is generated using prompt templates defined in `/prompts/narratives/`. Each tier (Stable / Transitional / Structural Risk) has a dedicated prompt variant selected based on `impactIndex` tier, dominant stage pair, `mismatchScore` range, and confidence level.
 
----
+### Design Rules
 
-## Design Rules
+Narratives must reflect actual metric values, avoid generic repetition, and differentiate meaningfully across tiers. The language must be calibrated to the specific stage pair driving mismatch — a RED/BEIGE divergence calls for different framing than an ORANGE/PURPLE divergence.
 
-Narratives must:
+Example hard constraint:
 
-* reflect actual metrics,
-* avoid generic repetition,
-* adapt to mismatch drivers,
-* differentiate stable vs transitional vs structural cases.
-
----
-
-## Example Logic
-
-Example:
-
-```text
+```
 Low mismatch + low impact
+→ must NOT generate "high structural collapse" language
 ```
 
-must NOT generate:
+Narratives are split into short-term (0–12 months) and long-term (1–5 years) horizons to avoid conflating immediate signals with structural trends.
 
-```text
-high structural collapse language
-```
+### Confidence Layer
 
----
-
-## Time Horizons
-
-Narratives are separated into:
-
-* short-term impact,
-* long-term impact.
-
-This improves strategic realism.
-
----
-
-## Confidence Layer
-
-Narratives must expose:
-
-* uncertainty,
-* confidence quality,
-* data limitations.
-
-The system must never simulate false certainty.
+Uncertainty, confidence quality, and data limitation disclaimers must always be surfaced. The system must never simulate false certainty. When `ConfidenceModifier` falls below 0.8, narratives must include an explicit caveat about input completeness.
 
 ---
 
 ## 8. Calibration System
 
-## Purpose
+Calibration stabilizes the entire analytical pipeline. Without it, even a well-designed scoring model degrades over time: outputs compress toward the median, all banks start receiving similar scores, narratives become interchangeable, and the system loses its core value — differentiation.
 
-Calibration stabilizes the entire analytical ecosystem.
-
-Without calibration:
-
-* outputs drift,
-* scores collapse toward the middle,
-* narratives become repetitive,
-* differentiation disappears.
-
----
+Calibration is not a post-processing step. It is a continuous constraint applied across all five engines.
 
 ## 9. Calibration Targets
 
-The system calibrates:
-
-| Component       | Goal                            |
-| --------------- | ------------------------------- |
-| Welfare Score   | Preserve spread                 |
-| Mismatch Score  | Preserve structural sensitivity |
-| Impact Index    | Prevent compression             |
-| Narratives      | Preserve differentiation        |
-| Recommendations | Preserve relevance              |
-
----
+| Component | Goal | Failure Mode |
+|---|---|---|
+| Welfare Score | Preserve spread across full 0–100 range | Compression to 40–60 band |
+| Mismatch Score | Preserve structural sensitivity at extremes | All banks scoring 0.2–0.4 |
+| Impact Index | Prevent compression toward the 50–60 band | Loss of Stable/Risk differentiation |
+| Narratives | Preserve differentiation across tiers and stage pairs | Generic output across all analyses |
+| Recommendations | Preserve relevance to dominant stage pair | Identical recommendations for RED and GREEN banks |
 
 ## 10. Calibration Philosophy
 
-The model is intentionally:
+The model is intentionally decision-oriented rather than academically neutral. It is designed to surface tension, not smooth it. A bank that extracts value from a vulnerable population should score differently from one that supports productive lending — and that difference must be visible and legible to a non-technical reader within 60 seconds.
 
-```text
-decision-oriented
-```
-
-not academically neutral.
-
-It is designed to produce:
-
-* interpretable differentiation,
-* institutional diagnostics,
-* strategic tension visibility.
-
----
+This means calibration actively resists regression to the mean, even when input data is noisy or incomplete.
 
 ## 11. Calibration Risks
 
-Major risks include:
-
-| Risk                   | Effect                              |
-| ---------------------- | ----------------------------------- |
-| Compression Drift      | All banks cluster around same score |
-| Red Dominance Collapse | Every bank becomes RED              |
-| Narrative Repetition   | Users stop trusting outputs         |
-| Confidence Inflation   | Weak data appears reliable          |
-| Risk Escalation Drift  | All outputs become “high risk”      |
+| Risk | Effect | Detection Signal |
+|---|---|---|
+| Compression Drift | All banks cluster around the same score band | Score variance < 15 points across sample |
+| Red Dominance Collapse | Every bank is assigned RED as dominant stage | Stage distribution entropy near zero |
+| Narrative Repetition | Users stop trusting outputs as generic | Same recommendation text across 3+ analyses |
+| Confidence Inflation | Weak or missing data appears reliable | `ConfidenceModifier` = 1.0 with incomplete inputs |
+| Risk Escalation Drift | All outputs default to "high risk" regardless of inputs | Structural Risk tier assigned to 80%+ of analyses |
 
 ---
 
 ## 12. Prompt Specification Layer
 
-The repository contains prompt specifications used for:
+The repository contains versioned prompt specifications enabling narrative consistency, calibration continuity, and reproducible AI-assisted generation.
 
-* narrative consistency,
-* calibration continuity,
-* future AI-assisted evolution.
-
----
-
-## Prompt Structure
-
-```text
-/prompts/core
-/prompts/narratives
-/prompts/calibration
+```
+/prompts/core/           ← System instructions and scoring context
+/prompts/narratives/     ← Per-tier narrative templates
+/prompts/calibration/    ← Calibration guard prompts
 ```
 
----
-
-## Purpose
-
-Prompt specs allow:
-
-* reproducible AI behavior,
-* versioned analytical logic,
-* future multi-agent workflows.
+Prompt specs allow reproducible AI behavior across versions, auditable analytical logic, and future multi-agent or batch analysis workflows.
 
 ---
 
@@ -505,106 +362,122 @@ Prompt specs allow:
 
 ### Current Stack
 
-| Component | Technology         |
-| --------- | ------------------ |
-| UI        | HTML5              |
-| Styling   | CSS3               |
-| Logic     | Vanilla JavaScript |
-| Charts    | Chart.js           |
-| Storage   | localStorage       |
-| Hosting   | GitHub Pages       |
-| i18n      | RU/EN dictionary   |
+| Component | Technology |
+|---|---|
+| UI | HTML5 |
+| Styling | CSS3 |
+| Logic | Vanilla JavaScript |
+| Charts | Chart.js |
+| Storage | localStorage |
+| Hosting | GitHub Pages |
+| i18n | RU/EN dictionary |
 
-### 13.1 Conversion Messaging Layer (UI-only)
+---
 
-The results view includes a conversion bridge directly under mismatch diagnostics.
+### 13.1 Conversion Messaging Layer
 
-Its responsibility is commercial framing without changing analytical outputs:
+The results view includes a conversion bridge rendered directly below mismatch diagnostics.
 
-* States that demo output is based on public/estimated inputs
-* Creates tension about hidden risk in internal datasets
-* Resolves with a Sponsor Lab call-to-action for calibrated simulation
+Its role is to connect analytical outputs to deeper engagement — without modifying or overstating those outputs.
 
-Implementation constraints:
+**Function:**
 
-* UI and copy only (no backend dependency)
-* Localized via existing RU/EN i18n dictionary
+- Contextualizes demo limitations: the displayed analysis is based on public or estimated inputs.
+- Creates tension around unresolved risk: internal institutional data may reveal a different picture.
+- Resolves with a clear call-to-action toward Sponsor Lab for calibrated simulation using proprietary data.
+
+**Implementation constraints:**
+
+- UI copy and layout only — no backend dependency.
+- Fully localized via the existing RU/EN i18n dictionary.
+- Must not alter `welfareScore`, `mismatchScore`, or `impactIndex` values.
+- Must not generate narrative claims beyond what the analytical engines have produced.
 
 ---
 
 ## 14. Data Flow
 
-Logical sequence of analytical execution:
+All engines are orchestrated by `analyzeBank()` in `engine.js`:
 
-```text
-Raw Inputs (Econ Indicators)
+```
+Raw Inputs (data{pg, ig, cc, pr, cb, im, ix, di, cp, co2, esgText})
     ↓
-[Scoring Engine]
-    → welfareScore
+[engine.js → analyzeBank(data)]
     ↓
-[Mismatch Engine]
-    → mismatchScore, stageGap
+[scoring.js → calcScore(data)]
+    → score: 0–100
+[scoring.js → calculateSpiralStages(data)]
+    → spiral.bank{}, spiral.population{}
     ↓
-[Impact Engine]
-    → impactIndex, tier
+[valueMapping.js → mapValuesToBehavior(esgText)]
+    → behavior (ESG stage mapping)
     ↓
-[Narrative Engine]
-    → Text Explanation, Recommendations
+[mismatch.js → calculateMismatch({score, spiral}, esgText)]
+    → mismatchScore, riskLevel, primaryDriver
+    → driverConfidence, explanationText
+    → predictiveImpact{shortTerm, longTerm}
     ↓
-[UI Rendering]
+[impact.js → calculateImpact(result)]
+    → impactIndex: 0–100
+    → reputationalRiskKey, stageGaps
+    ↓
+[ui.js → render + Conversion Messaging Layer]
+```
+
+---
 
 ## 15. Code Mapping
 
-Current implementation locations:
-
-| Engine / Component       | File Path                  |
-| ------------------------ | -------------------------- |
-| Scoring Engine           | `src/js/core/scoring.js`   |
-| Mismatch Engine          | `src/js/core/mismatch.js`  |
-| Impact Engine            | `src/js/core/impact.js`    |
-| Value Mapping            | `src/js/core/valueMapping.js` |
-| UI & Rendering           | `src/js/ui.js`             |
-| Internationalization     | `src/js/i18n.js`           |
+| Engine / Component | File Path | Notes |
+|---|---|---|
+| Orchestration | `src/js/core/engine.js` | `analyzeBank()` — calls all engines in sequence |
+| Scoring Engine | `src/js/core/scoring.js` | `calcScore()`, `calculateSpiralStages()`, `normalizeAndCap()` |
+| Mismatch Engine | `src/js/core/mismatch.js` | `calculateMismatch()`, `inferPrimaryDriver()`, `buildPredictiveImpact()` |
+| Impact Engine | `src/js/core/impact.js` | `calculateImpact()`, `dominantStage()` |
+| Value Mapping | `src/js/core/valueMapping.js` | `mapValuesToBehavior()` — ESG text → vMeme stage mapping |
+| Ranking | `src/js/core/ranking.js` | Multi-bank comparison and sorting |
+| Recommendations | `src/js/core/recommendations.js` | Stage-pair-driven recommendation generation |
+| UI & Rendering | `src/js/ui.js` | Single file; renders results, charts, CTA layer |
+| Internationalization | `src/js/i18n.js` | RU/EN dictionary; includes all CTA/Sponsor Lab copy |
 
 ---
 
 ## 16. Roadmap Phases
 
-### Phase 1: Core Stability (Current)
+### Phase 1: Core Stability ✓ (Current)
 
-* Single-file modular logic (Vanilla JS)
-* Basic i18n support
-* Static hosting (GitHub Pages)
-* **Focus:** Stability of core algorithms
+- Single-file modular logic in Vanilla JS
+- RU/EN i18n support
+- Static hosting via GitHub Pages
+- CTA / Conversion Messaging Layer (feature/cta-layer)
+- **Status:** Active. Core algorithm stability is the primary constraint before Phase 2.
 
 ### Phase 2: Decoupling & Testing
 
-* Extract engines into separate modules
-* Implement automated test suite (Jest/Mocha)
-* Add build step (Webpack/Vite)
-* **Focus:** Prevent regression, reduce bundle size
+- Extract engines from inline scripts into separate ES modules
+- Introduce automated test suite (Jest) covering scoring, mismatch, and impact formulas
+- Add lightweight build step (Vite) for bundling and tree-shaking
+- **Trigger:** When regression risk from ongoing feature additions becomes unacceptable.
 
 ### Phase 3: Scale & Integration
 
-* Add Scenario Engine (Macro shock simulation)
-* Expose API layer for external tools
-* Multi-country dataset expansion
-* **Focus:** Institutional readiness
+- Scenario Engine: simulate macro shocks (rate spike, poverty surge, ESG collapse)
+- REST API layer for external tool integration
+- Multi-country dataset support with normalized indicator mappings
+- **Trigger:** When institutional partners require programmatic access or batch analysis.
 
 ---
 
 ## 17. Commercial Objective
 
-The system is not only analytical.
-
-It is intended to evolve toward **decision-grade institutional intelligence**.
+The system is designed to evolve toward decision-grade institutional intelligence.
 
 Target audiences:
 
-* Regulators & Policy Researchers
-* ESG Analysts & Investors
-* Financial Institutions
-* Journalists & NGOs
+- Regulators and policy researchers
+- ESG analysts and investors
+- Financial institutions seeking self-assessment
+- Journalists and NGOs
 
 ---
 
@@ -612,8 +485,8 @@ Target audiences:
 
 The platform succeeds when:
 
-1. **Clarity:** Users understand outputs within 30–60 seconds
-2. **Differentiation:** Banks visibly separate in scoring (no clustering)
-3. **Credibility:** Narratives feel specific, not generic
-4. **Actionability:** Recommendations drive strategic thought, not just reading
-5. **Conversion:** CTA layer successfully moves users to "Sponsor Lab" or deeper analysis
+1. **Clarity:** Users understand outputs within 30–60 seconds of viewing results.
+2. **Differentiation:** Banks visibly separate in scoring — no clustering around the median.
+3. **Credibility:** Narratives feel specific to the institution, not generic templates.
+4. **Actionability:** Recommendations drive strategic thought, not passive reading.
+5. **Conversion:** The CTA layer successfully moves users toward Sponsor Lab or deeper analysis.

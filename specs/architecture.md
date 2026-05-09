@@ -584,5 +584,5 @@ The platform succeeds when:
 
 ---
 
-```
+```text
 ```

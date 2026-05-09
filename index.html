@@ -109,6 +109,16 @@
     .leaderboard-rank{font-weight:700;color:var(--p)}
     .leaderboard-meta{display:flex;gap:12px;flex-wrap:wrap;font-size:.85rem;color:var(--tm);margin-top:6px}
     .leaderboard-explain{margin-top:6px;font-size:.85rem;color:var(--t)}
+    .sponsor-bridge{margin-top:12px;padding:12px;border-radius:10px;border:1px solid #bfdbfe;background:#eff6ff;text-align:left}
+    .sponsor-text{font-size:.86rem;line-height:1.5;color:#1e3a8a}
+    .sponsor-text + .sponsor-text{margin-top:6px}
+    .sponsor-value{margin:8px 0 0 18px;color:#1e293b;font-size:.84rem}
+    .sponsor-value li + li{margin-top:4px}
+    .sponsor-actions{margin-top:10px;display:flex;flex-wrap:wrap;gap:8px}
+    .btn-outline{padding:10px 14px;border:1px solid var(--p);border-radius:8px;font-weight:600;cursor:pointer;background:transparent;color:var(--p);font-size:.86rem;text-decoration:none}
+    .btn-outline:hover{background:#dbeafe}
+    .sponsor-compare{margin-top:10px;padding:8px 10px;border-radius:8px;background:#fff;border:1px dashed #93c5fd;font-size:.8rem;color:#1e293b}
+    .sponsor-compare div + div{margin-top:3px}
     @media(max-width:600px){
       body{padding:8px}header{padding:12px 14px;margin-bottom:12px}.logo{font-size:1rem}.logo-i{width:32px;height:32px;font-size:.85rem}.lang-b{padding:6px 12px;font-size:.85rem}.input-s{padding:14px;margin-bottom:12px;border-radius:10px}.input-h{flex-direction:column;align-items:flex-start;gap:8px;margin-bottom:14px}.sec-t{font-size:1.05rem;width:100%}.btn-p{width:100%;text-align:center;padding:13px 20px;font-size:1rem}.ex{padding:10px;margin-bottom:14px;border-radius:8px}.ex-label{width:100%;margin-bottom:6px;font-size:.8rem}.ex-b{flex:1;min-width:0;text-align:center;padding:8px 10px;font-size:.8rem}.form-g{grid-template-columns:1fr;gap:12px}.form-r{grid-template-columns:1fr;gap:10px}.form-gr input{padding:10px 12px;font-size:1rem}.res-t{font-size:1.05rem;margin-bottom:12px}.grid{grid-template-columns:1fr;gap:12px}.card{padding:14px;border-radius:10px}.card-t{font-size:1rem;margin-bottom:12px}.metric{flex-direction:column;align-items:flex-start;gap:4px;padding:8px 0}.metric-v{justify-content:flex-start;width:100%}.score-v{font-size:2.2rem}.score-l{font-size:.85rem}.chart-c{height:220px}.spiral-chart-container{height:320px}.stage-grid{grid-template-columns:1fr}.prob-i{padding:8px 0}.prob-i div:last-child{font-size:.85rem}.quest-i{font-size:.85rem;padding:8px 0}footer{padding:16px;font-size:.8rem}.stage-grid-detail{grid-template-columns:repeat(4,1fr)}
     }
@@ -215,6 +225,24 @@
             <div id="mismatchLongTerm" style="margin-top:4px;"></div>
           </div>
           <div id="predictiveDisclaimer" style="margin-top:10px;padding:8px;border-radius:6px;background:#fff7ed;border:1px solid #fed7aa;font-size:.8rem;color:#9a3412">⚠️ Scenario-based projection: indicative only, not a guaranteed outcome.</div>
+        </div>
+        <div class="sponsor-bridge">
+          <div class="sponsor-text"><strong id="sponsorLead">Demo limitation: this analysis is based on public and estimated data.</strong></div>
+          <div class="sponsor-text" id="sponsorTension">Your internal data can significantly change the risk profile — key drivers may currently be underestimated or misread.</div>
+          <div class="sponsor-text" id="sponsorResolution">Run this model on your internal data in Sponsor Lab.</div>
+          <ul class="sponsor-value">
+            <li id="sponsorValueSimulation">Simulation before decision-making</li>
+            <li id="sponsorValueCalibration">Internal behavioral calibration</li>
+            <li id="sponsorValueScenario">Scenario testing (policy / product / credit strategy)</li>
+          </ul>
+          <div class="sponsor-actions">
+            <a class="btn-p" id="sponsorPrimaryCta" href="https://sdtest.me/price" target="_blank" rel="noopener noreferrer">Request Sponsor Lab Access</a>
+            <a class="btn-outline" id="sponsorSecondaryCta" href="https://sdtest.me/faq/sponsor-lab" target="_blank" rel="noopener noreferrer">See how internal data changes results</a>
+          </div>
+          <div class="sponsor-compare">
+            <div id="sponsorCompareDemo">Public demo → Estimated</div>
+            <div id="sponsorCompareLab">Sponsor Lab → Calibrated simulation</div>
+          </div>
         </div>
       </div>
 

@@ -7,7 +7,7 @@ Repository: `sdtest-me/bank-welfare-analyzer`
 
 ---
 
-# 1. System Overview
+## 1. System Overview
 
 Bank Welfare Analyzer is a client-side analytical application that evaluates the structural alignment between:
 
@@ -29,7 +29,7 @@ The architecture is intentionally modular even when deployed as a static fronten
 
 ---
 
-# 2. Core System Layers
+## 2. Core System Layers
 
 The system consists of five analytical layers:
 
@@ -43,7 +43,7 @@ The system consists of five analytical layers:
 
 ---
 
-# 3. Scoring Engine
+## 3. Scoring Engine
 
 ## Purpose
 
@@ -138,7 +138,7 @@ The engine must:
 
 ---
 
-# 4. Mismatch Engine
+## 4. Mismatch Engine
 
 ## Purpose
 
@@ -228,7 +228,7 @@ and remain normalized after all transformations.
 
 ---
 
-# 5. Impact Engine
+## 5. Impact Engine
 
 ## Purpose
 
@@ -319,7 +319,7 @@ The engine must:
 
 ---
 
-# 6. Narrative Engine
+## 6. Narrative Engine
 
 ## Purpose
 
@@ -346,7 +346,7 @@ The Narrative Engine is therefore both:
 
 ---
 
-# 7. Narrative Architecture
+## 7. Narrative Architecture
 
 The narrative system consists of:
 
@@ -410,7 +410,7 @@ The system must never simulate false certainty.
 
 ---
 
-# 8. Calibration System
+## 8. Calibration System
 
 ## Purpose
 
@@ -425,7 +425,7 @@ Without calibration:
 
 ---
 
-# 9. Calibration Targets
+## 9. Calibration Targets
 
 The system calibrates:
 
@@ -439,7 +439,7 @@ The system calibrates:
 
 ---
 
-# 10. Calibration Philosophy
+## 10. Calibration Philosophy
 
 The model is intentionally:
 
@@ -457,7 +457,7 @@ It is designed to produce:
 
 ---
 
-# 11. Calibration Risks
+## 11. Calibration Risks
 
 Major risks include:
 
@@ -471,7 +471,7 @@ Major risks include:
 
 ---
 
-# 12. Prompt Specification Layer
+## 12. Prompt Specification Layer
 
 The repository contains prompt specifications used for:
 
@@ -501,7 +501,7 @@ Prompt specs allow:
 
 ---
 
-# 13. Frontend Architecture
+## 13. Frontend Architecture
 
 Current frontend stack:
 
@@ -535,7 +535,7 @@ Implementation constraints:
 
 ---
 
-# 14. Future Architecture Direction
+## 14. Future Architecture Direction
 
 Planned evolution:
 
@@ -550,7 +550,7 @@ Planned evolution:
 
 ---
 
-# 15. Commercial Objective
+## 15. Commercial Objective
 
 The system is not only analytical.
 
@@ -572,7 +572,7 @@ for:
 
 ---
 
-# 16. Success Criteria
+## 16. Success Criteria
 
 The platform succeeds when:
 

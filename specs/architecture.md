@@ -503,7 +503,7 @@ Prompt specs allow:
 
 ## 13. Frontend Architecture
 
-Current frontend stack:
+### Current Stack
 
 | Component | Technology         |
 | --------- | ------------------ |
@@ -515,74 +515,105 @@ Current frontend stack:
 | Hosting   | GitHub Pages       |
 | i18n      | RU/EN dictionary   |
 
----
-
-## 13.1 Conversion Messaging Layer (UI-only)
+### 13.1 Conversion Messaging Layer (UI-only)
 
 The results view includes a conversion bridge directly under mismatch diagnostics.
 
 Its responsibility is commercial framing without changing analytical outputs:
 
-* states that demo output is based on public/estimated inputs,
-* creates tension about hidden risk in internal datasets,
-* resolves with a Sponsor Lab call-to-action for calibrated simulation.
+* States that demo output is based on public/estimated inputs
+* Creates tension about hidden risk in internal datasets
+* Resolves with a Sponsor Lab call-to-action for calibrated simulation
 
 Implementation constraints:
 
-* UI and copy only (no backend dependency),
-* localized via existing RU/EN i18n dictionary,
-* no scoring, mismatch, or prediction logic changes.
+* UI and copy only (no backend dependency)
+* Localized via existing RU/EN i18n dictionary
 
 ---
 
-## 14. Future Architecture Direction
+## 14. Data Flow
 
-Planned evolution:
+Logical sequence of analytical execution:
 
-| Direction              | Purpose                     |
-| ---------------------- | --------------------------- |
-| Modular JS             | Reduce complexity           |
-| Test Harness           | Prevent regression          |
-| Scenario Engine        | Simulate macro shocks       |
-| API Layer              | Enable external integration |
-| Multi-country datasets | Improve realism             |
-| Conversion Layer       | Commercialization           |
+```text
+Raw Inputs (Econ Indicators)
+    ↓
+[Scoring Engine]
+    → welfareScore
+    ↓
+[Mismatch Engine]
+    → mismatchScore, stageGap
+    ↓
+[Impact Engine]
+    → impactIndex, tier
+    ↓
+[Narrative Engine]
+    → Text Explanation, Recommendations
+    ↓
+[UI Rendering]
+
+## 15. Code Mapping
+
+Current implementation locations:
+
+| Engine / Component       | File Path                  |
+| ------------------------ | -------------------------- |
+| Scoring Engine           | `src/js/core/scoring.js`   |
+| Mismatch Engine          | `src/js/core/mismatch.js`  |
+| Impact Engine            | `src/js/core/impact.js`    |
+| Value Mapping            | `src/js/core/valueMapping.js` |
+| UI & Rendering           | `src/js/ui.js`             |
+| Internationalization     | `src/js/i18n.js`           |
 
 ---
 
-## 15. Commercial Objective
+## 16. Roadmap Phases
+
+### Phase 1: Core Stability (Current)
+
+* Single-file modular logic (Vanilla JS)
+* Basic i18n support
+* Static hosting (GitHub Pages)
+* **Focus:** Stability of core algorithms
+
+### Phase 2: Decoupling & Testing
+
+* Extract engines into separate modules
+* Implement automated test suite (Jest/Mocha)
+* Add build step (Webpack/Vite)
+* **Focus:** Prevent regression, reduce bundle size
+
+### Phase 3: Scale & Integration
+
+* Add Scenario Engine (Macro shock simulation)
+* Expose API layer for external tools
+* Multi-country dataset expansion
+* **Focus:** Institutional readiness
+
+---
+
+## 17. Commercial Objective
 
 The system is not only analytical.
 
-It is intended to evolve toward:
+It is intended to evolve toward **decision-grade institutional intelligence**.
 
-```text
-decision-grade institutional intelligence
-```
+Target audiences:
 
-for:
-
-* regulators,
-* ESG analysts,
-* investors,
-* journalists,
-* NGOs,
-* policy researchers,
-* financial institutions.
+* Regulators & Policy Researchers
+* ESG Analysts & Investors
+* Financial Institutions
+* Journalists & NGOs
 
 ---
 
-## 16. Success Criteria
+## 18. Success Criteria
 
 The platform succeeds when:
 
-* users understand outputs within 30–60 seconds,
-* banks visibly differentiate,
-* narratives feel credible,
-* recommendations feel actionable,
-* the system produces strategic insight rather than decorative ESG scoring.
-
----
-
-```text
-```
+1. **Clarity:** Users understand outputs within 30–60 seconds
+2. **Differentiation:** Banks visibly separate in scoring (no clustering)
+3. **Credibility:** Narratives feel specific, not generic
+4. **Actionability:** Recommendations drive strategic thought, not just reading
+5. **Conversion:** CTA layer successfully moves users to "Sponsor Lab" or deeper analysis

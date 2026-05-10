@@ -1,15 +1,9 @@
 # Bank Welfare Analyzer — Architecture Specification
 
-<<<<<<< HEAD
 Version: v3
 Status: Active
 Repository: `sdtest-me/bank-welfare-analyzer`
 Canonical specs: `specs/` — see `specs/overview.md` for document hierarchy
-=======
-Version: v2
-Status: Active
-Repository: `sdtest-me/bank-welfare-analyzer`
->>>>>>> origin/main
 
 ---
 
@@ -17,19 +11,19 @@ Repository: `sdtest-me/bank-welfare-analyzer`
 
 Bank Welfare Analyzer is a client-side analytical application that evaluates the structural alignment between:
 
-- bank behavior,
-- population conditions,
-- welfare outcomes,
-- and institutional risk dynamics.
+- Bank behavior
+- Population conditions
+- Welfare outcomes
+- Institutional risk dynamics
 
 The system combines:
 
-- welfare scoring,
-- Spiral Dynamics stage modeling,
-- mismatch detection,
-- impact estimation,
-- narrative generation,
-- and strategic recommendations.
+- Welfare scoring
+- Spiral Dynamics stage modeling
+- Mismatch detection
+- Impact estimation
+- Narrative generation
+- Strategic recommendations
 
 The architecture is intentionally modular even when deployed as a static frontend application.
 
@@ -135,15 +129,15 @@ The system's central diagnostic layer. Measures structural divergence between th
 ### Mismatch Score Formula (`calculateMismatch`)
 
 ```javascript
-redGap       = max(0, bank.red − population.red)
-greenGap     = max(0, population.green − bank.green)
+redGap        = max(0, bank.red − population.red)
+greenGap      = max(0, population.green − bank.green)
 structuralGap = Σ |bank[s] − population[s]| / 2   // over all 8 stages
-stageGap     = |bank[bankDominant] − population[popDominant]|
+stageGap      = |bank[bankDominant] − population[popDominant]|
 
 claimsPenalty = (esgClaimsHigh && bank.red ≥ 25 && bank.green ≤ 10) ? 0.2 : 0
 scorePenalty  = (100 − score) / 100
 
-baseStagePressure = (redGap/40)×0.4 + (greenGap/40)×0.3
+baseStagePressure  = (redGap/40)×0.4 + (greenGap/40)×0.3
 structuralPressure = (structuralGap/100)×0.2
 scorePressure      = scorePenalty×0.1
 heavyGapBoost      = clamp01(((redGap + greenGap + stageGap) / 120) ^ 1.4)
@@ -158,11 +152,11 @@ mismatchScore = clamp01(
 ### Output
 
 ```
-mismatchScore: 0.000–1.000   (3 decimal places)
-riskLevel: 'low' | 'medium' | 'high'
-primaryDriver: 'redPressure' | 'empathyGap' | 'stageMismatch' | 'welfareScorePenalty' | 'esgClaimMismatch'
+mismatchScore:    0.000–1.000   (3 decimal places)
+riskLevel:        'low' | 'medium' | 'high'
+primaryDriver:    'redPressure' | 'empathyGap' | 'stageMismatch' | 'welfareScorePenalty' | 'esgClaimMismatch'
 driverConfidence: 0–1
-explanationText: { en, ru }
+explanationText:  { en, ru }
 predictiveImpact: { shortTerm: { en, ru }, longTerm: { en, ru } }
 ```
 
@@ -170,7 +164,7 @@ predictiveImpact: { shortTerm: { en, ru }, longTerm: { en, ru } }
 
 Risk level is derived from `impactIndex` (computed internally):
 
-```
+```javascript
 impactIndex > 70  → 'low'
 impactIndex ≥ 50  → 'medium'
 impactIndex < 50  → 'high'
@@ -179,11 +173,8 @@ impactIndex < 50  → 'high'
 ```
 
 Tension level for narrative branching:
-<<<<<<< HEAD
-=======
 
->>>>>>> origin/main
-```
+```javascript
 mismatchScore ≥ 0.67 → 'high'
 mismatchScore ≥ 0.34 → 'medium'
 otherwise             → 'low'
@@ -191,18 +182,17 @@ otherwise             → 'low'
 
 ### Interpretation
 
-<<<<<<< HEAD
 The system uses two distinct tier vocabularies for mismatch severity:
 
-**Implementation tiers** (code, `mismatch.js`) — three levels derived from `impactIndex`:
+**Implementation tiers** (code, `mismatch.js`) — three levels:
 
-| mismatchScore | riskLevel (code) | Interpretation |
+| mismatchScore | riskLevel | Interpretation |
 |---|---|---|
 | < 0.34 | `'low'` | Limited immediate mismatch exposure |
 | 0.34–0.66 | `'medium'` | Moderate misalignment, active monitoring required |
 | ≥ 0.67 | `'high'` | High risk of extractive mismatch |
 
-**Conceptual interpretation tiers** (`specs/mismatch-engine.md`) — four levels for analytical framing:
+**Conceptual interpretation tiers** (`specs/mismatch-engine.md`) — four levels:
 
 | Conceptual Tier | Meaning |
 |---|---|
@@ -211,14 +201,7 @@ The system uses two distinct tier vocabularies for mismatch severity:
 | High | Structural inconsistency |
 | Critical | Extraction dominates narrative |
 
-The `Critical` tier does not exist as a code value. It is a conceptual label used in analytical interpretation when `riskLevel = 'high'` combines with `redGap ≥ 18` or `esgClaimMismatch` driver — indicating extraction dominance. Narratives and recommendations may use "critical" language in this condition without a separate code branch.
-=======
-| mismatchScore | riskLevel | Interpretation |
-|---|---|---|
-| < 0.34 | low | Limited immediate mismatch exposure |
-| 0.34–0.66 | medium | Moderate misalignment, active monitoring required |
-| ≥ 0.67 | high | High risk of extractive mismatch |
->>>>>>> origin/main
+`Critical` is not a code value. It is an analytical label applied when `riskLevel = 'high'` combines with `redGap ≥ 18` or `esgClaimMismatch` as primary driver.
 
 ### Dominant Stage Analysis
 
@@ -247,20 +230,20 @@ Combines welfare performance and structural alignment into a single decision-gra
 ### Output
 
 ```
-impactIndex: 0–100
+impactIndex:        0–100
 reputationalRiskKey: 'impactRiskLow' | 'impactRiskMedium' | 'impactRiskHigh'
-stageGaps: { bankDominant, populationDominant, dominantGap, redGap, greenGap, structuralGap }
-prediction: { shortTerm, longTerm }
+stageGaps:          { bankDominant, populationDominant, dominantGap, redGap, greenGap, structuralGap }
+prediction:         { shortTerm, longTerm }
 ```
 
 ### Impact Index Formula (`calculateImpact`)
 
 ```javascript
-baseImpact   = welfareIndex ?? score ?? 50
-safeMismatch = clamp(mismatchScore, 0, 1)
+baseImpact    = welfareIndex ?? score ?? 50
+safeMismatch  = clamp(mismatchScore, 0, 1)
 heavyMismatch = pow(safeMismatch, 1.4)
 
-redPenalty        = bank.red > 25 ? 0.15 : 0
+redPenalty         = bank.red > 25 ? 0.15 : 0
 dominantGapPenalty = min(|dominantGap| / 40, 1)
 
 penalty = min(0.9,
@@ -284,13 +267,12 @@ impactIndex = clamp(round(baseImpact × (1 − penalty) × mismatchPressure), 0,
 
 ### Reputational Risk Assignment
 
-```
-riskLevel = 'high'   OR  mismatchScore ≥ 0.67  OR  redGap ≥ 18  → impactRiskHigh
-riskLevel = 'medium' OR  mismatchScore ≥ 0.34  OR  redGap ≥ 10  OR  greenGap ≥ 10  → impactRiskMedium
+```javascript
+riskLevel = 'high'   OR  mismatchScore ≥ 0.67  OR  redGap ≥ 18              → impactRiskHigh
+riskLevel = 'medium' OR  mismatchScore ≥ 0.34  OR  redGap ≥ 10  OR greenGap ≥ 10  → impactRiskMedium
 otherwise → impactRiskLow
 ```
 
-<<<<<<< HEAD
 ### Structural Risk Escalation Trigger
 
 A hard escalation condition activates when both of the following are true:
@@ -304,15 +286,13 @@ Where:
 - `creditConsumption = cc` — consumer credit concentration (%)
 
 When this condition fires:
-- impact tier is escalated toward Structural Risk regardless of raw `impactIndex`
-- narrative severity increases to high/critical framing
-- recommendations enter override mode with structural intervention language
-- the condition is documented in `specs/scoring-engine.md` and `specs/impact-engine.md`
+- Impact tier is escalated toward Structural Risk regardless of raw `impactIndex`
+- Narrative severity increases to high/critical framing
+- Recommendations enter override mode with structural intervention language
+- Documented in `specs/scoring-engine.md` and `specs/impact-engine.md`
 
 This trigger represents the clearest signal of extractive behavior: the bank is growing profits faster than population income while simultaneously concentrating lending in consumer (rather than productive business) credit.
 
-=======
->>>>>>> origin/main
 ### Critical Design Rules
 
 1. The penalty is dominated by `heavyMismatch` (weight 0.6) — high mismatch compresses impact even with strong welfare scores.
@@ -335,9 +315,10 @@ Transforms analytical outputs into readable explanations, strategic interpretati
 
 The Narrative Engine is both an analytical layer and a user-facing communication layer. It is the primary surface through which the system's institutional diagnostics become legible to regulators, ESG analysts, and decision-makers.
 
+---
+
 ## 7. Narrative Architecture
 
-<<<<<<< HEAD
 The canonical narrative structure is defined in `specs/narrative-engine.md`. Four sequential layers:
 
 | Layer | Purpose |
@@ -348,17 +329,6 @@ The canonical narrative structure is defined in `specs/narrative-engine.md`. Fou
 | Recommendation | Provides corrective direction, strategic intervention, and monitoring priorities |
 
 Each tier (Stable / Transitional / Structural Risk) has a dedicated variant selected based on `impactIndex` tier, dominant stage pair, `mismatchScore` range, and confidence level. Narrative text generation uses prompt templates in `/prompts/narratives/`.
-=======
-| Layer | Purpose |
-|---|---|
-| Risk Narrative | Explains the nature and source of institutional danger |
-| Impact Narrative | Describes the social effect on population welfare |
-| Recommendation Layer | Suggests concrete strategic actions for the institution |
-| Strategic Shift Layer | Describes the transformation direction required for realignment |
-| Mitigation Layer | Identifies paths to reduce systemic risk without full structural change |
-
-Narrative text is generated using prompt templates defined in `/prompts/narratives/`. Each tier (Stable / Transitional / Structural Risk) has a dedicated prompt variant selected based on `impactIndex` tier, dominant stage pair, `mismatchScore` range, and confidence level.
->>>>>>> origin/main
 
 ### Design Rules
 
@@ -371,19 +341,11 @@ Low mismatch + low impact
 → must NOT generate "high structural collapse" language
 ```
 
-<<<<<<< HEAD
 Narratives are split into short-term (0–12 months) and long-term (1–5 years) horizons. The `buildPredictiveImpact()` function in `mismatch.js` implements this split based on `primaryDriver` and `tensionLevel`.
 
 ### Confidence Layer
 
 Uncertainty and data limitation disclaimers must always be surfaced. The system must never simulate false certainty. Confidence is exposed via `driverConfidence` and `esgSignal.confidence` in `mismatch.js` output.
-=======
-Narratives are split into short-term (0–12 months) and long-term (1–5 years) horizons to avoid conflating immediate signals with structural trends.
-
-### Confidence Layer
-
-Uncertainty, confidence quality, and data limitation disclaimers must always be surfaced. The system must never simulate false certainty. When `ConfidenceModifier` falls below 0.8, narratives must include an explicit caveat about input completeness.
->>>>>>> origin/main
 
 ---
 
@@ -392,6 +354,8 @@ Uncertainty, confidence quality, and data limitation disclaimers must always be 
 Calibration stabilizes the entire analytical pipeline. Without it, even a well-designed scoring model degrades over time: outputs compress toward the median, all banks start receiving similar scores, narratives become interchangeable, and the system loses its core value — differentiation.
 
 Calibration is not a post-processing step. It is a continuous constraint applied across all five engines.
+
+---
 
 ## 9. Calibration Targets
 
@@ -403,11 +367,15 @@ Calibration is not a post-processing step. It is a continuous constraint applied
 | Narratives | Preserve differentiation across tiers and stage pairs | Generic output across all analyses |
 | Recommendations | Preserve relevance to dominant stage pair | Identical recommendations for RED and GREEN banks |
 
+---
+
 ## 10. Calibration Philosophy
 
 The model is intentionally decision-oriented rather than academically neutral. It is designed to surface tension, not smooth it. A bank that extracts value from a vulnerable population should score differently from one that supports productive lending — and that difference must be visible and legible to a non-technical reader within 60 seconds.
 
 This means calibration actively resists regression to the mean, even when input data is noisy or incomplete.
+
+---
 
 ## 11. Calibration Risks
 
@@ -448,8 +416,6 @@ Prompt specs allow reproducible AI behavior across versions, auditable analytica
 | Storage | localStorage |
 | Hosting | GitHub Pages |
 | i18n | RU/EN dictionary |
-
----
 
 ### 13.1 Conversion Messaging Layer
 
@@ -519,12 +485,9 @@ Raw Inputs (data{pg, ig, cc, pr, cb, im, ix, di, cp, co2, esgText})
 
 ---
 
-<<<<<<< HEAD
 ## 16. Roadmap
 
 The full 6-phase product roadmap is maintained in `specs/roadmap.md` as the authoritative source.
-
-Summary of phases:
 
 | Phase | Name | Status |
 |---|---|---|
@@ -538,31 +501,6 @@ Summary of phases:
 Current focus (Phase 1): stabilize scoring, improve differentiation, calibrate impact logic, reduce generic narratives. The `feature/cta-layer` branch implements Phase 3 conversion messaging ahead of schedule as a lightweight UI-only addition.
 
 → See `specs/roadmap.md` for full phase definitions, goals, and technical priorities.
-=======
-## 16. Roadmap Phases
-
-### Phase 1: Core Stability ✓ (Current)
-
-- Single-file modular logic in Vanilla JS
-- RU/EN i18n support
-- Static hosting via GitHub Pages
-- CTA / Conversion Messaging Layer (feature/cta-layer)
-- **Status:** Active. Core algorithm stability is the primary constraint before Phase 2.
-
-### Phase 2: Decoupling & Testing
-
-- Extract engines from inline scripts into separate ES modules
-- Introduce automated test suite (Jest) covering scoring, mismatch, and impact formulas
-- Add lightweight build step (Vite) for bundling and tree-shaking
-- **Trigger:** When regression risk from ongoing feature additions becomes unacceptable.
-
-### Phase 3: Scale & Integration
-
-- Scenario Engine: simulate macro shocks (rate spike, poverty surge, ESG collapse)
-- REST API layer for external tool integration
-- Multi-country dataset support with normalized indicator mappings
-- **Trigger:** When institutional partners require programmatic access or batch analysis.
->>>>>>> origin/main
 
 ---
 

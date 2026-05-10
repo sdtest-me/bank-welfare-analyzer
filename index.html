@@ -129,8 +129,10 @@
     .exec-summary__row{display:grid;grid-template-columns:minmax(0,120px) 1fr;gap:8px 14px;align-items:start;font-size:.9rem}
     .exec-summary__label{color:var(--tm);font-weight:600;line-height:1.45;min-width:0}
     .exec-summary__value{color:var(--t);line-height:1.55;overflow-wrap:anywhere;word-break:break-word;min-width:0}
+    .results-toolbar{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px;margin:8px 0 14px}
+    .results-toolbar .res-t{margin:0;flex:1;min-width:min(100%,220px)}
     @media(max-width:600px){
-      body{padding:8px}header{padding:12px 14px;margin-bottom:12px}.logo{font-size:1rem}.logo-i{width:32px;height:32px;font-size:.85rem}.lang-b{padding:6px 12px;font-size:.85rem}.input-s{padding:14px;margin-bottom:12px;border-radius:10px}.input-h{flex-direction:column;align-items:flex-start;gap:8px;margin-bottom:14px}.sec-t{font-size:1.05rem;width:100%}.btn-p{width:100%;text-align:center;padding:13px 20px;font-size:1rem}.ex{padding:10px;margin-bottom:14px;border-radius:8px}.ex-label{width:100%;margin-bottom:6px;font-size:.8rem}.ex-b{flex:1;min-width:0;text-align:center;padding:8px 10px;font-size:.8rem}.form-g{grid-template-columns:1fr;gap:12px}.form-r{grid-template-columns:1fr;gap:10px}.form-gr input{padding:10px 12px;font-size:1rem}.res-t{font-size:1.05rem;margin-bottom:12px}.exec-summary{padding:14px;margin-bottom:12px;border-radius:10px}.exec-summary__head{font-size:1rem;margin-bottom:10px}.exec-summary__row{grid-template-columns:1fr;gap:4px;font-size:.86rem}.exec-summary__label{font-size:.82rem}.grid{grid-template-columns:1fr;gap:12px}.card{padding:14px;border-radius:10px}.card-t{font-size:1rem;margin-bottom:12px}.metric{flex-direction:column;align-items:flex-start;gap:4px;padding:8px 0}.metric-v{justify-content:flex-start;width:100%}.score-v{font-size:2.2rem}.score-l{font-size:.85rem}.chart-c{height:220px}.spiral-chart-container{height:320px}.stage-grid{grid-template-columns:1fr}.prob-i{padding:8px 0}.prob-i div:last-child{font-size:.85rem}.quest-i{font-size:.85rem;padding:8px 0}footer{padding:16px;font-size:.8rem}.stage-grid-detail{grid-template-columns:repeat(4,1fr)}
+      body{padding:8px}header{padding:12px 14px;margin-bottom:12px}.logo{font-size:1rem}.logo-i{width:32px;height:32px;font-size:.85rem}.lang-b{padding:6px 12px;font-size:.85rem}.input-s{padding:14px;margin-bottom:12px;border-radius:10px}.input-h{flex-direction:column;align-items:flex-start;gap:8px;margin-bottom:14px}.sec-t{font-size:1.05rem;width:100%}.btn-p{width:100%;text-align:center;padding:13px 20px;font-size:1rem}.ex{padding:10px;margin-bottom:14px;border-radius:8px}.ex-label{width:100%;margin-bottom:6px;font-size:.8rem}.ex-b{flex:1;min-width:0;text-align:center;padding:8px 10px;font-size:.8rem}.form-g{grid-template-columns:1fr;gap:12px}.form-r{grid-template-columns:1fr;gap:10px}.form-gr input{padding:10px 12px;font-size:1rem}.res-t{font-size:1.05rem;margin-bottom:12px}.exec-summary{padding:14px;margin-bottom:12px;border-radius:10px}.exec-summary__head{font-size:1rem;margin-bottom:10px}.exec-summary__row{grid-template-columns:1fr;gap:4px;font-size:.86rem}.exec-summary__label{font-size:.82rem}.results-toolbar{flex-direction:column;align-items:stretch}.results-toolbar .btn-outline{width:100%;text-align:center;padding:12px 14px}.grid{grid-template-columns:1fr;gap:12px}.card{padding:14px;border-radius:10px}.card-t{font-size:1rem;margin-bottom:12px}.metric{flex-direction:column;align-items:flex-start;gap:4px;padding:8px 0}.metric-v{justify-content:flex-start;width:100%}.score-v{font-size:2.2rem}.score-l{font-size:.85rem}.chart-c{height:220px}.spiral-chart-container{height:320px}.stage-grid{grid-template-columns:1fr}.prob-i{padding:8px 0}.prob-i div:last-child{font-size:.85rem}.quest-i{font-size:.85rem;padding:8px 0}footer{padding:16px;font-size:.8rem}.stage-grid-detail{grid-template-columns:repeat(4,1fr)}
     }
     @media(max-width:400px){.logo{font-size:.95rem;gap:8px}.logo-i{width:28px;height:28px;font-size:.8rem}.lang-b{padding:5px 10px;font-size:.8rem}.input-s{padding:12px}.ex-b{padding:7px 8px;font-size:.75rem}.score-v{font-size:1.8rem}.spiral-chart-container{height:280px}}
   </style>
@@ -196,7 +198,10 @@
           </div>
         </div>
       </div>
-      <div class="res-t" id="resultsTitle">📊 Результаты анализа</div>
+      <div class="results-toolbar">
+        <div class="res-t" id="resultsTitle">📊 Результаты анализа</div>
+        <button type="button" class="btn-outline" id="btnExportPdf" onclick="exportAnalysisPdf()">Export PDF</button>
+      </div>
       <div class="grid">
         <div class="card">
           <div class="card-t" id="tBank">Показатели банка</div>
@@ -330,6 +335,7 @@
     <script src="src/js/core/engine.js"></script>
     <script src="src/js/core/ranking.js"></script>
     <script src="src/js/core/recommendations.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="src/js/ui.js"></script>
 
 </body>

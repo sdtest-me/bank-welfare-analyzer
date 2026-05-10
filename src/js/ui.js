@@ -327,6 +327,47 @@
     else{wb.style.background='#fef3c7';wb.style.color='#92400e';wt.textContent=window.i18n.lang==='ru'?`⚠️ Требуется мониторинг: отдельные показатели указывают на риски долговой нагрузки.`:`⚠️ Monitor needed: some indicators suggest debt burden risks.`;}
   }
 
+  function sanitizePdfBasename(name){
+    const raw=(name||'bank').trim().replace(/\s+/g,'-');
+    const cleaned=raw.replace(/[^\w\u0400-\u04FF.\-]+/gi,'').replace(/-+/g,'-');
+    const out=cleaned.replace(/^[\-.]+|[\-.]+$/g,'');
+    return out.slice(0,96)||'bank';
+  }
+
+  function exportAnalysisPdf(){
+    const t=window.i18n.tr[window.i18n.lang];
+    if(typeof window.html2pdf!=='function'){
+      window.alert(t.pdfExportUnavailable);
+      return;
+    }
+    const root=$('resultsSection');
+    if(!root||root.style.display==='none')return;
+    const btn=$('btnExportPdf');
+    const bridges=Array.from(root.querySelectorAll('.sponsor-bridge'));
+    const prev=bridges.map(el=>el.style.display);
+    bridges.forEach(el=>{el.style.display='none';});
+    if(btn)btn.disabled=true;
+    const opt={
+      margin:[8,8,8,8],
+      filename:sanitizePdfBasename(getData().bn)+'-analysis.pdf',
+      image:{type:'jpeg',quality:0.93},
+      html2canvas:{scale:2,logging:false,useCORS:true,windowWidth:root.scrollWidth},
+      jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},
+      pagebreak:{mode:['css','legacy']}
+    };
+    const restore=()=>{
+      bridges.forEach((el,i)=>{el.style.display=prev[i]||'';});
+      if(btn)btn.disabled=false;
+    };
+    try{
+      const job=window.html2pdf().set(opt).from(root).save();
+      Promise.resolve(job).then(restore).catch(restore);
+    }catch(e){
+      restore();
+      window.alert(t.pdfExportUnavailable);
+    }
+  }
+
   function fixCredit(){
     const c=parseFloat($('creditConsumption').value)||0,b=parseFloat($('creditBusiness').value)||0,o=parseFloat($('creditOther').value)||0;
     if(Math.abs(c+b+o-100)>1)$('creditOther').value=Math.max(0,100-c-b);
@@ -348,4 +389,5 @@
   window.loadEx = loadEx;
   window.doAnalyze = doAnalyze;
   window.doRankBanks = doRankBanks;
+  window.exportAnalysisPdf = exportAnalysisPdf;
 })();

@@ -238,6 +238,29 @@
     });
   }
 
+  function renderWorstCaseScenario(analysis){
+    const block = $('worstCaseBlock');
+    if(!block) return;
+    const impact = typeof window.calculateImpact === 'function' ? window.calculateImpact(analysis) : null;
+    const impactIndex = impact && Number.isFinite(impact.impactIndex) ? impact.impactIndex : 100;
+    if(impactIndex >= 70){
+      block.hidden = true;
+      return;
+    }
+
+    const t = window.i18n.tr[window.i18n.lang];
+    const mismatch = analysis.mismatch || {};
+    const riskLevel = mismatch.riskLevel || 'medium';
+    const riskKey = riskLevel === 'high' ? 'High' : riskLevel === 'low' ? 'Low' : 'Medium';
+    const driverLabel = (t.driverLabels && t.driverLabels[mismatch.primaryDriver]) || mismatch.primaryDriver || '-';
+    const mismatchScore = Number.isFinite(mismatch.mismatchScore) ? mismatch.mismatchScore.toFixed(2) : '-';
+
+    $('worstConditionValue').textContent = t['worstCondition' + riskKey];
+    $('worstRiskValue').textContent = `${t.worstDriverPrefix}: ${driverLabel}; ${window.i18n.tr[window.i18n.lang].mismatchScoreLabel} ${mismatchScore}.`;
+    $('worstConsequenceValue').textContent = t['worstConsequence' + riskKey];
+    block.hidden = false;
+  }
+
   function refresh(d=null){
     if(!d)d=getData();
     $('rProfit').textContent=window.i18n.fmtPct(d.pg);$('rCap').textContent=d.cp;
@@ -286,6 +309,7 @@
       const primaryAction=(spiralRec.recommendationBullets&&spiralRec.recommendationBullets[0])||(spiralRec.recommendationIntro||'').trim();
       $('execActionValue').textContent=primaryAction||tUi.execActionFallback;
     }
+    renderWorstCaseScenario(analysis);
 
     const sc=analysis.score;
     $('scoreVal').textContent=sc+'/100';

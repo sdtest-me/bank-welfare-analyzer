@@ -24,10 +24,10 @@
         ? safeResult.score
         : 50;
 
-    const hasMismatch = Number.isFinite(result?.mismatchScore);
     const mismatchScore = Number.isFinite(mismatch.mismatchScore) ? mismatch.mismatchScore : 1;
     const safeMismatch = Math.max(0, Math.min(1, toFinite(mismatchScore)));
-    const heavyMismatch = Math.pow(safeMismatch, 1.4);
+    // Stronger convex response to mismatch tail (calibration #75); keep architecture: single penalty + pressure.
+    const mismatchBoost = Math.pow(safeMismatch, 1.72);
     const riskLevel = typeof mismatch.riskLevel === 'string' ? mismatch.riskLevel : 'high';
 
     const bank = spiral.bank || {};
@@ -39,16 +39,21 @@
     const redGap = Math.max(0, (bank.red || 0) - (population.red || 0));
     const greenGap = Math.max(0, (population.green || 0) - (bank.green || 0));
     const structuralGap = STAGES.reduce((sum, stage) => sum + Math.abs((bank[stage] || 0) - (population[stage] || 0)), 0) / 2;
+    const structuralNorm = Math.min(structuralGap / 100, 1);
     const redPenalty = (bank.red || 0) > 25 ? 0.15 : 0;
     const dominantGapPenalty = Math.min(Math.abs(dominantGap) / 40, 1);
-    const penalty = Math.min(0.9,
-      0.6 * heavyMismatch +
-      0.25 * dominantGapPenalty +
-      0.15 * redPenalty
+    const penalty = Math.min(0.94,
+      0.78 * mismatchBoost +
+      0.28 * dominantGapPenalty +
+      0.15 * redPenalty +
+      0.12 * structuralNorm
     );
 
-    const mismatchPressure =
-      hasMismatch && safeMismatch > 0.30 ? 0.9 : 1;
+    // Extra amplitude for elevated mismatch: analyzeBank nests mismatch on result.mismatch (no top-level mismatchScore).
+    let mismatchPressure = 1;
+    if (safeMismatch > 0.30) {
+      mismatchPressure = 0.88 - 0.20 * Math.min(1, (safeMismatch - 0.30) / 0.55);
+    }
 
     const impactIndex = Math.max(0, Math.min(100,
       Math.round(baseImpact * (1 - penalty) * mismatchPressure)

@@ -130,7 +130,7 @@
     $('hTitle').textContent=`${d.bn} | ${window.i18n.tr[window.i18n.lang].app}`;
     refresh(d);
     localStorage.setItem('bwa_data',JSON.stringify(d));
-    $('resultsTitle').scrollIntoView({behavior:'smooth',block:'start'});
+    ($('execSummary')||$('resultsTitle')).scrollIntoView({behavior:'smooth',block:'start'});
   }
 
   function generateRecommendations(context){
@@ -260,8 +260,32 @@
     const esgInput = $('esgText') ? $('esgText').value : '';
     const analysis = window.analyzeBank({ ...d, esgText: esgInput });
     const spiral=analysis.spiral;
-    initSpiralChart(spiral.population,spiral.bank);
-    renderDetailedAnalysis(d,spiral.population,spiral.bank);
+    const tUi=window.i18n.tr[window.i18n.lang];
+    const stages=['beige','purple','red','blue','orange','green','yellow','turquoise'];
+    const iconsUi={beige:'🟤',purple:'🟣',red:'🔴',blue:'🔵',orange:'🟠',green:'🟢',yellow:'🟡',turquoise:'💎'};
+    const spiralPop=spiral.population;
+    const spiralBank=spiral.bank;
+    const bankDominant=stages.reduce((a,b)=>spiralBank[a]>spiralBank[b]?a:b);
+    const spiralRec=generateRecommendations({data:d,population:spiralPop,bank:spiralBank,bankD:bankDominant,icons:iconsUi,stages:tUi.stages});
+    initSpiralChart(spiralPop,spiralBank);
+    renderDetailedAnalysis(d,spiralPop,spiralBank);
+
+    const exSum=$('execSummary');
+    if(exSum){
+      const scPre=analysis.score;
+      const riskTier=scPre<40?'poor':scPre<70?'mixed':'good';
+      exSum.classList.remove('exec-summary--poor','exec-summary--mixed','exec-summary--good');
+      exSum.classList.add('exec-summary--'+riskTier);
+      $('execConditionValue').textContent=tUi[{'poor':'execConditionPoor','mixed':'execConditionMixed','good':'execConditionGood'}[riskTier]];
+      const mm=analysis.mismatch;
+      const lang=window.i18n.lang;
+      $('execRiskValue').textContent=(mm.explanationText&&mm.explanationText[lang])||mm.explanationText.en||'';
+      const pi=mm.predictiveImpact||{};
+      const consq=pi.shortTerm?(pi.shortTerm[lang]||pi.shortTerm.en):'';
+      $('execConsequenceValue').textContent=consq||tUi.execConsequenceUnavailable;
+      const primaryAction=(spiralRec.recommendationBullets&&spiralRec.recommendationBullets[0])||(spiralRec.recommendationIntro||'').trim();
+      $('execActionValue').textContent=primaryAction||tUi.execActionFallback;
+    }
 
     const sc=analysis.score;
     $('scoreVal').textContent=sc+'/100';

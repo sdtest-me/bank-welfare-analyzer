@@ -119,8 +119,18 @@
     .btn-outline:hover{background:#dbeafe}
     .sponsor-compare{margin-top:10px;padding:8px 10px;border-radius:8px;background:#fff;border:1px dashed #93c5fd;font-size:.8rem;color:#1e293b}
     .sponsor-compare div + div{margin-top:3px}
+    .exec-summary{background:var(--c);border-radius:12px;padding:16px 18px;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,0,0,.1);border-left:5px solid var(--tm)}
+    .exec-summary--poor{border-left-color:var(--d);background:#fffafa}
+    .exec-summary--mixed{border-left-color:var(--w);background:#fffefb}
+    .exec-summary--good{border-left-color:var(--s);background:#f6fef9}
+    .exec-summary__head{font-size:1.05rem;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+    .exec-summary__head::before{content:'';width:4px;height:16px;background:var(--p);border-radius:2px;flex-shrink:0}
+    .exec-summary__grid{display:grid;gap:12px}
+    .exec-summary__row{display:grid;grid-template-columns:minmax(0,120px) 1fr;gap:8px 14px;align-items:start;font-size:.9rem}
+    .exec-summary__label{color:var(--tm);font-weight:600;line-height:1.45;min-width:0}
+    .exec-summary__value{color:var(--t);line-height:1.55;overflow-wrap:anywhere;word-break:break-word;min-width:0}
     @media(max-width:600px){
-      body{padding:8px}header{padding:12px 14px;margin-bottom:12px}.logo{font-size:1rem}.logo-i{width:32px;height:32px;font-size:.85rem}.lang-b{padding:6px 12px;font-size:.85rem}.input-s{padding:14px;margin-bottom:12px;border-radius:10px}.input-h{flex-direction:column;align-items:flex-start;gap:8px;margin-bottom:14px}.sec-t{font-size:1.05rem;width:100%}.btn-p{width:100%;text-align:center;padding:13px 20px;font-size:1rem}.ex{padding:10px;margin-bottom:14px;border-radius:8px}.ex-label{width:100%;margin-bottom:6px;font-size:.8rem}.ex-b{flex:1;min-width:0;text-align:center;padding:8px 10px;font-size:.8rem}.form-g{grid-template-columns:1fr;gap:12px}.form-r{grid-template-columns:1fr;gap:10px}.form-gr input{padding:10px 12px;font-size:1rem}.res-t{font-size:1.05rem;margin-bottom:12px}.grid{grid-template-columns:1fr;gap:12px}.card{padding:14px;border-radius:10px}.card-t{font-size:1rem;margin-bottom:12px}.metric{flex-direction:column;align-items:flex-start;gap:4px;padding:8px 0}.metric-v{justify-content:flex-start;width:100%}.score-v{font-size:2.2rem}.score-l{font-size:.85rem}.chart-c{height:220px}.spiral-chart-container{height:320px}.stage-grid{grid-template-columns:1fr}.prob-i{padding:8px 0}.prob-i div:last-child{font-size:.85rem}.quest-i{font-size:.85rem;padding:8px 0}footer{padding:16px;font-size:.8rem}.stage-grid-detail{grid-template-columns:repeat(4,1fr)}
+      body{padding:8px}header{padding:12px 14px;margin-bottom:12px}.logo{font-size:1rem}.logo-i{width:32px;height:32px;font-size:.85rem}.lang-b{padding:6px 12px;font-size:.85rem}.input-s{padding:14px;margin-bottom:12px;border-radius:10px}.input-h{flex-direction:column;align-items:flex-start;gap:8px;margin-bottom:14px}.sec-t{font-size:1.05rem;width:100%}.btn-p{width:100%;text-align:center;padding:13px 20px;font-size:1rem}.ex{padding:10px;margin-bottom:14px;border-radius:8px}.ex-label{width:100%;margin-bottom:6px;font-size:.8rem}.ex-b{flex:1;min-width:0;text-align:center;padding:8px 10px;font-size:.8rem}.form-g{grid-template-columns:1fr;gap:12px}.form-r{grid-template-columns:1fr;gap:10px}.form-gr input{padding:10px 12px;font-size:1rem}.res-t{font-size:1.05rem;margin-bottom:12px}.exec-summary{padding:14px;margin-bottom:12px;border-radius:10px}.exec-summary__head{font-size:1rem;margin-bottom:10px}.exec-summary__row{grid-template-columns:1fr;gap:4px;font-size:.86rem}.exec-summary__label{font-size:.82rem}.grid{grid-template-columns:1fr;gap:12px}.card{padding:14px;border-radius:10px}.card-t{font-size:1rem;margin-bottom:12px}.metric{flex-direction:column;align-items:flex-start;gap:4px;padding:8px 0}.metric-v{justify-content:flex-start;width:100%}.score-v{font-size:2.2rem}.score-l{font-size:.85rem}.chart-c{height:220px}.spiral-chart-container{height:320px}.stage-grid{grid-template-columns:1fr}.prob-i{padding:8px 0}.prob-i div:last-child{font-size:.85rem}.quest-i{font-size:.85rem;padding:8px 0}footer{padding:16px;font-size:.8rem}.stage-grid-detail{grid-template-columns:repeat(4,1fr)}
     }
     @media(max-width:400px){.logo{font-size:.95rem;gap:8px}.logo-i{width:28px;height:28px;font-size:.8rem}.lang-b{padding:5px 10px;font-size:.8rem}.input-s{padding:12px}.ex-b{padding:7px 8px;font-size:.75rem}.score-v{font-size:1.8rem}.spiral-chart-container{height:280px}}
   </style>
@@ -165,6 +175,27 @@
     </section>
 
     <div id="resultsSection" style="display:none;">
+      <div id="execSummary" class="exec-summary exec-summary--mixed" role="region" aria-labelledby="execSummaryTitle">
+        <div class="exec-summary__head" id="execSummaryTitle">Executive summary</div>
+        <div class="exec-summary__grid">
+          <div class="exec-summary__row">
+            <div class="exec-summary__label" id="execLblCondition">Overall condition</div>
+            <div class="exec-summary__value" id="execConditionValue"></div>
+          </div>
+          <div class="exec-summary__row">
+            <div class="exec-summary__label" id="execLblRisk">Primary risk</div>
+            <div class="exec-summary__value" id="execRiskValue"></div>
+          </div>
+          <div class="exec-summary__row">
+            <div class="exec-summary__label" id="execLblConsequence">Expected consequence</div>
+            <div class="exec-summary__value" id="execConsequenceValue"></div>
+          </div>
+          <div class="exec-summary__row">
+            <div class="exec-summary__label" id="execLblAction">Recommended action</div>
+            <div class="exec-summary__value" id="execActionValue"></div>
+          </div>
+        </div>
+      </div>
       <div class="res-t" id="resultsTitle">📊 Результаты анализа</div>
       <div class="grid">
         <div class="card">

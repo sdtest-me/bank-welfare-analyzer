@@ -17,27 +17,37 @@
     const populationDominant = dominantStage(population);
     const driver = mismatch.primaryDriver || 'stageMismatch';
 
+    function tr(key) {
+      return (typeof window.i18n !== 'undefined' && typeof window.i18n.translate === 'function')
+        ? window.i18n.translate(key)
+        : key;
+    }
+    const driverLabels = (typeof window.i18n !== 'undefined' && typeof window.i18n.translate === 'function')
+      ? window.i18n.translate('driverLabels')
+      : {};
+    const primaryDriverLabel = (driverLabels && driverLabels[driver]) ? driverLabels[driver] : driver;
+
     const redGap = Math.max(0, (bank.red || 0) - (population.red || 0));
     const greenGap = Math.max(0, (population.green || 0) - (bank.green || 0));
     const esgAlignmentGap = Math.max(0, redGap + greenGap);
 
     const shortTermByDriver = {
-      redPressure: 'Reduce high-pressure loan practices: cap penalty fees, extend restructuring windows, and prioritize affordability checks.',
-      empathyGap: 'Launch borrower support protocols: hardship restructuring, transparent communication, and customer-relief options.',
-      stageMismatch: 'Rebalance product mix to local realities: simplify terms, add income-linked repayment options, and reduce friction points.',
-      welfareScorePenalty: 'Stabilize core welfare-sensitive indicators by easing effective borrowing costs and reducing extractive terms.',
-      esgClaimMismatch: 'Close the ESG trust gap: align public ESG claims with measurable borrower-level practices and disclosures.'
+      redPressure: tr('recShortTerm_redPressure'),
+      empathyGap: tr('recShortTerm_empathyGap'),
+      stageMismatch: tr('recShortTerm_stageMismatch'),
+      welfareScorePenalty: tr('recShortTerm_welfareScorePenalty'),
+      esgClaimMismatch: tr('recShortTerm_esgClaimMismatch')
     };
 
     const strategicByStage = {
-      red: 'Shift from Red-dominant extraction to Orange/Green value creation through productive lending and inclusive growth targets.',
-      blue: 'Retain Blue discipline while expanding Orange innovation in SME lending and outcome-based portfolio management.',
-      orange: 'Strengthen Orange execution with Green safeguards: pair growth KPIs with social affordability and resilience KPIs.',
-      green: 'Scale Green strengths into Yellow systems thinking: embed cross-sector welfare outcomes in credit strategy.',
-      yellow: 'Codify adaptive governance to keep portfolio decisions aligned with evolving population welfare patterns.',
-      turquoise: 'Preserve long-term systemic orientation while protecting near-term borrower resilience in volatile segments.',
-      beige: 'Move from survival-driven lending signals toward basic stability products and risk-aware inclusion pathways.',
-      purple: 'Transition from tradition-driven patterns to transparent, data-backed lending governance.'
+      red: tr('recStrategic_red'),
+      blue: tr('recStrategic_blue'),
+      orange: tr('recStrategic_orange'),
+      green: tr('recStrategic_green'),
+      yellow: tr('recStrategic_yellow'),
+      turquoise: tr('recStrategic_turquoise'),
+      beige: tr('recStrategic_beige'),
+      purple: tr('recStrategic_purple')
     };
 
     const rawImpact = (safeResult.impact || {}).impactIndex;
@@ -49,32 +59,32 @@
     const hasImpact = Number.isFinite(impactIndex);
 
     const tieredStrategicRecommendation = !hasImpact
-      ? 'Maintain a balanced transition posture until impact data is available, then align actions to measured borrower outcomes.'
+      ? tr('recTier_noImpact')
       : impactIndex > 70
-        ? 'Stable alignment detected: reinforce current strategy with disciplined monitoring and incremental borrower-outcome improvements.'
+        ? tr('recTier_highImpact')
         : impactIndex >= 50
-          ? 'Transitional alignment detected: prioritize targeted portfolio adjustments to improve welfare alignment and execution consistency.'
-          : 'Structural risk detected: execute a structural-risk correction plan focused on affordability, governance, and stage-realignment.';
+          ? tr('recTier_midImpact')
+          : tr('recTier_lowImpact');
 
     const riskMitigation = [];
     if (esgAlignmentGap >= 20) {
-      riskMitigation.push('High ESG alignment gap detected: institute quarterly audit of promised ESG outcomes vs borrower experience.');
+      riskMitigation.push(tr('recRisk_esgHigh'));
     } else {
-      riskMitigation.push('Monitor ESG alignment every quarter to prevent drift between stated values and field behavior.');
+      riskMitigation.push(tr('recRisk_esgMonitor'));
     }
 
     if (mismatch.riskLevel === 'high') {
-      riskMitigation.push('Set a 90-day risk response plan with board oversight for vulnerable borrower segments.');
+      riskMitigation.push(tr('recRisk_levelHigh'));
     } else if (mismatch.riskLevel === 'medium') {
-      riskMitigation.push('Use monthly early-warning dashboards for delinquency, restructuring, and social stress signals.');
+      riskMitigation.push(tr('recRisk_levelMedium'));
     } else {
-      riskMitigation.push('Maintain light-touch monitoring and keep preventive affordability controls active.');
+      riskMitigation.push(tr('recRisk_levelLow'));
     }
 
     return {
       shortTermActions: [
         shortTermByDriver[driver] || shortTermByDriver.stageMismatch,
-        `Primary mismatch driver to address first: ${driver}.`
+        tr('recPrimaryDriverTemplate').replace('{driver}', primaryDriverLabel)
       ],
       strategicShift: {
         dominantBankStage: bankDominant,

@@ -131,16 +131,22 @@
     function calculateImpactIndexForRisk() {
       const baseImpact = score;
       const safeMismatch = clamp01(mismatchScore);
-      const heavyMismatch = Math.pow(safeMismatch, 1.4);
+      // Keep in sync with calculateImpact() in impact.js (PR #116 calibration)
+      const heavyMismatch = Math.pow(safeMismatch, 1.72);
       const dominantGap = (bank[bankDominant] || 0) - (population[popDominant] || 0);
       const redPenalty = (bank.red || 0) > 25 ? 0.15 : 0;
       const dominantGapPenalty = Math.min(Math.abs(dominantGap) / 40, 1);
-      const penalty = Math.min(0.9,
-        0.6 * heavyMismatch +
-        0.25 * dominantGapPenalty +
-        0.15 * redPenalty
+      const structuralNorm = Math.min(structuralGap / 100, 1);
+      const penalty = Math.min(0.94,
+        0.78 * heavyMismatch +
+        0.28 * dominantGapPenalty +
+        0.15 * redPenalty +
+        0.12 * structuralNorm
       );
-      const mismatchPressure = safeMismatch > 0.30 ? 0.9 : 1;
+      let mismatchPressure = 1;
+      if (safeMismatch > 0.30) {
+        mismatchPressure = 0.88 - 0.20 * Math.min(1, (safeMismatch - 0.30) / 0.55);
+      }
 
       return Math.max(0, Math.min(100,
         Math.round(baseImpact * (1 - penalty) * mismatchPressure)

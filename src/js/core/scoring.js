@@ -1,5 +1,6 @@
 (function () {
   function normalizeAndCap(obj, max=40){
+    for(let k in obj) obj[k]=Number.isFinite(obj[k]) ? Math.max(0,obj[k]) : 0;
     let total=Object.values(obj).reduce((a,b)=>a+b,0);
     if(total===0)return;
     for(let k in obj) obj[k]=(obj[k]/total)*100;
@@ -20,64 +21,125 @@
     let keys=Object.keys(obj), sum=0;
     for(let k of keys){obj[k]=Math.round(obj[k]);sum+=obj[k];}
     let diff=100-sum;
-    if(diff!==0){let target=keys.find(k => obj[k] + diff <= max); if(!target) target = keys[0]; obj[target] += diff;}
+    if(diff>0){let target=keys.find(k => obj[k] + diff <= max); if(!target) target = keys[0]; obj[target] += diff;}
+    if(diff<0){
+      let remaining=-diff;
+      for(let k of keys.sort((a,b)=>obj[b]-obj[a])){
+        let take=Math.min(remaining,obj[k]);
+        obj[k]-=take;
+        remaining-=take;
+        if(remaining===0)break;
+      }
+    }
   }
 
+  function clamp(value, min, max){return Math.max(min,Math.min(max,value));}
+  function finite(value, fallback=0){return Number.isFinite(value) ? value : fallback;}
+  function scale(value, min, max){return clamp((value-min)/(max-min),0,1);}
+  function amplified(signal, power=1.9){return Math.pow(Math.max(0,signal),power);}
+
   function calculateSpiralStages(data){
+    data = data || {};
     const safeData = {
       ...data,
-      cp: Number.isFinite(data.cp) ? data.cp : 50,
-      di: Number.isFinite(data.di) ? data.di : 50,
-      co2: Number.isFinite(data.co2) ? data.co2 : 50,
+      pg: finite(data.pg),
+      cp: finite(data.cp, 50),
+      di: finite(data.di, 50),
+      im: finite(data.im),
+      ix: finite(data.ix),
+      ig: finite(data.ig),
+      pr: finite(data.pr),
+      gd: finite(data.gd),
+      cc: finite(data.cc),
+      cb: finite(data.cb),
+      co2: finite(data.co2, 50),
     };
     const pop={beige:0,purple:0,red:0,blue:0,orange:0,green:0,yellow:0,turquoise:0};
     const bank={beige:0,purple:0,red:0,blue:0,orange:0,green:0,yellow:0,turquoise:0};
 
-    if (data.cc > 40) {
+    if (safeData.cc > 40) {
       pop.beige = 40;
-      pop.purple = Math.min(15, 15 - (data.gd / 300));
+      pop.purple = Math.min(15, 15 - (safeData.gd / 300));
       pop.red = 5;
       pop.blue = 25;
-      pop.orange = Math.min(5, data.gd / 500);
-      pop.green = Math.min(15, (data.pr * 0.4) + 2);
+      pop.orange = Math.min(5, safeData.gd / 500);
+      pop.green = Math.min(15, (safeData.pr * 0.4) + 2);
       pop.yellow = 0;
       pop.turquoise = 0;
     } else {
-      pop.beige = Math.min(30, data.pr * 1.2);
-      pop.purple = Math.min(25, 30 - (data.gd / 200));
-      pop.red = Math.min(35, 20 + data.pr * 0.4);
+      pop.beige = Math.min(30, safeData.pr * 1.2);
+      pop.purple = Math.min(25, 30 - (safeData.gd / 200));
+      pop.red = Math.min(35, 20 + safeData.pr * 0.4);
       pop.blue = 33;
-      pop.orange = Math.min(25, data.gd / 150);
-      pop.green = Math.min(20, data.pr * 0.5);
-      pop.yellow = Math.min(15, data.ig > 10 ? 12 : 5);
+      pop.orange = Math.min(25, safeData.gd / 150);
+      pop.green = Math.min(20, safeData.pr * 0.5);
+      pop.yellow = Math.min(15, safeData.ig > 10 ? 12 : 5);
       pop.turquoise = 0;
     }
 
-    const profitGap = data.pg / Math.max(data.ig, 1);
-    const interestSpread = Math.max(0, data.ix - data.im);
-    const capitalDiscipline = Math.max(0, Math.min(35, (safeData.cp * 0.22) + ((100 - safeData.di) * 0.18)));
-    const welfareSignal = Math.max(0, (data.ig * 1.4) + ((100 - data.pr) * 0.25) + ((100 - safeData.co2) * 0.16));
+    const profitGap = safeData.pg / Math.max(safeData.ig, 1);
+    const interestSpread = Math.max(0, safeData.ix - safeData.im);
 
-    bank.beige = safeData.cp < 10 ? Math.min(28, (10 - safeData.cp) * 7) : 1;
-    bank.purple = Math.min(11, Math.max(2, 5 + (safeData.cp < 12 ? 2 : 0) - (data.cb > 35 ? 2 : 0)));
+    const consumerPressure = scale(safeData.cc, 15, 70);
+    const businessFocus = scale(safeData.cb, 8, 60);
+    const profitMomentum = scale(safeData.pg, 5, 220);
+    const incomeMomentum = scale(safeData.ig, 0, 25);
+    const povertyPressure = scale(safeData.pr, 5, 45);
+    const spreadPressure = scale(interestSpread, 2, 22);
+    const extractionGap = scale(profitGap, 1.5, 8);
+    const capitalStrength = scale(safeData.cp, 8, 80);
+    const dividendDiscipline = 1 - scale(safeData.di, 20, 100);
+    const diversifiedCredit = scale(safeData.co2, 8, 45);
 
-    // Stage-specific drivers with competitive amplification to create decisive peaks when signals are strong.
-    const redSignal = Math.max(0, (data.cc * 0.95) + (interestSpread * 2.4) + (profitGap * 3.2) - (data.cb * 0.4) - (data.ig * 0.5));
-    const orangeSignal = Math.max(0, (data.pg * 0.45) + (data.cb * 1.28) + (profitGap < 3 ? 8 : 3) - (data.cc * 0.4));
-    const blueSignal = Math.max(0, (capitalDiscipline * 2.2) + (safeData.cp > 35 ? 11 : 4) - (interestSpread * 0.75));
-    const greenSignal = Math.max(0, (welfareSignal * 1.5) + (data.ig * 1.35) + ((100 - safeData.di) * 0.3) - (data.cc * 0.45));
+    bank.beige = 0.10 + amplified(1 - capitalStrength, 1.6) * 0.40 + povertyPressure * 0.12;
+    bank.purple = 0.08 + amplified(povertyPressure, 1.4) * 0.18 + (consumerPressure > 0.75 ? 0.08 : 0);
 
-    const competitivePower = 1.7;
-    bank.red = Math.min(38, Math.max(6, Math.pow(redSignal / 20, competitivePower) * 10 + 6));
-    bank.orange = Math.min(35, Math.max(6, Math.pow(orangeSignal / 25, competitivePower) * 10 + 4));
-    bank.blue = Math.min(37, Math.max(7, Math.pow(blueSignal / 21, competitivePower) * 10 + 5));
-    bank.green = Math.min(37, Math.max(6, Math.pow(greenSignal / 24, competitivePower) * 10 + 5 + (data.ig > 15 ? 4 : 0) + (data.pr < 10 ? 3 : 0)));
+    // Distinct earned signals. Orange has no central fallback: it must come from growth,
+    // business lending, and real-economy expansion rather than weak normalization residue.
+    const redSignal =
+      0.07 +
+      amplified(consumerPressure, 1.35) * 1.25 +
+      amplified(spreadPressure, 1.25) * 0.85 +
+      amplified(extractionGap, 1.2) * 0.75 +
+      povertyPressure * 0.28 -
+      businessFocus * 0.42 -
+      incomeMomentum * 0.30;
 
-    bank.yellow = Math.min(17, Math.max(4, 6 + (data.cb > 28 ? 3 : 0) + (data.ig > 10 ? 2 : 0) - (profitGap > 6 ? 2 : 0)));
-    bank.turquoise = Math.min(9, Math.max(1, (data.ig > 12 ? 4 : 2) + (data.pr < 12 ? 2 : 0)));
+    const orangeSignal =
+      0.03 +
+      amplified(businessFocus, 1.25) * 1.55 +
+      amplified(profitMomentum, 1.15) * 0.85 +
+      incomeMomentum * 0.45 -
+      consumerPressure * 0.62 -
+      spreadPressure * 0.15;
+
+    const blueSignal =
+      0.10 +
+      amplified(capitalStrength, 1.2) * 1.10 +
+      dividendDiscipline * 0.78 +
+      (1 - spreadPressure) * 0.42 +
+      (1 - extractionGap) * 0.24 -
+      consumerPressure * 0.26;
+
+    const greenSignal =
+      0.07 +
+      amplified(incomeMomentum, 1.25) * 1.10 +
+      (1 - povertyPressure) * 0.48 +
+      dividendDiscipline * 0.38 +
+      diversifiedCredit * 0.25 -
+      consumerPressure * 0.32 +
+      (safeData.pr < 12 ? 0.12 : 0);
+
+    const competitivePower = 2.05;
+    bank.red = 0.55 + amplified(redSignal, competitivePower) * 18;
+    bank.orange = 0.45 + amplified(orangeSignal, competitivePower) * 18;
+    bank.blue = 0.75 + amplified(blueSignal, competitivePower) * 16;
+    bank.green = 0.65 + amplified(greenSignal, competitivePower) * 17;
+    bank.yellow = 0.38 + amplified((businessFocus + incomeMomentum + capitalStrength) / 3, 1.8) * 4.2 + (profitGap < 2.5 ? 0.8 : 0);
+    bank.turquoise = 0.20 + amplified((incomeMomentum + (1 - povertyPressure) + diversifiedCredit) / 3, 2.1) * 2.6;
 
     normalizeAndCap(pop);
-    normalizeAndCap(bank);
+    normalizeAndCap(bank, 45);
     return{population:pop,bank};
   }
 

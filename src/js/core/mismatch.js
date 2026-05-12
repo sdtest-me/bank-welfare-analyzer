@@ -272,9 +272,24 @@
           ? { en: 'Moderate misalignment risk that needs monitoring.', ru: 'Умеренный риск несоответствия, требуется мониторинг.' }
           : { en: 'Current indicators suggest limited immediate mismatch exposure.', ru: 'Текущие индикаторы указывают на ограниченную немедленную экспозицию несоответствия.' };
 
+      function localizedStageName(stageKey) {
+        try {
+          const i18n = typeof window !== 'undefined' ? window.i18n : null;
+          const lang = i18n && i18n.lang;
+          const bundle = i18n && i18n.tr && lang ? i18n.tr[lang] : null;
+          const stages = bundle && bundle.stages;
+          const label = stages && stages[stageKey];
+          if (typeof label === 'string' && label.length) return label;
+        } catch (error) {
+          /* ignore i18n access errors */
+        }
+        return stageKey;
+      }
+      const bankStageLabel = localizedStageName(bankDominant);
+      const populationStageLabel = localizedStageName(popDominant);
       return {
-        en: `${riskText.en} ${uncertaintyText.en} Main reason: ${labels[primaryDriver].en} Mismatch score ${mismatchScore.toFixed(2)}. ESG confidence ${confidencePct}%. Driver confidence ${Math.round(driverConfidence * 100)}%. Dominant stages: bank ${bankDominant}, population ${popDominant}.`,
-        ru: `${riskText.ru} ${uncertaintyText.ru} Главная причина: ${labels[primaryDriver].ru} Индекс несоответствия ${mismatchScore.toFixed(2)}. Уверенность ESG ${confidencePct}%. Уверенность драйвера ${Math.round(driverConfidence * 100)}%. Доминирующие стадии: банк ${bankDominant}, население ${popDominant}.`
+        en: `${riskText.en} ${uncertaintyText.en} Main reason: ${labels[primaryDriver].en} Mismatch score ${mismatchScore.toFixed(2)}. ESG confidence ${confidencePct}%. Driver confidence ${Math.round(driverConfidence * 100)}%. Dominant stages: bank — ${bankStageLabel}, population — ${populationStageLabel}.`,
+        ru: `${riskText.ru} ${uncertaintyText.ru} Главная причина: ${labels[primaryDriver].ru} Индекс несоответствия ${mismatchScore.toFixed(2)}. Уверенность ESG ${confidencePct}%. Уверенность драйвера ${Math.round(driverConfidence * 100)}%. Доминирующая стадия банка — ${bankStageLabel}, населения — ${populationStageLabel}.`
       };
     }
 
@@ -301,9 +316,18 @@
     function buildPredictiveImpact(primaryDriver, driverConfidence) {
       const stageGapSigned = (bank[bankDominant] || 0) - (population[popDominant] || 0);
       const tensionLevel = mismatchScore >= 0.67 ? 'high' : mismatchScore >= 0.34 ? 'medium' : 'low';
+      function localStage(key) {
+        try {
+          const b = window.i18n && window.i18n.tr && window.i18n.lang ? window.i18n.tr[window.i18n.lang] : null;
+          const s = b && b.stages && b.stages[key];
+          return (typeof s === 'string' && s.length) ? s : key;
+        } catch(e) { return key; }
+      }
+      const bankStageLocalized = localStage(bankDominant);
+      const popStageLocalized = localStage(popDominant);
       const stageContext = {
-        en: `Bank dominant stage ${bankDominant} (${bank[bankDominant] || 0}%) vs population ${popDominant} (${population[popDominant] || 0}%), gap ${Math.round(stageGapSigned)}pp.`,
-        ru: `Доминирующая стадия банка ${bankDominant} (${bank[bankDominant] || 0}%) против населения ${popDominant} (${population[popDominant] || 0}%), разрыв ${Math.round(stageGapSigned)} п.п.`
+        en: `Bank dominant stage ${bankStageLocalized} (${bank[bankDominant] || 0}%) vs population ${popStageLocalized} (${population[popDominant] || 0}%), gap ${Math.round(stageGapSigned)}pp.`,
+        ru: `Доминирующая стадия банка ${bankStageLocalized} (${bank[bankDominant] || 0}%) против населения ${popStageLocalized} (${population[popDominant] || 0}%), разрыв ${Math.round(stageGapSigned)} п.п.`
       };
       const driverImpact = {
         redPressure: {

@@ -290,7 +290,9 @@
     const spiralPop=spiral.population;
     const spiralBank=spiral.bank;
     const bankDominant=stages.reduce((a,b)=>spiralBank[a]>spiralBank[b]?a:b);
-    const spiralRec=generateRecommendations({data:d,population:spiralPop,bank:spiralBank,bankD:bankDominant,icons:iconsUi,stages:tUi.stages});
+    const spiralImpact = typeof window.calculateImpact === 'function' ? window.calculateImpact(analysis) : null;
+    const spiralImpactIndex = spiralImpact && Number.isFinite(spiralImpact.impactIndex) ? spiralImpact.impactIndex : null;
+    const spiralRec=generateRecommendations({data:d,population:spiralPop,bank:spiralBank,bankD:bankDominant,icons:iconsUi,stages:tUi.stages,impact:{impactIndex:spiralImpactIndex}});
     initSpiralChart(spiralPop,spiralBank);
     renderDetailedAnalysis(d,spiralPop,spiralBank);
 

@@ -139,7 +139,7 @@
     bank.turquoise = 0.20 + amplified((incomeMomentum + (1 - povertyPressure) + diversifiedCredit) / 3, 2.1) * 2.6;
 
     normalizeAndCap(pop);
-    normalizeAndCap(bank, 45);
+    normalizeAndCap(bank);
     return{population:pop,bank};
   }
 

@@ -139,20 +139,69 @@
     ]
   };
 
-  const GENERIC_ESG_BUZZWORDS = ['esg', 'sustainable', 'sustainability', 'green finance', 'устойчив', 'зел', 'социальн'];
+  const GENERIC_ESG_BUZZWORDS = [
+    'esg',
+    'sustainable',
+    'sustainability',
+    'green finance',
+    'innovation',
+    'innovative',
+    'responsible banking',
+    'устойчив',
+    'зел',
+    'социальн',
+    'инновац'
+  ];
   const STAGES = ['beige', 'purple', 'red', 'blue', 'orange', 'green', 'yellow', 'turquoise'];
+
+  function normalizeText(value) {
+    return value.toLowerCase().replace(/\s+/g, ' ').trim();
+  }
+
+  function countWords(text) {
+    if (!text) return 0;
+    const matches = text.match(/[a-zа-яё0-9]+/gi);
+    return matches ? matches.length : 0;
+  }
+
+  function isBoundaryCharacter(character) {
+    return !character || !/[a-zа-яё0-9]/i.test(character);
+  }
+
+  function isStemKeyword(keyword) {
+    return /[а-яё]$/i.test(keyword) || keyword === 'decarbon';
+  }
 
   function countOccurrences(text, keyword) {
     if (!keyword) return 0;
+    const normalizedKeyword = normalizeText(keyword);
+    const allowStemSuffix = isStemKeyword(normalizedKeyword);
     let fromIndex = 0;
     let count = 0;
+
     while (fromIndex < text.length) {
-      const foundIndex = text.indexOf(keyword, fromIndex);
+      const foundIndex = text.indexOf(normalizedKeyword, fromIndex);
       if (foundIndex === -1) break;
-      count += 1;
-      fromIndex = foundIndex + keyword.length;
+
+      const before = text.charAt(foundIndex - 1);
+      const after = text.charAt(foundIndex + normalizedKeyword.length);
+      if (isBoundaryCharacter(before) && (allowStemSuffix || isBoundaryCharacter(after))) {
+        count += 1;
+      }
+
+      fromIndex = foundIndex + normalizedKeyword.length;
     }
+
     return count;
+  }
+
+  function dampenRepeatedSignal(frequency) {
+    if (frequency <= 1) return frequency;
+    return 1 + Math.log(frequency);
+  }
+
+  function roundMetric(value) {
+    return Number(value.toFixed(3));
   }
 
   function mapValuesToBehavior(esgText) {
@@ -167,27 +216,51 @@
       };
     }
 
-    const text = esgText.toLowerCase();
+    const text = normalizeText(esgText);
     const stageScores = {};
     const stageFrequencies = {};
 
     STAGES.forEach((stage) => {
       const weighted = (STAGE_KEYWORDS[stage] || []).reduce((sum, entry) => {
         const frequency = countOccurrences(text, entry.term);
+        const dampenedFrequency = dampenRepeatedSignal(frequency);
         if (frequency > 0) {
           stageFrequencies[stage] = (stageFrequencies[stage] || 0) + frequency;
-          debugLog('keyword match', { stage, term: entry.term, frequency, weight: entry.weight });
+          debugLog('keyword match', {
+            stage,
+            term: entry.term,
+            frequency,
+            dampenedFrequency: roundMetric(dampenedFrequency),
+            weight: entry.weight
+          });
         }
-        return sum + (frequency * entry.weight);
+        return sum + (dampenedFrequency * entry.weight);
       }, 0);
 
-      stageScores[stage] = Number(weighted.toFixed(3));
+      stageScores[stage] = roundMetric(weighted);
       debugLog('stage score', { stage, score: stageScores[stage], frequency: stageFrequencies[stage] || 0 });
     });
 
+    const wordCount = countWords(text);
+    const totalKeywordMatches = STAGES.reduce((sum, stage) => sum + (stageFrequencies[stage] || 0), 0);
     const buzzwordFrequency = GENERIC_ESG_BUZZWORDS.reduce((sum, term) => sum + countOccurrences(text, term), 0);
-    const buzzwordPenalty = Math.min(0.65, buzzwordFrequency * 0.08);
-    debugLog('penalty', { type: 'buzzword', buzzwordFrequency, buzzwordPenalty: Number(buzzwordPenalty.toFixed(3)) });
+    const keywordDensity = wordCount > 0 ? totalKeywordMatches / wordCount : 0;
+    const buzzwordDensity = wordCount > 0 ? buzzwordFrequency / wordCount : 0;
+    const totalCommunicationMarkers = totalKeywordMatches + buzzwordFrequency;
+    const buzzwordShare = totalCommunicationMarkers > 0 ? buzzwordFrequency / totalCommunicationMarkers : 0;
+    const buzzwordOveruse = buzzwordFrequency >= 4 && (buzzwordDensity >= 0.08 || buzzwordShare >= 0.55);
+    const buzzwordPenalty = Math.min(
+      0.75,
+      (buzzwordFrequency * 0.045) + (buzzwordDensity * 1.4) + (buzzwordShare * 0.12) + (buzzwordOveruse ? 0.18 : 0)
+    );
+    debugLog('penalty', {
+      type: 'buzzword',
+      buzzwordFrequency,
+      buzzwordDensity: roundMetric(buzzwordDensity),
+      buzzwordShare: roundMetric(buzzwordShare),
+      buzzwordOveruse,
+      buzzwordPenalty: roundMetric(buzzwordPenalty)
+    });
 
     const rankedStages = STAGES
       .map((stage) => ({ stage, score: stageScores[stage] }))
@@ -202,26 +275,48 @@
     const totalWeightedSignal = rankedStages.reduce((sum, entry) => sum + entry.score, 0);
     const separation = topScore > 0 ? (topScore - secondScore) / topScore : 0;
     const evidence = 1 - Math.exp(-totalWeightedSignal / 6);
-    const confidence = Math.max(0, Math.min(1, (0.45 * separation + 0.55 * evidence) - buzzwordPenalty));
+    const densityPenalty = keywordDensity > 0.35 ? Math.min(0.2, (keywordDensity - 0.35) * 0.9) : 0;
+    const confidence = Math.max(0, Math.min(1, (0.45 * separation + 0.55 * evidence) - buzzwordPenalty - densityPenalty));
     debugLog('confidence calculation', {
       topScore,
       secondScore,
-      totalWeightedSignal: Number(totalWeightedSignal.toFixed(3)),
-      separation: Number(separation.toFixed(3)),
-      evidence: Number(evidence.toFixed(3)),
-      buzzwordPenalty: Number(buzzwordPenalty.toFixed(3)),
-      confidence: Number(confidence.toFixed(3))
+      totalWeightedSignal: roundMetric(totalWeightedSignal),
+      separation: roundMetric(separation),
+      evidence: roundMetric(evidence),
+      buzzwordPenalty: roundMetric(buzzwordPenalty),
+      densityPenalty: roundMetric(densityPenalty),
+      confidence: roundMetric(confidence)
     });
+
+    const keywordDensityIndicators = {
+      wordCount,
+      totalKeywordMatches,
+      totalCommunicationMarkers,
+      totalWeightedSignal: roundMetric(totalWeightedSignal),
+      keywordDensity: roundMetric(keywordDensity),
+      buzzwordDensity: roundMetric(buzzwordDensity),
+      buzzwordShare: roundMetric(buzzwordShare),
+      buzzwordOveruse
+    };
 
     return {
       hasInput: true,
       detectedStages,
       primaryStage,
-      confidence: Number(confidence.toFixed(3)),
+      confidence: roundMetric(confidence),
       stageScores,
       stageFrequencies,
+      keywordDensityIndicators,
+      wordCount,
+      totalKeywordMatches,
+      totalCommunicationMarkers,
+      keywordDensity: roundMetric(keywordDensity),
       buzzwordFrequency,
-      buzzwordPenalty: Number(buzzwordPenalty.toFixed(3)),
+      buzzwordDensity: roundMetric(buzzwordDensity),
+      buzzwordShare: roundMetric(buzzwordShare),
+      buzzwordOveruse,
+      buzzwordPenalty: roundMetric(buzzwordPenalty),
+      densityPenalty: roundMetric(densityPenalty),
       stageExpectations: STAGE_EXPECTATIONS
     };
   }

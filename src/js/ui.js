@@ -136,9 +136,10 @@
   function generateRecommendations(context){
     const lang = window.i18n.lang;
     const t = window.tr('recommendationTexts') || {};
+    const stageMeanings = window.tr('stageMeaning') || {};
     const bankDominantText = context.bankD === 'red'
       ? (lang === 'ru' ? t.bankDominantRedRu : t.bankDominantRedEn)
-      : (lang === 'ru' ? t.bankDominantOtherRu : t.bankDominantOtherEn);
+      : (stageMeanings[context.bankD] || (lang === 'ru' ? t.bankDominantOtherRu : t.bankDominantOtherEn));
 
     const tokens = {
       redIcon: context.icons.red,

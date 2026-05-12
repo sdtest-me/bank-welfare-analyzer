@@ -47,6 +47,23 @@
     return Math.max(0, Math.min(1, value));
   }
 
+  function amplifyGap(gap, normalizer) {
+    const safeGap = Math.max(0, gap || 0);
+    const safeNormalizer = Math.max(1, normalizer || 1);
+    const linearPressure = clamp01(safeGap / safeNormalizer);
+
+    if (safeGap <= 5) {
+      return linearPressure * 0.8;
+    }
+
+    const amplifiedTail = Math.pow(
+      clamp01((safeGap - 5) / Math.max(1, safeNormalizer - 5)),
+      1.3
+    );
+
+    return clamp01(linearPressure + amplifiedTail * 0.3);
+  }
+
 
   function calculateMismatch(scoringOutput, esgText) {
     const safeOutput = scoringOutput || {};
@@ -68,9 +85,15 @@
     const scorePenalty = (100 - score) / 100;
     debugLog('penalties', { claimsPenalty, scorePenalty: Number(scorePenalty.toFixed(3)) });
 
-    const baseStagePressure = (redGap / 40) * 0.4 + (greenGap / 40) * 0.3;
-    const structuralPressure = (structuralGap / 100) * 0.2;
-    const scorePressure = scorePenalty * 0.1;
+    const redPressure = amplifyGap(redGap, 40);
+    const empathyPressure = amplifyGap(greenGap, 40);
+    const dominantStagePressure = amplifyGap(stageGap, 50);
+    const structuralMismatchPressure = amplifyGap(structuralGap, 100);
+
+    const baseStagePressure = redPressure * 0.42 + empathyPressure * 0.34;
+    const structuralPressure = structuralMismatchPressure * 0.18;
+    const stageGapPressure = dominantStagePressure * 0.12;
+    const scorePressure = scorePenalty * 0.08;
 
     const heavyGapBoost = clamp01(((redGap + greenGap + stageGap) / 120) ** 1.4);
     const spreadFactor = clamp01(((structuralGap / 100) + (stageGap / 50)) / 2);
@@ -78,9 +101,10 @@
     const mismatchScore = clamp01(
       baseStagePressure +
       structuralPressure +
+      stageGapPressure +
       scorePressure +
       claimsPenalty +
-      heavyGapBoost * 0.14 +
+      heavyGapBoost * 0.12 +
       spreadFactor * 0.08
     );
     debugLog('stage scores', {
@@ -90,6 +114,10 @@
       greenGap: Number(greenGap.toFixed(3)),
       structuralGap: Number(structuralGap.toFixed(3)),
       dominantStageGap: Number(stageGap.toFixed(3)),
+      redPressure: Number(redPressure.toFixed(3)),
+      empathyPressure: Number(empathyPressure.toFixed(3)),
+      dominantStagePressure: Number(dominantStagePressure.toFixed(3)),
+      structuralMismatchPressure: Number(structuralMismatchPressure.toFixed(3)),
       heavyGapBoost: Number(heavyGapBoost.toFixed(3)),
       spreadFactor: Number(spreadFactor.toFixed(3)),
       mismatchScore: Number(mismatchScore.toFixed(3))
@@ -150,22 +178,22 @@
       const ambiguityFloor = 0.085;
       const scoreFactors = {
         redPressure: {
-          score: (redGap / 40) * 0.4,
-          signal: redGap / 40,
-          confidenceWeight: 1.05
+          score: redPressure * 0.42,
+          signal: redPressure,
+          confidenceWeight: 1.12
         },
         empathyGap: {
-          score: (greenGap / 40) * 0.3,
-          signal: greenGap / 40,
-          confidenceWeight: 1
+          score: empathyPressure * 0.34,
+          signal: empathyPressure,
+          confidenceWeight: 1.08
         },
         stageMismatch: {
-          score: (structuralGap / 100) * 0.2 + (stageGap / 50) * 0.08,
-          signal: clamp01(((structuralGap / 100) + (stageGap / 50)) / 2),
-          confidenceWeight: 0.95
+          score: structuralMismatchPressure * 0.18 + dominantStagePressure * 0.12,
+          signal: clamp01((structuralMismatchPressure + dominantStagePressure) / 2),
+          confidenceWeight: 1.02
         },
         welfareScorePenalty: {
-          score: scorePenalty * 0.1,
+          score: scorePenalty * 0.08,
           signal: scorePenalty,
           confidenceWeight: 0.75
         },

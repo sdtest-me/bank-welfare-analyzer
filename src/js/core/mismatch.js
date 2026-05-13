@@ -239,7 +239,7 @@
       const labels = {
         redPressure: {
           en: 'Bank pressure (Red stage) is much higher than social resistance.',
-          ru: 'Давление банка (стадия Red) значительно выше сопротивления общества.'
+          ru: 'Давление банка (Красная стадия) значительно выше сопротивления общества.'
         },
         empathyGap: {
           en: 'Population relies on mutual aid more than the bank shows empathy.',
@@ -327,7 +327,7 @@
       const popStageLocalized = localStage(popDominant);
       const stageContext = {
         en: `Bank dominant stage ${bankStageLocalized} (${bank[bankDominant] || 0}%) vs population ${popStageLocalized} (${population[popDominant] || 0}%), gap ${Math.round(stageGapSigned)}pp.`,
-        ru: `Доминирующая стадия банка ${bankStageLocalized} (${bank[bankDominant] || 0}%) против населения ${popStageLocalized} (${population[popDominant] || 0}%), разрыв ${Math.round(stageGapSigned)} п.п.`
+        ru: `Доминирующая стадия банка — ${bankStageLocalized} (${bank[bankDominant] || 0}%), населения — ${popStageLocalized} (${population[popDominant] || 0}%), разрыв ${Math.round(stageGapSigned)} п.п.`
       };
       const driverImpact = {
         redPressure: {

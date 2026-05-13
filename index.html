@@ -145,6 +145,15 @@
     .exec-summary__row{display:grid;grid-template-columns:minmax(0,120px) 1fr;gap:8px 14px;align-items:start;font-size:.9rem}
     .exec-summary__label{color:var(--tm);font-weight:600;line-height:1.45;min-width:0}
     .exec-summary__value{color:var(--t);line-height:1.55;overflow-wrap:anywhere;word-break:break-word;min-width:0}
+    .exec-summary--decision-card{padding:12px 14px;margin-bottom:12px;border-radius:10px}
+    .exec-summary__head--card{font-size:.98rem;margin-bottom:8px}
+    .exec-summary__grid--card{gap:0}
+    .exec-summary__row--card{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px solid var(--b)}
+    .exec-summary__row--card:last-child{border-bottom:none}
+    .exec-summary__row--card .exec-summary__label{flex:0 0 auto;width:160px;font-size:.78rem;font-weight:700;line-height:1.35}
+    .exec-summary__value--card{flex:1;min-width:0;text-align:left;font-size:.86rem;font-weight:600;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+
+    #execSignalReliabilityValue{display:inline-block;margin-left:auto;padding:3px 10px;border-radius:999px;background:var(--ib);border:1px solid var(--b);font-size:.8rem}
     .worst-case{background:#fff7ed;border-radius:12px;padding:14px 18px;margin-bottom:16px;border-left:5px solid #ea580c;box-shadow:0 1px 3px rgba(0,0,0,.08)}
     .worst-case[hidden]{display:none!important}
     .worst-case__head{font-size:1rem;font-weight:700;color:#9a3412;margin-bottom:10px}
@@ -156,7 +165,7 @@
     .results-toolbar{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px;margin:8px 0 14px}
     .results-toolbar .res-t{margin:0;flex:1;min-width:min(100%,220px)}
     @media(max-width:600px){
-      body{padding:8px}header{padding:12px 14px;margin-bottom:12px}.logo{font-size:1rem}.logo-i{width:32px;height:32px;font-size:.85rem}.lang-b{padding:6px 12px;font-size:.85rem}.input-s{padding:14px;margin-bottom:12px;border-radius:10px}.input-h{flex-direction:column;align-items:flex-start;gap:8px;margin-bottom:14px}.sec-t{font-size:1.05rem;width:100%}.btn-p{width:100%;text-align:center;padding:13px 20px;font-size:1rem}.ex{padding:10px;margin-bottom:14px;border-radius:8px}.ex-label{width:100%;margin-bottom:6px;font-size:.8rem}.ex-b{flex:1;min-width:0;text-align:center;padding:8px 10px;font-size:.8rem}.form-g{grid-template-columns:1fr;gap:12px}.form-r{grid-template-columns:1fr;gap:10px}.form-gr input{padding:10px 12px;font-size:1rem}.res-t{font-size:1.05rem;margin-bottom:12px}.exec-summary{padding:14px;margin-bottom:12px;border-radius:10px}.exec-summary__head{font-size:1rem;margin-bottom:10px}.exec-summary__row{grid-template-columns:1fr;gap:4px;font-size:.86rem}.exec-summary__label{font-size:.82rem}.worst-case{padding:12px 14px;margin-bottom:12px}.worst-case__head{font-size:.95rem}.worst-case__row{grid-template-columns:1fr;gap:3px;font-size:.84rem}.results-toolbar{flex-direction:column;align-items:stretch}.results-toolbar .btn-outline{width:100%;text-align:center;padding:12px 14px}.grid{grid-template-columns:1fr;gap:12px}.card{padding:14px;border-radius:10px}.card-t{font-size:1rem;margin-bottom:12px}.metric{flex-direction:column;align-items:flex-start;gap:4px;padding:8px 0}.metric-v{justify-content:flex-start;width:100%}.score-v{font-size:2.2rem}.score-l{font-size:.85rem}.chart-c{height:220px}.spiral-chart-container{height:320px}.stage-grid{grid-template-columns:1fr}.prob-i{padding:8px 0}.prob-i div:last-child{font-size:.85rem}.quest-i{font-size:.85rem;padding:8px 0}footer{padding:16px;font-size:.8rem}.stage-grid-detail{grid-template-columns:repeat(4,1fr)}
+      body{padding:8px}header{padding:12px 14px;margin-bottom:12px}.logo{font-size:1rem}.logo-i{width:32px;height:32px;font-size:.85rem}.lang-b{padding:6px 12px;font-size:.85rem}.input-s{padding:14px;margin-bottom:12px;border-radius:10px}.input-h{flex-direction:column;align-items:flex-start;gap:8px;margin-bottom:14px}.sec-t{font-size:1.05rem;width:100%}.btn-p{width:100%;text-align:center;padding:13px 20px;font-size:1rem}.ex{padding:10px;margin-bottom:14px;border-radius:8px}.ex-label{width:100%;margin-bottom:6px;font-size:.8rem}.ex-b{flex:1;min-width:0;text-align:center;padding:8px 10px;font-size:.8rem}.form-g{grid-template-columns:1fr;gap:12px}.form-r{grid-template-columns:1fr;gap:10px}.form-gr input{padding:10px 12px;font-size:1rem}.res-t{font-size:1.05rem;margin-bottom:12px}.exec-summary{padding:14px;margin-bottom:12px;border-radius:10px}.exec-summary__head{font-size:1rem;margin-bottom:10px}.exec-summary__row{grid-template-columns:1fr;gap:4px;font-size:.86rem}.exec-summary__label{font-size:.82rem}.exec-summary--decision-card{padding:10px 12px}.exec-summary__row--card{flex-wrap:nowrap;padding:6px 0}.exec-summary__row--card .exec-summary__label{flex-basis:40%;font-size:.76rem}.exec-summary__value--card{font-size:.82rem;-webkit-line-clamp:3}.worst-case{padding:12px 14px;margin-bottom:12px}.worst-case__head{font-size:.95rem}.worst-case__row{grid-template-columns:1fr;gap:3px;font-size:.84rem}.results-toolbar{flex-direction:column;align-items:stretch}.results-toolbar .btn-outline{width:100%;text-align:center;padding:12px 14px}.grid{grid-template-columns:1fr;gap:12px}.card{padding:14px;border-radius:10px}.card-t{font-size:1rem;margin-bottom:12px}.metric{flex-direction:column;align-items:flex-start;gap:4px;padding:8px 0}.metric-v{justify-content:flex-start;width:100%}.score-v{font-size:2.2rem}.score-l{font-size:.85rem}.chart-c{height:220px}.spiral-chart-container{height:320px}.stage-grid{grid-template-columns:1fr}.prob-i{padding:8px 0}.prob-i div:last-child{font-size:.85rem}.quest-i{font-size:.85rem;padding:8px 0}footer{padding:16px;font-size:.8rem}.stage-grid-detail{grid-template-columns:repeat(4,1fr)}
     }
     @media(max-width:400px){.logo{font-size:.95rem;gap:8px}.logo-i{width:28px;height:28px;font-size:.8rem}.lang-b{padding:5px 10px;font-size:.8rem}.input-s{padding:12px}.ex-b{padding:7px 8px;font-size:.75rem}.score-v{font-size:1.8rem}.spiral-chart-container{height:280px}}
   </style>
@@ -201,28 +210,28 @@
     </section>
 
     <div id="resultsSection" style="display:none;">
-      <div id="execSummary" class="exec-summary exec-summary--mixed" role="region" aria-labelledby="execSummaryTitle">
-        <div class="exec-summary__head" id="execSummaryTitle">Executive summary</div>
-        <div class="exec-summary__grid">
-          <div class="exec-summary__row">
+      <div id="execSummary" class="exec-summary exec-summary--mixed exec-summary--decision-card" role="region" aria-labelledby="execSummaryTitle">
+        <div class="exec-summary__head exec-summary__head--card" id="execSummaryTitle">Executive summary</div>
+        <div class="exec-summary__grid exec-summary__grid--card">
+          <div class="exec-summary__row exec-summary__row--card">
             <div class="exec-summary__label" id="execLblCondition">Overall condition</div>
-            <div class="exec-summary__value" id="execConditionValue"></div>
+            <div class="exec-summary__value exec-summary__value--card" id="execConditionValue"></div>
           </div>
-          <div class="exec-summary__row">
+          <div class="exec-summary__row exec-summary__row--card">
             <div class="exec-summary__label" id="execLblRisk">Primary risk</div>
-            <div class="exec-summary__value" id="execRiskValue"></div>
+            <div class="exec-summary__value exec-summary__value--card" id="execRiskValue"></div>
           </div>
-          <div class="exec-summary__row">
+          <div class="exec-summary__row exec-summary__row--card">
             <div class="exec-summary__label" id="execLblSignalReliability">Signal reliability</div>
-            <div class="exec-summary__value" id="execSignalReliabilityValue"></div>
+            <div class="exec-summary__value exec-summary__value--card" id="execSignalReliabilityValue"></div>
           </div>
-          <div class="exec-summary__row">
+          <div class="exec-summary__row exec-summary__row--card">
             <div class="exec-summary__label" id="execLblConsequence">Expected consequence</div>
-            <div class="exec-summary__value" id="execConsequenceValue"></div>
+            <div class="exec-summary__value exec-summary__value--card" id="execConsequenceValue"></div>
           </div>
-          <div class="exec-summary__row">
+          <div class="exec-summary__row exec-summary__row--card">
             <div class="exec-summary__label" id="execLblAction">Recommended action</div>
-            <div class="exec-summary__value" id="execActionValue"></div>
+            <div class="exec-summary__value exec-summary__value--card" id="execActionValue"></div>
           </div>
         </div>
       </div>
@@ -295,10 +304,6 @@
           <div><strong id="mismatchScoreLabel">Mismatch score:</strong> <span id="mismatchVal">0.00</span></div>
           <div style="margin-top:4px;"><strong id="mismatchRiskLabel">Risk level:</strong> <span id="mismatchRiskLevel">-</span></div>
           <div style="margin-top:4px;"><strong id="mismatchDriverLabel">Primary driver:</strong> <span id="mismatchDriver">-</span></div>
-          <div id="signalReliabilityStrip" class="signal-reliability" hidden>
-            <span class="signal-reliability__label" id="signalReliabilityHeading">Signal reliability</span>
-            <span id="signalReliabilityBadge" class="signal-reliability__badge signal-reliability__badge--medium"></span>
-          </div>
           <div class="combined-confidence-row">
             <span class="confidence-label"><span id="combinedConfidenceLabel">Combined confidence</span></span>
             <div class="confidence-track"><div id="combinedConfidenceBar" class="confidence-fill"></div></div>

@@ -96,9 +96,16 @@
     .dominant-text{margin-top:8px;font-weight:600;font-size:.9rem}
     .confidence-row{display:grid;grid-template-columns:110px 1fr 42px;align-items:center;gap:8px}
     .confidence-label{font-size:.78rem;color:var(--tm)}
-    .confidence-track{height:8px;background:var(--b);border-radius:999px;overflow:hidden}
+    .confidence-track{height:12px;background:var(--b);border-radius:999px;overflow:hidden}
     .confidence-fill{height:100%;width:0%;background:var(--w);transition:width .35s ease, background .35s ease}
-    .confidence-val{font-size:.78rem;font-weight:600;color:var(--tm);text-align:right}
+    .confidence-val{font-size:.82rem;font-weight:700;color:var(--tx)}
+    .signal-reliability{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:10px;padding:8px 10px;border-radius:8px;border:1px solid var(--b);background:#fff}
+    .signal-reliability__label{font-size:.78rem;color:var(--tm);font-weight:600}
+    .signal-reliability__badge{font-size:.78rem;font-weight:700;padding:4px 10px;border-radius:999px;border:1px solid var(--b)}
+    .signal-reliability__badge--high{background:#dcfce7;color:#166534;border-color:#bbf7d0}
+    .signal-reliability__badge--medium{background:#fef9c3;color:#854d0e;border-color:#fde047}
+    .signal-reliability__badge--low{background:#fee2e2;color:#991b1b;border-color:#fecaca}
+    .combined-confidence-row{margin-top:6px;display:grid;grid-template-columns:140px 1fr 42px;align-items:center;gap:8px}
 
     .leaderboard-section{margin-top:16px}
     .leaderboard-input{width:100%;min-height:120px;padding:11px 13px;border:1px solid var(--b);border-radius:8px;background:var(--ib);font-size:.9rem;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;resize:vertical}
@@ -197,6 +204,10 @@
             <div class="exec-summary__value" id="execRiskValue"></div>
           </div>
           <div class="exec-summary__row">
+            <div class="exec-summary__label" id="execLblSignalReliability">Signal reliability</div>
+            <div class="exec-summary__value" id="execSignalReliabilityValue"></div>
+          </div>
+          <div class="exec-summary__row">
             <div class="exec-summary__label" id="execLblConsequence">Expected consequence</div>
             <div class="exec-summary__value" id="execConsequenceValue"></div>
           </div>
@@ -265,6 +276,15 @@
           <div><strong id="mismatchScoreLabel">Mismatch score:</strong> <span id="mismatchVal">0.00</span></div>
           <div style="margin-top:4px;"><strong id="mismatchRiskLabel">Risk level:</strong> <span id="mismatchRiskLevel">-</span></div>
           <div style="margin-top:4px;"><strong id="mismatchDriverLabel">Primary driver:</strong> <span id="mismatchDriver">-</span></div>
+          <div id="signalReliabilityStrip" class="signal-reliability" hidden>
+            <span class="signal-reliability__label" id="signalReliabilityHeading">Signal reliability</span>
+            <span id="signalReliabilityBadge" class="signal-reliability__badge signal-reliability__badge--medium"></span>
+          </div>
+          <div class="combined-confidence-row">
+            <span class="confidence-label"><span id="combinedConfidenceLabel">Combined confidence</span></span>
+            <div class="confidence-track"><div id="combinedConfidenceBar" class="confidence-fill"></div></div>
+            <span id="combinedConfidenceVal" class="confidence-val">0%</span>
+          </div>
           <div style="margin-top:8px;display:grid;gap:6px;">
             <div class="confidence-row">
               <span class="confidence-label"><span id="esgConfidenceLabel">ESG confidence</span></span>

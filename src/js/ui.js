@@ -1,5 +1,12 @@
 (function () {
-  const def={bn:"Eldik Bank",co:"Кыргызстан",pg:208,cp:74.8,di:100,im:17,ix:32,ig:12.9,pr:25.7,gd:2513,as:37361,cc:53,cb:20,co2:27};
+  const presets={
+    eldik:{bn:'Eldik Bank',co:'Кыргызстан',pg:208,cp:74.8,di:100,im:17,ix:32,ig:12.9,pr:25.7,gd:2513,as:37361,cc:53,cb:20,co2:27},
+    optima:{bn:'Optima Bank',co:'Кыргызстан',pg:34,cp:28,di:40,im:18,ix:30,ig:9,pr:24,gd:2513,as:36000,cc:55,cb:30,co2:15},
+    demir:{bn:'Demir Bank',co:'Кыргызстан',pg:22,cp:32,di:35,im:16,ix:26,ig:8,pr:23,gd:2513,as:38000,cc:45,cb:40,co2:15},
+    kicb:{bn:'KICB',co:'Кыргызстан',pg:18,cp:30,di:30,im:15,ix:24,ig:7,pr:23,gd:2513,as:39000,cc:40,cb:45,co2:15},
+    bakai:{bn:'Bakai Bank',co:'Кыргызстан',pg:28,cp:27,di:38,im:19,ix:31,ig:10,pr:24,gd:2513,as:35500,cc:60,cb:25,co2:15}
+  };
+  const exampleBtnIds=['exEldik','exOptima','exDemir','exKicb','exBakai','exNew'];
   window.chart = null;
   window.spiralChart = null;
 
@@ -8,11 +15,17 @@
   function hideRes(){$('resultsSection').style.display='none';}
 
   function loadEx(n){
-    $('exEldik').classList.toggle('a',n==='eldik');
-    $('exNew').classList.toggle('a',n==='new');
-    if(n==='eldik'){
+    exampleBtnIds.forEach(id=>{const el=$(id);if(el)el.classList.toggle('a',(id==='exEldik'&&n==='eldik')||(id==='exOptima'&&n==='optima')||(id==='exDemir'&&n==='demir')||(id==='exKicb'&&n==='kicb')||(id==='exBakai'&&n==='bakai')||(id==='exNew'&&n==='new'));});
+    
+    if(n==='new'){
+      $('f').reset();
+      ['bankName','country','profitGrowth','capital','dividends','interestMin','interestMax','incomeGrowth','povertyRate','gdpPerCapita','avgSalary','creditConsumption','creditBusiness','creditOther'].forEach(id=>$(id).value='');
+      hideRes();
+      setTimeout(()=>$('bankName').focus(),50);
+    }else if(presets[n]){
+      const d=presets[n];
       const map={bn:'bankName',co:'country',pg:'profitGrowth',cp:'capital',di:'dividends',im:'interestMin',ix:'interestMax',ig:'incomeGrowth',pr:'povertyRate',gd:'gdpPerCapita',as:'avgSalary',cc:'creditConsumption',cb:'creditBusiness',co2:'creditOther'};
-      Object.keys(def).forEach(k=>{if($(map[k]))$(map[k]).value=def[k]});
+      Object.keys(d).forEach(k=>{if($(map[k]))$(map[k]).value=d[k]});
       doAnalyze();
     }else{
       $('f').reset();

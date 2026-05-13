@@ -2,7 +2,7 @@
   const tr = {
     ru: {
       app:"Bank Welfare Analyzer",inpTitle:"Ввод данных банка",btnAnalyze:"🚀 Анализировать",
-      exLabel:"Примеры:",exEldik:"🏦 Eldik Bank",exNew:"✨ Новый банк",
+      exLabel:"Примеры:",exEldik:"🏦 Eldik Bank",exOptima:"🏦 Optima Bank",exDemir:"🏦 Demir Bank",exKicb:"🏦 KICB",exBakai:"🏦 Bakai Bank",exNew:"✨ Новый банк",
       lName:"Название банка *",lCountry:"Страна",lProfit:"Рост прибыли (%) *",
       lCapital:"Капитализация",lDiv:"Дивиденды акционерам (%)",lIntMin:"Ставка мин (%)",lIntMax:"Ставка макс (%)",
       lInc:"Рост доходов населения (%) *",lPov:"Уровень бедности (%) *",lGdp:"ВВП на душу ($)",lSal:"Средняя зарплата",
@@ -138,7 +138,7 @@
     },
     en: {
       app:"Bank Welfare Analyzer",inpTitle:"Bank Input Data",btnAnalyze:"🚀 Analyze",
-      exLabel:"Examples:",exEldik:"🏦 Eldik Bank",exNew:"✨ New bank",
+      exLabel:"Examples:",exEldik:"🏦 Eldik Bank",exOptima:"🏦 Optima Bank",exDemir:"🏦 Demir Bank",exKicb:"🏦 KICB",exBakai:"🏦 Bakai Bank",exNew:"✨ New bank",
       lName:"Bank Name *",lCountry:"Country",lProfit:"Profit Growth (%) *",
       lCapital:"Capitalization",lDiv:"Dividends to Shareholders (%)",lIntMin:"Min Rate (%)",lIntMax:"Max Rate (%)",
       lInc:"Population Income Growth (%) *",lPov:"Poverty Rate (%) *",lGdp:"GDP per Capita ($)",lSal:"Average Salary",

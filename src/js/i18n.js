@@ -77,6 +77,15 @@
       sponsorCompareDemo:"Public demo → Оценочно",
       sponsorCompareLab:"Sponsor Lab → Калиброванная симуляция",
       riskLevels:{low:"низкий",medium:"средний",high:"высокий"},
+      execLblSignalReliability:"Надёжность сигнала",
+      signalReliabilityHeading:"Надёжность сигнала",
+      combinedConfidenceLabel:"Сводная уверенность",
+      uncertaintyTierHigh:"Высокая",
+      uncertaintyTierMedium:"Средняя",
+      uncertaintyTierLow:"Низкая",
+      signalStrengthStrong:"Устойчивый сигнал — интерпретации можно использовать как основу для решений.",
+      signalStrengthModerate:"Умеренная уверенность — трактуйте выводы как ориентир и проверяйте данными.",
+      signalStrengthProvisional:"Предварительный сигнал — избегайте жёстких выводов без дополнительной проверки.",
 
       driverLabels:{redPressure:"Давление Red",empathyGap:"Разрыв эмпатии",stageMismatch:"Структурный разрыв стадий",welfareScorePenalty:"Слабый welfare score",esgClaimMismatch:"Разрыв ESG-заявлений"},
       recommendationTexts:{
@@ -216,6 +225,15 @@
       recRisk_levelLow:"Maintain light-touch monitoring and keep preventive affordability controls active.",
       recPrimaryDriverTemplate:"Primary mismatch driver to address first: {driver}.",
       riskLevels:{low:"low",medium:"medium",high:"high"},
+      execLblSignalReliability:"Signal reliability",
+      signalReliabilityHeading:"Signal reliability",
+      combinedConfidenceLabel:"Combined confidence",
+      uncertaintyTierHigh:"High",
+      uncertaintyTierMedium:"Medium",
+      uncertaintyTierLow:"Low",
+      signalStrengthStrong:"Strong signal — interpretations can reasonably guide decisions.",
+      signalStrengthModerate:"Moderate confidence — treat outputs as directional and validate with data.",
+      signalStrengthProvisional:"Provisional signal — avoid decisive conclusions without corroboration.",
 
       driverLabels:{redPressure:"Red pressure",empathyGap:"Empathy gap",stageMismatch:"Structural stage gap",welfareScorePenalty:"Low welfare score",esgClaimMismatch:"ESG claim mismatch"},
       recommendationTexts:{

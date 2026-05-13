@@ -306,6 +306,15 @@
       const mm=analysis.mismatch;
       const lang=window.i18n.lang;
       $('execRiskValue').textContent=(mm.explanationText&&mm.explanationText[lang])||mm.explanationText.en||'';
+      const ec=Math.max(0,Math.min(1,((mm.esgConfidence||0)+(mm.driverConfidence||0))/2));
+      const execTier=ec>=0.75?'high':ec>=0.45?'medium':'low';
+      const execSigEl=$('execSignalReliabilityValue');
+      if(execSigEl){
+        const tt=window.i18n.tr[lang];
+        const tl=execTier==='high'?tt.uncertaintyTierHigh:execTier==='medium'?tt.uncertaintyTierMedium:tt.uncertaintyTierLow;
+        const ss=execTier==='high'?tt.signalStrengthStrong:execTier==='medium'?tt.signalStrengthModerate:tt.signalStrengthProvisional;
+        execSigEl.textContent=`${tl} (${Math.round(ec*100)}%): ${ss}`;
+      }
       const pi=mm.predictiveImpact||{};
       const consq=pi.shortTerm?(pi.shortTerm[lang]||pi.shortTerm.en):'';
       $('execConsequenceValue').textContent=consq||tUi.execConsequenceUnavailable;
@@ -340,8 +349,33 @@
     const pickColor = pct => pct >= 75 ? 'var(--s)' : pct >= 45 ? 'var(--w)' : 'var(--d)';
     esgBar.style.background = pickColor(esgPct);
     driverBar.style.background = pickColor(driverPct);
-
-    $('mismatchText').textContent = mismatch.explanationText[window.i18n.lang] || mismatch.explanationText.en;
+    const combinedConfidence = Math.max(0, Math.min(1, (esgConfidence + driverConfidence) / 2));
+    const combinedPct = Math.round(combinedConfidence * 100);
+    const combinedBar = $('combinedConfidenceBar');
+    const combinedVal = $('combinedConfidenceVal');
+    if (combinedBar && combinedVal) {
+      combinedBar.style.width = `${combinedPct}%`;
+      combinedBar.style.background = pickColor(combinedPct);
+      combinedVal.textContent = `${combinedPct}%`;
+    }
+    const tUiConf = window.i18n.tr[window.i18n.lang];
+    let uncertaintyTier = 'low';
+    if (combinedConfidence >= 0.75) uncertaintyTier = 'high';
+    else if (combinedConfidence >= 0.45) uncertaintyTier = 'medium';
+    const tierLabel = uncertaintyTier === 'high' ? tUiConf.uncertaintyTierHigh : uncertaintyTier === 'medium' ? tUiConf.uncertaintyTierMedium : tUiConf.uncertaintyTierLow;
+    const signalSentence = uncertaintyTier === 'high' ? tUiConf.signalStrengthStrong : uncertaintyTier === 'medium' ? tUiConf.signalStrengthModerate : tUiConf.signalStrengthProvisional;
+    const strip = $('signalReliabilityStrip');
+    const badge = $('signalReliabilityBadge');
+    if (strip && badge) {
+      strip.hidden = false;
+      badge.textContent = `${tierLabel} · ${combinedPct}%`;
+      badge.classList.remove('signal-reliability__badge--high','signal-reliability__badge--medium','signal-reliability__badge--low');
+      badge.classList.add(uncertaintyTier === 'high' ? 'signal-reliability__badge--high' : uncertaintyTier === 'medium' ? 'signal-reliability__badge--medium' : 'signal-reliability__badge--low');
+    }
+    const execSig = $('execSignalReliabilityValue');
+    if (execSig) execSig.textContent = `${tierLabel} (${combinedPct}%): ${signalSentence}`;
+    const explainBase = mismatch.explanationText[window.i18n.lang] || mismatch.explanationText.en;
+    $('mismatchText').textContent = `${signalSentence}\n\n${explainBase}`;
     const predictive = mismatch.predictiveImpact || {};
     const shortTerm = predictive.shortTerm ? (predictive.shortTerm[window.i18n.lang] || predictive.shortTerm.en) : '-';
     const longTerm = predictive.longTerm ? (predictive.longTerm[window.i18n.lang] || predictive.longTerm.en) : '-';

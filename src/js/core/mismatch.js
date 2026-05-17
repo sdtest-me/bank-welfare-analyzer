@@ -178,6 +178,25 @@
     const adjustedRisk = calculateAdjustedRiskLevel();
     const severity = adjustedRisk.level;
 
+    function getImpactNarrativeTier() {
+      const impactIndex = adjustedRisk.impactIndex;
+      if (impactIndex > 70) return 'stable';
+      if (impactIndex >= 50) return 'transitional';
+      return 'structural';
+    }
+
+    function getMismatchDriverLens() {
+      const dominantGapHigh = stageGap >= 18;
+      const structuralGapHigh = structuralGap >= 35;
+      const mismatchHigh = mismatchScore >= 0.67;
+
+      if (dominantGapHigh && stageGap >= structuralGap * 0.45) return 'dominantGap';
+      if (structuralGapHigh) return 'structuralGap';
+      if (mismatchHigh) return 'mismatchScore';
+      if (mismatchScore >= 0.34) return 'mismatchScore';
+      return 'balanced';
+    }
+
     function inferPrimaryDriver() {
       const confidence = clamp01(esgSignal.confidence || 0);
       const confidenceFactor = 0.6 + confidence * 0.8;
@@ -266,11 +285,40 @@
           ? { en: 'Uncertainty: medium.', ru: 'Неопределенность: средняя.' }
           : { en: 'Uncertainty: high.', ru: 'Неопределенность: высокая.' };
 
-      const riskText = severity === 'high'
-        ? { en: 'High risk of extractive mismatch.', ru: 'Высокий риск экстрактивного несоответствия.' }
-        : severity === 'medium'
-          ? { en: 'Moderate misalignment risk that needs monitoring.', ru: 'Умеренный риск несоответствия, требуется мониторинг.' }
-          : { en: 'Current indicators suggest limited immediate mismatch exposure.', ru: 'Текущие индикаторы указывают на ограниченную немедленную экспозицию несоответствия.' };
+      const impactTier = getImpactNarrativeTier();
+      const narrativeLens = getMismatchDriverLens();
+      const tierText = {
+        stable: {
+          en: `Stable alignment narrative: impact index ${adjustedRisk.impactIndex} keeps this case in the aligned range, so risks are mostly about preserving fit rather than redesigning the model.`,
+          ru: `Нарратив стабильного соответствия: индекс влияния ${adjustedRisk.impactIndex} остаётся в зоне соответствия, поэтому риск связан прежде всего с сохранением баланса, а не с перестройкой модели.`
+        },
+        transitional: {
+          en: `Transitional narrative: impact index ${adjustedRisk.impactIndex} shows partial alignment, but the operating model can still drift if the main mismatch driver is not corrected.`,
+          ru: `Переходный нарратив: индекс влияния ${adjustedRisk.impactIndex} показывает частичное соответствие, но модель может смещаться при неустранённом главном драйвере несоответствия.`
+        },
+        structural: {
+          en: `Structural risk narrative: impact index ${adjustedRisk.impactIndex} indicates that numeric performance is being materially weakened by stage and welfare misalignment.`,
+          ru: `Нарратив структурного риска: индекс влияния ${adjustedRisk.impactIndex} указывает, что численные результаты существенно ослаблены рассогласованием стадий и благосостояния.`
+        }
+      };
+      const lensText = {
+        dominantGap: {
+          en: `Dominant-stage gap is high (${Math.round(stageGap)}pp), so the narrative emphasizes cultural and power mismatch between institutional behavior and population conditions.`,
+          ru: `Разрыв доминирующих стадий высок (${Math.round(stageGap)} п.п.), поэтому нарратив подчёркивает культурное и властное несоответствие между поведением института и условиями населения.`
+        },
+        structuralGap: {
+          en: `Structural gap is high (${Math.round(structuralGap)}pp), so the narrative emphasizes systemic misalignment across the full stage profile.`,
+          ru: `Структурный разрыв высок (${Math.round(structuralGap)} п.п.), поэтому нарратив подчёркивает системное рассогласование по всему профилю стадий.`
+        },
+        mismatchScore: {
+          en: `Mismatch score is ${mismatchScore.toFixed(2)}, so the narrative emphasizes behavioral friction that can appear even when no single stage gap explains the case alone.`,
+          ru: `Индекс несоответствия равен ${mismatchScore.toFixed(2)}, поэтому нарратив подчёркивает поведенческое трение, которое возможно даже без одного явно доминирующего разрыва стадий.`
+        },
+        balanced: {
+          en: `No single mismatch driver dominates, so the narrative treats this as a balanced alignment case with watchpoints rather than acute friction.`,
+          ru: `Ни один драйвер несоответствия не доминирует, поэтому нарратив рассматривает случай как сбалансированное соответствие с зонами наблюдения, а не острое трение.`
+        }
+      };
 
       function localizedStageName(stageKey) {
         try {
@@ -288,8 +336,8 @@
       const bankStageLabel = localizedStageName(bankDominant);
       const populationStageLabel = localizedStageName(popDominant);
       return {
-        en: `${riskText.en} ${uncertaintyText.en} Main reason: ${labels[primaryDriver].en} Mismatch score ${mismatchScore.toFixed(2)}. ESG confidence ${confidencePct}%. Driver confidence ${Math.round(driverConfidence * 100)}%. Dominant stages: bank — ${bankStageLabel}, population — ${populationStageLabel}.`,
-        ru: `${riskText.ru} ${uncertaintyText.ru} Главная причина: ${labels[primaryDriver].ru} Индекс несоответствия ${mismatchScore.toFixed(2)}. Уверенность ESG ${confidencePct}%. Уверенность драйвера ${Math.round(driverConfidence * 100)}%. Доминирующая стадия банка — ${bankStageLabel}, населения — ${populationStageLabel}.`
+        en: `${tierText[impactTier].en} ${lensText[narrativeLens].en} ${uncertaintyText.en} Main reason: ${labels[primaryDriver].en} ESG confidence ${confidencePct}%. Driver confidence ${Math.round(driverConfidence * 100)}%. Dominant stages: bank — ${bankStageLabel}, population — ${populationStageLabel}.`,
+        ru: `${tierText[impactTier].ru} ${lensText[narrativeLens].ru} ${uncertaintyText.ru} Главная причина: ${labels[primaryDriver].ru} Уверенность ESG ${confidencePct}%. Уверенность драйвера ${Math.round(driverConfidence * 100)}%. Доминирующая стадия банка — ${bankStageLabel}, населения — ${populationStageLabel}.`
       };
     }
 
@@ -309,13 +357,15 @@
       }
       return {
         qualifier: { en: 'could potentially', ru: 'потенциально может' },
-        context: { en: 'Signal confidence is limited, so treat this as an early warning.', ru: 'Уверенность сигнала ограниченная, воспринимайте это как ранний сигнал.' }
+        context: { en: 'Signal confidence is limited, so treat this as a hypothesis for validation.', ru: 'Уверенность сигнала ограниченная, поэтому рассматривайте вывод как гипотезу для проверки.' }
       };
     }
 
     function buildPredictiveImpact(primaryDriver, driverConfidence) {
       const stageGapSigned = (bank[bankDominant] || 0) - (population[popDominant] || 0);
       const tensionLevel = mismatchScore >= 0.67 ? 'high' : mismatchScore >= 0.34 ? 'medium' : 'low';
+      const impactTier = getImpactNarrativeTier();
+      const narrativeLens = getMismatchDriverLens();
       function localStage(key) {
         try {
           const b = window.i18n && window.i18n.tr && window.i18n.lang ? window.i18n.tr[window.i18n.lang] : null;
@@ -352,8 +402,8 @@
         },
         stageMismatch: {
           shortTerm: {
-            en: 'policy communication friction: bank products fit bank culture better than social needs',
-            ru: 'трение в коммуникации: продукты банка лучше соответствуют культуре банка, чем нуждам общества'
+            en: 'product and governance friction where bank routines do not match household realities',
+            ru: 'продуктовое и управленческое трение, при котором процедуры банка не совпадают с реальностью домохозяйств'
           },
           longTerm: {
             en: 'persistent institutional mismatch that can lock the system into low-welfare credit patterns',
@@ -384,6 +434,26 @@
 
       const selected = driverImpact[primaryDriver] || driverImpact.stageMismatch;
       const tone = confidenceTone(driverConfidence);
+      const tierImpact = {
+        stable: {
+          shortTerm: { en: 'Immediate impact should remain contained if monitoring stays active.', ru: 'Немедленный эффект должен оставаться ограниченным при активном мониторинге.' },
+          longTerm: { en: 'Long-term value depends on preventing gradual drift away from current alignment.', ru: 'Долгосрочная ценность зависит от предотвращения постепенного ухода от текущего соответствия.' }
+        },
+        transitional: {
+          shortTerm: { en: 'Short-term outcomes can swing between contained stress and visible borrower strain.', ru: 'Краткосрочные исходы могут колебаться между сдержанным стрессом и заметной нагрузкой на заёмщиков.' },
+          longTerm: { en: 'Long-term trajectory is still reversible, but only if the leading driver is addressed early.', ru: 'Долгосрочная траектория ещё обратима, но только при ранней работе с ведущим драйвером.' }
+        },
+        structural: {
+          shortTerm: { en: 'Short-term pressure is more likely to surface as repayment stress, complaints, or portfolio quality strain.', ru: 'Краткосрочное давление чаще проявится как стресс погашения, жалобы или ухудшение качества портфеля.' },
+          longTerm: { en: 'Long-term risk is a self-reinforcing welfare gap unless affordability, governance, and stage alignment change together.', ru: 'Долгосрочный риск — самоподдерживающийся разрыв благосостояния, если доступность, управление и стадийное соответствие не меняются вместе.' }
+        }
+      };
+      const lensImpact = {
+        dominantGap: { en: 'The dominant-stage gap points to a cultural and power-balance channel.', ru: 'Разрыв доминирующих стадий указывает на культурный и властный канал риска.' },
+        structuralGap: { en: 'The structural gap points to system-wide misalignment rather than an isolated product issue.', ru: 'Структурный разрыв указывает на системное рассогласование, а не на отдельную продуктовую проблему.' },
+        mismatchScore: { en: 'The aggregate mismatch score points to broad behavioral friction across several signals.', ru: 'Совокупный индекс несоответствия указывает на широкое поведенческое трение по нескольким сигналам.' },
+        balanced: { en: 'Driver pressure is distributed, so monitoring should stay broad rather than single-issue.', ru: 'Давление распределено между драйверами, поэтому мониторинг должен оставаться широким, а не однофакторным.' }
+      };
       const riskPrefix = tensionLevel === 'high'
         ? { en: 'Near-term risk is likely elevated.', ru: 'Краткосрочный риск, вероятно, повышен.' }
         : tensionLevel === 'medium'
@@ -392,12 +462,12 @@
 
       return {
         shortTerm: {
-          en: `${riskPrefix.en} This scenario ${tone.qualifier.en} lead to ${selected.shortTerm.en}. ${tone.context.en} ${stageContext.en}`,
-          ru: `${riskPrefix.ru} Этот сценарий ${tone.qualifier.ru} привести к следующему: ${selected.shortTerm.ru}. ${tone.context.ru} ${stageContext.ru}`
+          en: `${riskPrefix.en} ${tierImpact[impactTier].shortTerm.en} This scenario ${tone.qualifier.en} lead to ${selected.shortTerm.en}. ${lensImpact[narrativeLens].en} ${tone.context.en} ${stageContext.en}`,
+          ru: `${riskPrefix.ru} ${tierImpact[impactTier].shortTerm.ru} Этот сценарий ${tone.qualifier.ru} привести к следующему: ${selected.shortTerm.ru}. ${lensImpact[narrativeLens].ru} ${tone.context.ru} ${stageContext.ru}`
         },
         longTerm: {
-          en: `Over time, this scenario ${tone.qualifier.en} contribute to ${selected.longTerm.en} ${tone.context.en} ${stageContext.en}`,
-          ru: `Со временем этот сценарий ${tone.qualifier.ru} привести к следующему: ${selected.longTerm.ru} ${tone.context.ru} ${stageContext.ru}`
+          en: `${tierImpact[impactTier].longTerm.en} Over time, this scenario ${tone.qualifier.en} contribute to ${selected.longTerm.en} ${lensImpact[narrativeLens].en} ${tone.context.en} ${stageContext.en}`,
+          ru: `${tierImpact[impactTier].longTerm.ru} Со временем этот сценарий ${tone.qualifier.ru} привести к следующему: ${selected.longTerm.ru} ${lensImpact[narrativeLens].ru} ${tone.context.ru} ${stageContext.ru}`
         }
       };
     }

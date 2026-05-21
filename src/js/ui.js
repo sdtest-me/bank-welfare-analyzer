@@ -175,9 +175,18 @@
     };
 
     const applyTokens = template => template.replace(/\{(\w+)\}/g, (_, key) => tokens[key]);
+    const gapKeyByDominant = {
+      red: 'gapBulletsExtraction',
+      blue: 'gapBulletsGovernance',
+      orange: 'gapBulletsGrowth',
+      green: 'gapBulletsWelfare'
+    };
+    const gapKey = gapKeyByDominant[context.bankD] || 'gapBullets';
+    const gapSource = t[gapKey] || t.gapBullets || {};
+
     return {
       bankDominantText,
-      gapBullets: ((t.gapBullets || {})[lang] || []).map(applyTokens),
+      gapBullets: ((gapSource || {})[lang] || []).map(applyTokens),
       recommendationIntro: applyTokens(((t.recommendationIntro || {})[lang]) || ''),
       recommendationBullets: ((t.recommendationBullets || {})[lang] || []).map(applyTokens)
     };

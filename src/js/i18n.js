@@ -2,6 +2,9 @@
   const tr = {
     ru: {
       app:"Bank Welfare Analyzer",inpTitle:"Ввод данных банка",btnAnalyze:"🚀 Анализировать",
+      heroDemoBadge:"🧪 Публичное демо",heroDemoTitle:"Проверьте welfare-гипотезы банка до принятия решений.",
+      heroDemoSubtitle:"Этот слой работает на публичных и оценочных данных. Используйте для быстрой ориентации, затем валидируйте на внутренних данных в Sponsor Lab.",
+      heroDemoPrimary:"Загрузить демо-банк",heroDemoSecondary:"Быстрый анализ",heroDemoContextPrefix:"Текущий демо-кейс",
       exLabel:"Примеры:",exEldik:"🏦 Eldik Bank",exOptima:"🏦 Optima Bank",exDemir:"🏦 Demir Bank",exKicb:"🏦 KICB",exBakai:"🏦 Bakai Bank",exNew:"✨ Новый банк",
       lName:"Название банка *",lCountry:"Страна",lProfit:"Рост прибыли (%) *",
       lCapital:"Капитализация",lDiv:"Дивиденды акционерам (%)",lIntMin:"Ставка мин (%)",lIntMax:"Ставка макс (%)",
@@ -138,6 +141,9 @@
     },
     en: {
       app:"Bank Welfare Analyzer",inpTitle:"Bank Input Data",btnAnalyze:"🚀 Analyze",
+      heroDemoBadge:"🧪 Public demo",heroDemoTitle:"Stress-test bank welfare assumptions before decisions.",
+      heroDemoSubtitle:"This layer runs on public + estimated inputs. Use it for rapid orientation, then validate on internal data in Sponsor Lab.",
+      heroDemoPrimary:"Load demo bank",heroDemoSecondary:"Run quick analysis",heroDemoContextPrefix:"Current demo case",
       exLabel:"Examples:",exEldik:"🏦 Eldik Bank",exOptima:"🏦 Optima Bank",exDemir:"🏦 Demir Bank",exKicb:"🏦 KICB",exBakai:"🏦 Bakai Bank",exNew:"✨ New bank",
       lName:"Bank Name *",lCountry:"Country",lProfit:"Profit Growth (%) *",
       lCapital:"Capitalization",lDiv:"Dividends to Shareholders (%)",lIntMin:"Min Rate (%)",lIntMax:"Max Rate (%)",

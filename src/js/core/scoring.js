@@ -57,34 +57,26 @@
     const pop={beige:0,purple:0,red:0,blue:0,orange:0,green:0,yellow:0,turquoise:0};
     const bank={beige:0,purple:0,red:0,blue:0,orange:0,green:0,yellow:0,turquoise:0};
 
-    if (safeData.cc > 40) {
-      pop.beige = 40;
-      pop.purple = Math.min(15, 15 - (safeData.gd / 300));
-      pop.red = 5;
-      pop.blue = 25;
-      pop.orange = Math.min(5, safeData.gd / 500);
-      pop.green = Math.min(15, (safeData.pr * 0.4) + 2);
-      pop.yellow = 0;
-      pop.turquoise = 0;
-    } else {
-      pop.beige = Math.min(30, safeData.pr * 1.2);
-      pop.purple = Math.min(25, 30 - (safeData.gd / 200));
-      pop.red = Math.min(35, 20 + safeData.pr * 0.4);
-      pop.blue = 33;
-      pop.orange = Math.min(25, safeData.gd / 150);
-      pop.green = Math.min(20, safeData.pr * 0.5);
-      pop.yellow = Math.min(15, safeData.ig > 10 ? 12 : 5);
-      pop.turquoise = 0;
-    }
+    const povertyPressure = scale(safeData.pr, 5, 45);
+    const developmentLevel = scale(safeData.gd, 900, 12000);
+    const incomeMomentum = scale(safeData.ig, 0, 25);
+    const consumerSegment = scale(safeData.cc, 15, 70);
+
+    pop.beige = 18 + povertyPressure * 22 - developmentLevel * 12;
+    pop.purple = 12 + povertyPressure * 10 - developmentLevel * 3;
+    pop.red = 8 + povertyPressure * 10 + consumerSegment * 6 - incomeMomentum * 5;
+    pop.blue = 24 + (1 - povertyPressure) * 10 + incomeMomentum * 5 + consumerSegment * 2;
+    pop.orange = 7 + developmentLevel * 16 + incomeMomentum * 4 - povertyPressure * 3 - consumerSegment * 3;
+    pop.green = 7 + incomeMomentum * 9 + (1 - povertyPressure) * 6 - consumerSegment * 2;
+    pop.yellow = 2 + developmentLevel * 5 + incomeMomentum * 3;
+    pop.turquoise = 0.5 + developmentLevel * 1.5 + incomeMomentum * 1.2;
 
     const profitGap = safeData.pg / Math.max(safeData.ig, 1);
     const interestSpread = Math.max(0, safeData.ix - safeData.im);
 
-    const consumerPressure = scale(safeData.cc, 15, 70);
+    const consumerPressure = consumerSegment;
     const businessFocus = scale(safeData.cb, 8, 60);
     const profitMomentum = scale(safeData.pg, 5, 220);
-    const incomeMomentum = scale(safeData.ig, 0, 25);
-    const povertyPressure = scale(safeData.pr, 5, 45);
     const spreadPressure = scale(interestSpread, 2, 22);
     const extractionGap = scale(profitGap, 1.5, 8);
     const capitalStrength = scale(safeData.cp, 8, 80);

@@ -76,6 +76,42 @@
       .map(line=>JSON.parse(line));
   }
 
+  function getPresetBankObjects(){
+    return ['eldik','optima','demir','kicb','bakai'].map((key)=>({key,...presets[key]}));
+  }
+
+  function buildCompareNarrative(ranked){
+    const t=window.i18n.tr[window.i18n.lang];
+    if(!ranked.length) return '';
+    const leader=ranked[0];
+    const laggard=ranked[ranked.length-1];
+    const topName=(leader.data&&leader.data.bn)||'—';
+    const lowName=(laggard.data&&laggard.data.bn)||'—';
+    const avgMismatch=(ranked.reduce((a,b)=>a+(b.mismatch.mismatchScore||0),0)/ranked.length).toFixed(2);
+    return `${t.compareNarrativeLead} ${topName}. ${t.compareNarrativeGap} ${lowName}. ${t.compareNarrativeAvg} ${avgMismatch}.`;
+  }
+
+  function setupComparativeMode(){
+    const toggle=$('compareModeToggle');
+    const panel=$('compareModePanel');
+    const host=$('comparePresetButtons');
+    if(!toggle||!panel||!host) return;
+    const bankOptions=getPresetBankObjects();
+    host.innerHTML=bankOptions.map((b)=>`<label class="ex-b" style="cursor:pointer;"><input type="checkbox" data-bank="${b.key}" style="margin-right:6px;">${b.bn}</label>`).join('');
+    toggle.addEventListener('change',()=>{panel.style.display=toggle.checked?'block':'none';});
+  }
+
+  function getComparativeSelection(){
+    const checked=[...document.querySelectorAll('#comparePresetButtons input[type="checkbox"]:checked')].map(i=>i.getAttribute('data-bank'));
+    return checked.map(k=>presets[k]).filter(Boolean);
+  }
+
+  function calcGovernanceScore(item){
+    const d=item.data||{};
+    const raw=(100-(d.di||0))*0.5 + (d.cb||0)*0.5;
+    return Math.max(0,Math.min(100,Math.round(raw)));
+  }
+
   function doRankBanks(){
     const input=$('rankInput');
     const err=$('rankError');
@@ -85,7 +121,10 @@
     err.textContent='';
 
     try{
-      const banks=parseBanksInput(input.value);
+      let banks=parseBanksInput(input.value);
+      if($('compareModeToggle') && $('compareModeToggle').checked){
+        banks=getComparativeSelection();
+      }
       if(!banks.length){
         list.innerHTML='';
         err.textContent=t.rankEmpty;
@@ -93,7 +132,15 @@
         return;
       }
 
+      if(banks.length<3||banks.length>5){
+        err.textContent=t.compareRangeErr;
+        err.style.display='block';
+        list.innerHTML='';
+        return;
+      }
       const ranked=window.analyzeMultipleBanks(banks);
+      const narrative=$('compareNarrative');
+      if(narrative) narrative.textContent=buildCompareNarrative(ranked);
       list.innerHTML=ranked.map(item=>{
         const name=(item.data&&item.data.bn)||'Unknown';
         const risk=t.riskLevels[item.mismatch.riskLevel]||item.mismatch.riskLevel;
@@ -124,8 +171,8 @@
           </div>
           <div class="leaderboard-meta">
             <span>${t.rankRisk}: <strong>${risk}</strong></span>
-            <span>${t.rankMismatch}: <strong>${item.mismatch.mismatchScore.toFixed(2)}</strong></span>
-            <span>${t.rankImpactIndex}: <strong>${impact ? impact.impactIndex : '-'}/100</strong></span>
+            <span>${t.rankWelfare}: <strong>${item.score}/100</strong></span><span>${t.rankMismatch}: <strong>${item.mismatch.mismatchScore.toFixed(2)}</strong></span>
+            <span>${t.rankImpactIndex}: <strong>${impact ? impact.impactIndex : '-'}/100</strong></span><span>${t.rankGovernance}: <strong>${calcGovernanceScore(item)}/100</strong></span>
           </div>
           <div class="leaderboard-explain">${snippet}</div>
           <div class="leaderboard-explain" style="margin-top:8px;">

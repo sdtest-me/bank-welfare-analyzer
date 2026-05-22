@@ -339,7 +339,9 @@
       }
       const pi=mm.predictiveImpact||{};
       const consq=pi.shortTerm?(pi.shortTerm[lang]||pi.shortTerm.en):'';
+      const stakes=pi.longTerm?(pi.longTerm[lang]||pi.longTerm.en):'';
       $('execConsequenceValue').textContent=consq||tUi.execConsequenceUnavailable;
+      $('execStakesValue').textContent=stakes||tUi.execStakesFallback;
       const primaryAction=(spiralRec.recommendationBullets&&spiralRec.recommendationBullets[0])||(spiralRec.recommendationIntro||'').trim();
       $('execActionValue').textContent=primaryAction||tUi.execActionFallback;
     }

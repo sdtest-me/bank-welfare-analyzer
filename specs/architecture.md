@@ -526,3 +526,46 @@ The platform succeeds when:
 3. **Credibility:** Narratives feel specific to the institution, not generic templates.
 4. **Actionability:** Recommendations drive strategic thought, not passive reading.
 5. **Conversion:** The CTA layer successfully moves users toward Sponsor Lab or deeper analysis.
+
+---
+
+## 10. Comparative Mode (Optional, Frontend-only)
+
+Issue #150 introduces an optional comparative workflow without changing the existing single-bank path.
+
+### Scope Constraints
+
+- Single-bank mode remains the default and fully preserved.
+- No backend services are introduced.
+- No architecture rewrite or framework migration.
+- Comparative mode is a UI/logic extension on top of the current client-side engines.
+
+### Comparative Flow (3–5 banks)
+
+1. User enables **Comparative Mode**.
+2. User selects 3–5 banks (demo presets) or provides equivalent JSON input.
+3. Existing engine pipeline runs independently for each bank (`analyzeBank`).
+4. Results are ranked for executive scanning across four decision dimensions:
+   - Welfare pressure
+   - Mismatch
+   - Impact
+   - Governance
+5. UI renders a concise comparative narrative highlighting leader, laggard, and cohort-level average mismatch.
+
+### Ranking Dimensions
+
+Comparative output surfaces multi-metric interpretation instead of a single score:
+
+- **Welfare pressure**: derived from welfare score posture (`score`).
+- **Mismatch**: structural divergence intensity (`mismatchScore`).
+- **Impact**: real-world impact index (`impactIndex`).
+- **Governance**: frontend-derived proxy combining dividend extraction pressure and business-credit orientation.
+
+### UX + Mobile Responsiveness
+
+Comparative controls are designed as an optional panel with lightweight, responsive layout:
+
+- Toggle-based activation keeps default mode uncluttered for executives.
+- 3–5 bank guardrails enforce fast, readable side-by-side decisions.
+- Narrative summary appears inline for strategic interpretation.
+- Existing mobile CSS rules apply; comparative controls use the same responsive card and button system.

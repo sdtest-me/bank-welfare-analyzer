@@ -60,6 +60,39 @@
   }
 
 
+
+  function getSimulationAdjustments(){
+    const pick=id=>parseFloat($(id)?.value||0);
+    return {rateShift:pick('simRateShift'),consumptionShift:pick('simConsumptionShift'),incomeShift:pick('simIncomeShift'),dividendShift:pick('simDividendShift')};
+  }
+
+  function applySimulation(base){
+    const a=getSimulationAdjustments();
+    const out={...base};
+    out.im=Math.max(0,base.im+a.rateShift);
+    out.ix=Math.max(out.im,base.ix+a.rateShift);
+    out.ig=Math.max(0,base.ig+a.incomeShift);
+    out.di=Math.max(0,Math.min(100,base.di+a.dividendShift));
+    const cc=Math.max(0,Math.min(100,base.cc+a.consumptionShift));
+    const cb=Math.max(0,Math.min(100,base.cb-a.consumptionShift*0.7));
+    out.cc=cc; out.cb=cb; out.co2=Math.max(0,100-cc-cb);
+    return out;
+  }
+
+  function renderSimulationComparison(currentAnalysis,simAnalysis,currentData,simData){
+    const body=$('simCompareBody'); if(!body) return;
+    const curImpact=window.calculateImpact?window.calculateImpact(currentAnalysis):null;
+    const simImpact=window.calculateImpact?window.calculateImpact(simAnalysis):null;
+    const rows=[
+      ['Mismatch score',currentAnalysis.mismatch.mismatchScore,simAnalysis.mismatch.mismatchScore],
+      ['Impact index',curImpact?curImpact.impactIndex:0,simImpact?simImpact.impactIndex:0],
+      ['Dominant stage gap',Math.max(...Object.values(currentAnalysis.spiral.bank))-Math.max(...Object.values(currentAnalysis.spiral.population)),Math.max(...Object.values(simAnalysis.spiral.bank))-Math.max(...Object.values(simAnalysis.spiral.population))],
+      ['Income growth (%)',currentData.ig,simData.ig],
+      ['Consumption loans (%)',currentData.cc,simData.cc]
+    ];
+    body.innerHTML=rows.map(r=>{const d=(r[2]-r[1]);return `<tr><td>${r[0]}</td><td>${Number(r[1]).toFixed(2)}</td><td>${Number(r[2]).toFixed(2)}</td><td>${d>=0?'+':''}${d.toFixed(2)}</td></tr>`}).join('');
+  }
+
   function parseBanksInput(raw){
     const text=(raw||'').trim();
     if(!text) return [];
@@ -317,7 +350,10 @@
     }else{window.chart.data.labels=[window.i18n.tr[window.i18n.lang].cons,window.i18n.tr[window.i18n.lang].bus,window.i18n.tr[window.i18n.lang].other];window.chart.data.datasets[0].data=[d.cc,d.cb,d.co2];window.chart.update();}
 
     const esgInput = $('esgText') ? $('esgText').value : '';
-    const analysis = window.analyzeBank({ ...d, esgText: esgInput });
+    const baseData={...d};
+    const simData=applySimulation(baseData);
+    const analysis = window.analyzeBank({ ...simData, esgText: esgInput });
+    const currentAnalysis = window.analyzeBank({ ...baseData, esgText: esgInput });
     const spiral=analysis.spiral;
     const tUi=window.i18n.tr[window.i18n.lang];
     const stages=['beige','purple','red','blue','orange','green','yellow','turquoise'];
@@ -359,6 +395,7 @@
       $('execActionValue').textContent=primaryAction||tUi.execActionFallback;
     }
     renderWorstCaseScenario(analysis);
+    renderSimulationComparison(currentAnalysis,analysis,baseData,simData);
 
     const sc=analysis.score;
     $('scoreVal').textContent=sc+'/100';
@@ -471,6 +508,17 @@
     if(Math.abs(c+b+o-100)>1)$('creditOther').value=Math.max(0,100-c-b);
   }
 
+  function bindSimulationControls(){
+    ['simRateShift','simConsumptionShift','simIncomeShift','simDividendShift'].forEach(id=>{
+      const el=$(id);
+      if(!el)return;
+      const val=$(id+'Val');
+      const render=()=>{if(val)val.textContent=el.value; refresh();};
+      el.addEventListener('input',render);
+      render();
+    });
+  }
+
   document.addEventListener('DOMContentLoaded',()=>{
     const sv=localStorage.getItem('bwa_data');
     if(sv){try{const d=JSON.parse(sv);const m={bn:'bankName',co:'country',pg:'profitGrowth',cp:'capital',di:'dividends',im:'interestMin',ix:'interestMax',ig:'incomeGrowth',pr:'povertyRate',gd:'gdpPerCapita',as:'avgSalary',cc:'creditConsumption',cb:'creditBusiness',co2:'creditOther'};Object.keys(d).forEach(k=>{if($(m[k])&&d[k]!==undefined)$(m[k]).value=d[k];});}catch(e){}}
@@ -479,6 +527,7 @@
     updateHero(sv ? getData() : null);
     showRes();
     ['creditConsumption','creditBusiness','creditOther'].forEach(id=>$(id).addEventListener('change',fixCredit));
+    bindSimulationControls();
     if ($('rankInput')) {
       $('rankInput').value = JSON.stringify([{ bn: 'Eldik Bank', pg: 208, ig: 12.9, cc: 53, cb: 20, co2: 27, pr: 25.7, im: 17, ix: 32 }, { bn: 'Balanced Bank', pg: 24, ig: 14, cc: 28, cb: 52, co2: 20, pr: 12, im: 9, ix: 14 }], null, 2);
     }

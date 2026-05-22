@@ -526,3 +526,46 @@ The platform succeeds when:
 3. **Credibility:** Narratives feel specific to the institution, not generic templates.
 4. **Actionability:** Recommendations drive strategic thought, not passive reading.
 5. **Conversion:** The CTA layer successfully moves users toward Sponsor Lab or deeper analysis.
+
+---
+
+## 8. What-If Simulation Layer (Frontend-only)
+
+Issue #151 introduces an in-browser strategic simulation layer for executive experimentation without changing core engine architecture or adding backend services.
+
+### Scope and Constraints
+
+- No forecasting claims: outputs are scenario deltas only.
+- No backend: all controls and recomputation run client-side in `ui.js`.
+- Preserve architecture: existing scoring → mismatch → impact → narrative pipeline remains unchanged; simulation only perturbs inputs before passing through the same pipeline.
+
+### Simulation Controls
+
+The UI exposes real-time sliders for strategic levers:
+
+- Interest rate shift (applies to `im` and `ix`)
+- Consumption loan share shift (rebalanced against `cb`/`co2`)
+- Income growth shift (`ig`)
+- Dividend policy shift (`di`)
+
+### Recalculation Contract
+
+On every slider input event, the system recomputes through existing engines:
+
+1. mismatch
+2. impact
+3. stage distribution
+4. narrative text
+
+This ensures decision support remains consistent with the existing analytical stack.
+
+### Comparison View
+
+A current vs simulated table surfaces:
+
+- mismatch score
+- impact index
+- dominant-stage gap proxy
+- selected strategic input deltas
+
+The narrative panel also includes explicit simulated delta vs current mismatch to improve executive clarity.

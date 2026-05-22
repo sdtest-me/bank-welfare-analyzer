@@ -171,6 +171,14 @@
     .worst-case__value{color:#431407;overflow-wrap:anywhere;word-break:break-word}
     .results-toolbar{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px;margin:8px 0 14px}
     .results-toolbar .res-t{margin:0;flex:1;min-width:min(100%,220px)}
+    .whatif-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-top:10px}
+    .whatif-control{padding:10px;background:var(--ib);border:1px solid var(--b);border-radius:8px}
+    .whatif-control label{display:flex;justify-content:space-between;font-size:.82rem;font-weight:600;margin-bottom:6px}
+    .whatif-control input{width:100%}
+    .compare-table{width:100%;border-collapse:collapse;margin-top:10px;font-size:.86rem}
+    .compare-table th,.compare-table td{border:1px solid var(--b);padding:6px 8px;text-align:left}
+    .compare-table th{background:#f8fafc}
+
     @media(max-width:600px){
       body{padding:8px}header{padding:12px 14px;margin-bottom:12px}.logo{font-size:1rem}.logo-i{width:32px;height:32px;font-size:.85rem}.lang-b{padding:6px 12px;font-size:.85rem}.input-s{padding:14px;margin-bottom:12px;border-radius:10px}.input-h{flex-direction:column;align-items:flex-start;gap:8px;margin-bottom:14px}.sec-t{font-size:1.05rem;width:100%}.btn-p{width:100%;text-align:center;padding:13px 20px;font-size:1rem}.ex{padding:10px;margin-bottom:14px;border-radius:8px}.ex-label{width:100%;margin-bottom:6px;font-size:.8rem}.ex-b{flex:1;min-width:0;text-align:center;padding:8px 10px;font-size:.8rem}.form-g{grid-template-columns:1fr;gap:12px}.form-r{grid-template-columns:1fr;gap:10px}.form-gr input{padding:10px 12px;font-size:1rem}.res-t{font-size:1.05rem;margin-bottom:12px}.exec-summary{padding:14px;margin-bottom:12px;border-radius:10px}.exec-summary__head{font-size:1rem;margin-bottom:10px}.exec-summary__row{grid-template-columns:1fr;gap:4px;font-size:.86rem}.exec-summary__label{font-size:.82rem}.exec-summary--decision-card{padding:10px 12px}.exec-summary__row--card{flex-wrap:nowrap;padding:6px 0}.exec-summary__row--card .exec-summary__label{flex-basis:40%;font-size:.76rem}.exec-summary__value--card{font-size:.82rem;-webkit-line-clamp:3}.worst-case{padding:12px 14px;margin-bottom:12px}.worst-case__head{font-size:.95rem}.worst-case__row{grid-template-columns:1fr;gap:3px;font-size:.84rem}.results-toolbar{flex-direction:column;align-items:stretch}.results-toolbar .btn-outline{width:100%;text-align:center;padding:12px 14px}.grid{grid-template-columns:1fr;gap:12px}.card{padding:14px;border-radius:10px}.card-t{font-size:1rem;margin-bottom:12px}.metric{flex-direction:column;align-items:flex-start;gap:4px;padding:8px 0}.metric-v{justify-content:flex-start;width:100%}.score-v{font-size:2.2rem}.score-l{font-size:.85rem}.chart-c{height:220px}.spiral-chart-container{height:320px}.stage-grid{grid-template-columns:1fr}.prob-i{padding:8px 0}.prob-i div:last-child{font-size:.85rem}.quest-i{font-size:.85rem;padding:8px 0}footer{padding:16px;font-size:.8rem}.stage-grid-detail{grid-template-columns:repeat(4,1fr)}
     }
@@ -278,6 +286,22 @@
           </div>
         </div>
       </div>
+      
+      <div class="card" id="whatIfSection" style="margin:12px 0;">
+        <div class="card-t">🧪 What-If Simulation</div>
+        <div style="font-size:.85rem;color:var(--tm)">Adjust levers to simulate strategic changes. Results update in real time for decision support.</div>
+        <div class="whatif-grid">
+          <div class="whatif-control"><label>Interest rate shift (pp) <span id="simRateShiftVal">0</span></label><input id="simRateShift" type="range" min="-10" max="10" step="0.5" value="0"></div>
+          <div class="whatif-control"><label>Consumption loans shift (pp) <span id="simConsumptionShiftVal">0</span></label><input id="simConsumptionShift" type="range" min="-30" max="30" step="1" value="0"></div>
+          <div class="whatif-control"><label>Income growth shift (pp) <span id="simIncomeShiftVal">0</span></label><input id="simIncomeShift" type="range" min="-10" max="10" step="0.5" value="0"></div>
+          <div class="whatif-control"><label>Dividend policy shift (pp) <span id="simDividendShiftVal">0</span></label><input id="simDividendShift" type="range" min="-40" max="40" step="1" value="0"></div>
+        </div>
+        <table class="compare-table">
+          <thead><tr><th>Metric</th><th>Current</th><th>Simulated</th><th>Delta</th></tr></thead>
+          <tbody id="simCompareBody"></tbody>
+        </table>
+      </div>
+
       <div class="results-toolbar">
         <div class="res-t" id="resultsTitle">📊 Результаты анализа</div>
         <button type="button" class="btn-outline" id="btnExportPdf" onclick="exportAnalysisPdf()">Export PDF</button>

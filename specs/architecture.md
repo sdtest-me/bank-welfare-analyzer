@@ -417,17 +417,25 @@ Prompt specs allow reproducible AI behavior across versions, auditable analytica
 | Hosting | GitHub Pages |
 | i18n | RU/EN dictionary |
 
-### 13.1 Conversion Messaging Layer
+### 13.1 Institutional Scenario Layer (Sponsor Lab Preview)
 
-The results view includes a conversion bridge rendered directly below mismatch diagnostics.
+The results view includes a clearly separated institutional scenario layer rendered directly below mismatch diagnostics.
 
-Its role is to connect analytical outputs to deeper engagement — without modifying or overstating those outputs.
+Its role is to frame scenario planning for institutional users and connect analytical outputs to deeper engagement — without modifying or overstating those outputs.
 
 **Function:**
 
-- Contextualizes demo limitations: the displayed analysis is based on public or estimated inputs.
+- Visually and narratively separates public analysis signals from institutional scenario framing.
+- Adds explicit disclaimer language: scenario planning only, not forecasting, not predictive AI.
+- Contextualizes preview limitations: the displayed analysis is based on public or estimated inputs.
 - Creates tension around unresolved risk: internal institutional data may reveal a different picture.
-- Resolves with a clear call-to-action toward Sponsor Lab for calibrated simulation using proprietary data.
+- Repositions the layer as **Sponsor Lab Preview** for institutional calibration and planning.
+- Resolves with a clear call-to-action toward Sponsor Lab for calibrated scenario planning using proprietary data.
+- Frames institutional use-cases directly in UI copy:
+  - internal calibration,
+  - strategic planning,
+  - policy experimentation,
+  - portfolio strategy testing.
 
 **Implementation constraints:**
 
@@ -435,6 +443,7 @@ Its role is to connect analytical outputs to deeper engagement — without modif
 - Fully localized via the existing RU/EN i18n dictionary.
 - Must not alter `welfareScore`, `mismatchScore`, or `impactIndex` values.
 - Must not generate narrative claims beyond what the analytical engines have produced.
+- Must preserve existing architecture and client-side execution path.
 
 ---
 

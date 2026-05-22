@@ -276,6 +276,54 @@
             "Population {greenIcon} {greenStage} ({populationGreen}%) — survives through mutual aid. Bank {bankGreenStage} = {bankGreen}% (no empathy for debtors)"
           ]
         },
+        gapBulletsExtraction:{
+          ru:[
+            "У населения низкий {redIcon} {redStage} ({populationRed}%) — нет бунтов, люди не грабят. Но у банка высокий {bankRedStage} ({bankRed}%) — агрессивное выбивание долгов",
+            "У населения высокий {blueIcon} {blueStage} ({populationBlue}%) — дисциплинированно платят долги. Банк использует это для извлечения прибыли",
+            "Население {greenIcon} {greenStage} ({populationGreen}%) — спасается взаимовыручкой. У Банка {bankGreenStage} = {bankGreen}% (нет эмпатии к должникам)"
+          ],
+          en:[
+            "Population has low {redIcon} {redStage} ({populationRed}%) — no riots, no robberies. But Bank has high {bankRedStage} ({bankRed}%) — aggressive debt collection",
+            "Population has high {blueIcon} {blueStage} ({populationBlue}%) — disciplined debt payers. Bank exploits this for profit",
+            "Population {greenIcon} {greenStage} ({populationGreen}%) — survives through mutual aid. Bank {bankGreenStage} = {bankGreen}% (no empathy for debtors)"
+          ]
+        },
+        gapBulletsGovernance:{
+          ru:[
+            "Банк {bankIcon} {bankStage} — порядок и контроль. У населения {blueIcon} {blueStage} ({populationBlue}%) — дисциплина платежей",
+            "У населения высокий {blueIcon} {blueStage} ({populationBlue}%) — соблюдение правил. Банк {bankIcon} {bankStage} опирается на формальное управление",
+            "Население {blueIcon} {blueStage} ({populationBlue}%) vs банк {bankIcon} {bankStage} — разрыв в ожиданиях порядка"
+          ],
+          en:[
+            "Bank {bankIcon} {bankStage} — order and control. Population {blueIcon} {blueStage} ({populationBlue}%) — payment discipline",
+            "Population has high {blueIcon} {blueStage} ({populationBlue}%) — rule compliance. Bank {bankIcon} {bankStage} relies on formal governance",
+            "Population {blueIcon} {blueStage} ({populationBlue}%) vs bank {bankIcon} {bankStage} — governance expectation gap"
+          ]
+        },
+        gapBulletsGrowth:{
+          ru:[
+            "Банк {bankIcon} {bankStage} — достижение и рост. Потребительские кредиты {creditConsumption}% не синхронизированы с доходами населения",
+            "У населения {blueIcon} {blueStage} ({populationBlue}%) — платёжная дисциплина. Банк {bankIcon} {bankStage} гонит рост портфеля",
+            "Банк {bankIcon} {bankStage} vs население {greenIcon} {greenStage} ({populationGreen}%) — рост прибыли опережает взаимопомощь"
+          ],
+          en:[
+            "Bank {bankIcon} {bankStage} — achievement and growth. Consumer loans {creditConsumption}% are out of sync with population income",
+            "Population {blueIcon} {blueStage} ({populationBlue}%) — payment discipline. Bank {bankIcon} {bankStage} pushes portfolio growth",
+            "Bank {bankIcon} {bankStage} vs population {greenIcon} {greenStage} ({populationGreen}%) — profit growth outpaces mutual aid"
+          ]
+        },
+        gapBulletsWelfare:{
+          ru:[
+            "Население {greenIcon} {greenStage} ({populationGreen}%) — взаимопомощь. Банк {bankIcon} {bankStage}, {bankGreenStage} = {bankGreen}%",
+            "У населения {greenIcon} {greenStage} ({populationGreen}%) — эмпатия и поддержка. Банк {bankIcon} {bankStage} не отражает welfare-ориентацию",
+            "Банк {bankIcon} {bankStage} vs население {greenIcon} {greenStage} ({populationGreen}%) — разрыв эмпатии"
+          ],
+          en:[
+            "Population {greenIcon} {greenStage} ({populationGreen}%) — mutual aid. Bank {bankIcon} {bankStage}, {bankGreenStage} = {bankGreen}%",
+            "Population {greenIcon} {greenStage} ({populationGreen}%) — empathy and support. Bank {bankIcon} {bankStage} does not reflect welfare orientation",
+            "Bank {bankIcon} {bankStage} vs population {greenIcon} {greenStage} ({populationGreen}%) — empathy gap"
+          ]
+        },
         recommendationIntro:{
           ru:"Банку следует перейти от {bankIcon} {bankStage} к {transitionTarget}:",
           en:"Bank should evolve from {bankIcon} {bankStage} to {transitionTarget} by:"

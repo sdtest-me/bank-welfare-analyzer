@@ -13,6 +13,18 @@
   function $(id){return document.getElementById(id);}
   function showRes(){$('resultsSection').style.display='block';}
   function hideRes(){$('resultsSection').style.display='none';}
+  function updateHero(data){
+    const t=window.i18n.tr[window.i18n.lang];
+    if($('heroDemoBadge')) $('heroDemoBadge').textContent=t.heroDemoBadge;
+    if($('heroDemoTitle')) $('heroDemoTitle').textContent=t.heroDemoTitle;
+    if($('heroDemoPrimary')) $('heroDemoPrimary').textContent=t.heroDemoPrimary;
+    if($('heroDemoSecondary')) $('heroDemoSecondary').textContent=t.heroDemoSecondary;
+    if($('heroDemoSubtitle')){
+      $('heroDemoSubtitle').textContent=(data&&data.bn)
+        ? `${t.heroDemoContextPrefix}: ${data.bn}. ${t.heroDemoSubtitle}`
+        : t.heroDemoSubtitle;
+    }
+  }
 
   function loadEx(n){
     exampleBtnIds.forEach(id=>{const el=$(id);if(el)el.classList.toggle('a',(id==='exEldik'&&n==='eldik')||(id==='exOptima'&&n==='optima')||(id==='exDemir'&&n==='demir')||(id==='exKicb'&&n==='kicb')||(id==='exBakai'&&n==='bakai')||(id==='exNew'&&n==='new'));});
@@ -142,6 +154,7 @@
     showRes();
     $('hTitle').textContent=`${d.bn} | ${window.i18n.tr[window.i18n.lang].app}`;
     refresh(d);
+    updateHero(d);
     localStorage.setItem('bwa_data',JSON.stringify(d));
     ($('execSummary')||$('resultsTitle')).scrollIntoView({behavior:'smooth',block:'start'});
   }
@@ -463,6 +476,7 @@
     if(sv){try{const d=JSON.parse(sv);const m={bn:'bankName',co:'country',pg:'profitGrowth',cp:'capital',di:'dividends',im:'interestMin',ix:'interestMax',ig:'incomeGrowth',pr:'povertyRate',gd:'gdpPerCapita',as:'avgSalary',cc:'creditConsumption',cb:'creditBusiness',co2:'creditOther'};Object.keys(d).forEach(k=>{if($(m[k])&&d[k]!==undefined)$(m[k]).value=d[k];});}catch(e){}}
     refresh(def);
     window.setLang('en');
+    updateHero(sv ? getData() : null);
     showRes();
     ['creditConsumption','creditBusiness','creditOther'].forEach(id=>$(id).addEventListener('change',fixCredit));
     if ($('rankInput')) {

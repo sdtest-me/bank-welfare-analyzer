@@ -166,6 +166,9 @@
     .worst-case__head{font-size:1rem;font-weight:700;color:#9a3412;margin-bottom:10px}
     .worst-case__disclaimer{font-size:.82rem;color:#9a3412;margin-bottom:10px}
     .worst-case__grid{display:grid;gap:10px}
+    .worst-case__lab{margin-top:10px;padding:10px;border-radius:8px;background:#fff;border:1px dashed #fdba74}
+    .worst-case__lab-text{font-size:.82rem;color:#7c2d12;line-height:1.45}
+    .worst-case__lab-actions{margin-top:8px;display:flex;flex-wrap:wrap;gap:8px}
     .worst-case__row{display:grid;grid-template-columns:minmax(0,150px) 1fr;gap:8px 12px;font-size:.88rem}
     .worst-case__label{font-weight:600;color:#7c2d12}
     .worst-case__value{color:#431407;overflow-wrap:anywhere;word-break:break-word}
@@ -276,6 +279,13 @@
           <div class="worst-case__row">
             <div class="worst-case__label" id="worstLblConsequence">If unaddressed</div>
             <div class="worst-case__value" id="worstConsequenceValue"></div>
+          </div>
+        </div>
+        <div class="worst-case__lab">
+          <div class="worst-case__lab-text" id="whatIfSponsorLead">Escalation path: validate this scenario with internal data in Sponsor Lab before executive decisions.</div>
+          <div class="worst-case__lab-actions">
+            <a class="btn-p" id="whatIfSponsorPrimaryCta" href="https://sdtest.me/price" target="_blank" rel="noopener noreferrer">Validate in Sponsor Lab</a>
+            <a class="btn-outline" id="whatIfSponsorSecondaryCta" href="https://sdtest.me/faq/sponsor-lab" target="_blank" rel="noopener noreferrer">Why internal calibration matters</a>
           </div>
         </div>
       </div>

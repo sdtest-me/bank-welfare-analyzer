@@ -341,6 +341,10 @@
     $('worstConditionValue').textContent = t['worstCondition' + riskKey];
     $('worstRiskValue').textContent = `${t.worstDriverPrefix}: ${driverLabel}; ${window.i18n.tr[window.i18n.lang].mismatchScoreLabel} ${mismatchScore}.`;
     $('worstConsequenceValue').textContent = t['worstConsequence' + riskKey];
+    const sponsorLead = $('whatIfSponsorLead');
+    if(sponsorLead){
+      sponsorLead.textContent = `${t.whatIfSponsorLead} ${t.worstDriverPrefix}: ${driverLabel}.`;
+    }
     block.hidden = false;
   }
 

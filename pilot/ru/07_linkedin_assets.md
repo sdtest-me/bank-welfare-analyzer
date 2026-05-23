@@ -1,5 +1,14 @@
 # LinkedIn-материалы пилота — BWA
 
+## Навигационная таблица: посты ↔ карточки ↔ скриншоты ↔ UI-фрагменты
+
+| Post # | LinkedIn Card # | Screenshot # | UI Fragment (start → end) | Comments |
+|---|---|---|---|---|
+| Пост 1 | Карточка 1 (сравнительный ракурс) | Скриншот 1 | Заголовок **Bank Input Data** → конец блока **Country Welfare Contribution Index** (оценка 58/100) | Основной визуал для нарратива «одна страна — разные результаты» (Eldik vs KICB). |
+| Пост 2 | Карточка 2 (методологический ракурс) | Скриншот 2 | Секция **SPIRAL GAP ANALYSIS** → конец секции **RECOMMENDATION** | Визуал для объяснения extraction pressure и приоритетов вмешательства. |
+| Пост 3 | Карточка 3 (доверие и credibility) | Скриншот 3 | Блок **Data Provenance** → конец блока **Data Provenance** | Визуал для прозрачности источников, lineage и аудита. |
+| Пост 1 (альтернативный сравнительный визуал) | Карточка 1 (сравнительный ракурс) | Скриншот 4 | Заголовок секции **Compare Banks** → конец компактной summary-таблицы (до детальных карточек) | Дополнительный визуал к тому же сравнительному посту/треду. |
+
 ## Скриншот 1 — Сравнение Welfare Score (одна страна, разные риск-профили)
 - **Рекомендованное имя файла:** `linkedin_s1_welfare-comparison_eldik58_kicb79.png`
 - **Что выделить аннотациями:**
@@ -11,6 +20,7 @@
   *Same operating environment, different institutional outcomes. In this BWA comparison, Eldik (Welfare Score 58) and KICB (Welfare Score 79) show how governance and portfolio behavior can diverge within one country context. Use Welfare Score and Mismatch Score together to identify where alignment pressure is structural versus bank-specific.*
 - **RU-подпись:**
   *Одинаковая среда работы — разные институциональные результаты. В этом сравнении BWA Eldik (Welfare Score 58) и KICB (Welfare Score 79) показывают, как управленческие и портфельные практики могут расходиться в одной стране. Смотрите на Welfare Score вместе с Mismatch Score, чтобы отделять структурное давление от факторов конкретного банка.*
+- **Примечание к захвату (пресет + настройки):** Сначала откройте пресет банка **Eldik** в single-bank режиме и проверьте контекст **58/100** в Country Welfare Contribution Index, затем переключитесь в **Compare Banks** и добавьте **KICB**; сохраните тот же страновой фильтр и веса пилота по умолчанию.
 
 ## Скриншот 2 — Spiral Gap Analysis (red-dominant банк, нарратив давления извлечения)
 - **Рекомендованное имя файла:** `linkedin_s2_gap-analysis_extraction-pressure.png`
@@ -23,6 +33,7 @@
   *This view illustrates extraction pressure in a red-dominant profile: high short-term concentration and weak balance across stakeholder outcomes. BWA does not predict future events; it maps current alignment gaps with deterministic rules. Spiral Gap Analysis, Mismatch Score, and Impact Index together show where corrective governance focus is most urgent.*
 - **RU-подпись:**
   *Этот экран иллюстрирует «давление извлечения» в red-dominant профиле: высокая краткосрочная концентрация и слабый баланс интересов стейкхолдеров. BWA не прогнозирует события; система детерминированно фиксирует текущие разрывы соответствия. Вместе Spiral Gap Analysis, Mismatch Score и Impact Index показывают, где управленческая корректировка наиболее срочна.*
+- **Примечание к захвату (пресет + настройки):** Используйте **red-dominant stress-пресет** (пилотный профиль с повышенным extraction pressure), откройте детальную панель банка и оставьте включенными блоки рекомендаций, чтобы кадр включал диапазон от **SPIRAL GAP ANALYSIS** до **RECOMMENDATION**.
 
 ## Скриншот 3 — Data Provenance (бейджи Official / Estimated / Inferred)
 - **Рекомендованное имя файла:** `linkedin_s3_data-provenance_badges.png`
@@ -35,6 +46,7 @@
   *Trust starts with source discipline. BWA surfaces provenance badges (Official, Estimated, Inferred) at metric level so analysts can separate hard evidence from proxy-based signals. This improves review quality, supports auditability, and keeps interpretation anchored to transparent data lineage.*
 - **RU-подпись:**
   *Доверие начинается с дисциплины источников. BWA выводит provenance badges (Official, Estimated, Inferred) на уровне каждого показателя, чтобы аналитик различал «жесткие» данные и прокси-сигналы. Это повышает качество разбора, поддерживает аудит и удерживает интерпретацию в рамках прозрачного lineage данных.*
+- **Примечание к захвату (пресет + настройки):** Используйте любой пилотный пресет банка со смешанными типами источников (рекомендуется: **KICB**), затем включите режим видимости provenance, чтобы бейджи **Official / Estimated / Inferred** и строки источник/дата были видны внутри блока Data Provenance.
 
 ## Скриншот 4 — Comparative mode (3 банка бок о бок)
 - **Рекомендованное имя файла:** `linkedin_s4_comparative-mode_3banks_rankings.png`
@@ -47,6 +59,7 @@
   *Comparative mode translates complex diagnostics into executive-ready prioritization. Three banks can be reviewed side by side with standardized Welfare Score and Mismatch Score, preserving methodological consistency while clarifying relative position and intervention urgency.*
 - **RU-подпись:**
   *Comparative mode переводит сложную диагностику в формат управленческой приоритизации. Три банка сравниваются бок о бок по стандартизированным Welfare Score и Mismatch Score, сохраняя методологическую сопоставимость и проясняя относительную позицию и срочность действий.*
+- **Примечание к захвату (пресет + настройки):** Используйте пресет **Compare Banks** для трех пилотных банков (например, **Eldik, KICB и еще один банк пилота**), сохраните одинаковые фильтры страны/контекста и обрежьте кадр до компактной summary-таблицы, не включая детальные карточки.
 
 ---
 

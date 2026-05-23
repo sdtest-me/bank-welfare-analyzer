@@ -126,6 +126,7 @@
     .leaderboard-section{margin-top:16px}
     .leaderboard-input{width:100%;min-height:120px;padding:11px 13px;border:1px solid var(--b);border-radius:8px;background:var(--ib);font-size:.9rem;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;resize:vertical}
     .leaderboard-note{font-size:.82rem;color:var(--tm);margin-top:6px}
+    .leaderboard-subtitle{font-size:.88rem;color:var(--tm);margin:-6px 0 10px}
     .leaderboard-list{display:grid;gap:10px;margin-top:12px}
     .leaderboard-item{padding:12px;background:var(--ib);border-radius:8px;border:1px solid var(--b)}
     .leaderboard-head{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:.92rem}
@@ -415,8 +416,10 @@
 
 
       <div class="card leaderboard-section">
-        <div class="card-t" id="rankTitle">🏁 Рейтинг банков</div>
-        <div class="form-gr">
+        <div class="card-t" id="rankTitle">🏁 Compare Banks / Сравнить банки</div>
+        <div class="leaderboard-subtitle" id="rankSubtitle">Select banks from presets or enter custom data / Выберите банки из примеров или введите данные вручную</div>
+        <button class="btn-ghost" type="button" id="rankAdvancedToggle" onclick="toggleRankingAdvancedInput()">Show advanced input / Показать расширенный ввод</button>
+        <div class="form-gr" id="rankAdvancedInput" style="display:none;margin-top:10px;">
           <label id="rankInputLabel">Массив банков (JSON или по одной JSON-строке)</label>
           <textarea id="rankInput" class="leaderboard-input" placeholder='[{"bn":"Bank A","pg":30,"ig":10,"cc":40,"cb":35,"co2":25}]'></textarea>
           <div class="leaderboard-note" id="rankInputHint">Поддерживается JSON-массив или несколько строк JSON (один банк на строку).</div>
@@ -443,6 +446,13 @@
     </footer>
   </div>
 
+    <script>
+      function toggleRankingAdvancedInput() {
+        const advancedInput = document.getElementById('rankAdvancedInput');
+        if (!advancedInput) return;
+        advancedInput.style.display = advancedInput.style.display === 'none' ? 'block' : 'none';
+      }
+    </script>
     <script src="src/js/i18n.js"></script>
     <script src="src/js/core/scoring.js"></script>
     <script src="src/js/core/valueMapping.js"></script>

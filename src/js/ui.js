@@ -321,6 +321,32 @@
     });
   }
 
+
+  function updateTransparency(analysis){
+    const t=window.i18n.tr[window.i18n.lang];
+    const mismatch=analysis.mismatch||{};
+    const impact = typeof window.calculateImpact === 'function' ? window.calculateImpact(analysis) : null;
+    const combined=Math.max(0,Math.min(1,((mismatch.esgConfidence||0)+(mismatch.driverConfidence||0))/2));
+    const confidenceLabel=combined>=0.75?t.transparencyConfidenceHigh:combined>=0.45?t.transparencyConfidenceMedium:t.transparencyConfidenceLow;
+    const completeness=`${Math.round((combined*0.75+0.25)*100)}%`;
+    const set=(suffix,source,calib)=>{
+      const c=$('transparencyConfidence'+suffix),d=$('transparencyCompleteness'+suffix),s=$('transparencySource'+suffix),m=$('transparencyCalibration'+suffix);
+      if(c)c.textContent=confidenceLabel;
+      if(d)d.textContent=completeness;
+      if(s)s.textContent=source;
+      if(m)m.textContent=calib;
+    };
+    const sourceOfficial=t.transparencySourceOfficial;
+    const sourceEstimated=t.transparencySourceEstimated;
+    const sourceInferred=t.transparencySourceInferred;
+    const calibration = window.i18n.lang==='en' ? t.transparencyCalibrationPublic : t.transparencyCalibrationPublic;
+    const calibrationLab = t.transparencyCalibrationLab;
+    set('Welfare',sourceOfficial,calibration);
+    set('Mismatch',sourceInferred,calibration);
+    set('Spiral',sourceInferred,calibration);
+    set('Impact',impact ? sourceEstimated : sourceInferred,calibrationLab);
+  }
+
   function renderWorstCaseScenario(analysis){
     const block = $('worstCaseBlock');
     if(!block) return;
@@ -416,6 +442,7 @@
       $('execActionValue').textContent=primaryAction||tUi.execActionFallback;
     }
     renderWorstCaseScenario(analysis);
+    updateTransparency(analysis);
 
     const sc=analysis.score;
     $('scoreVal').textContent=sc+'/100';

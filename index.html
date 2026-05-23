@@ -135,6 +135,9 @@
     .leaderboard-input{width:100%;min-height:120px;padding:11px 13px;border:1px solid var(--b);border-radius:8px;background:var(--ib);font-size:.9rem;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;resize:vertical}
     .leaderboard-note{font-size:.82rem;color:var(--tm);margin-top:6px}
     .leaderboard-subtitle{font-size:.88rem;color:var(--tm);margin:-6px 0 10px}
+    .compare-helper{font-size:.82rem;color:var(--tm);margin-left:26px}
+    .compare-separator{margin-top:10px;padding:8px 10px;border:1px dashed var(--b);border-radius:8px;background:#f8fafc;font-size:.82rem;color:var(--tm);display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+    .compare-separator strong{color:var(--t)}
     .leaderboard-list{display:grid;gap:10px;margin-top:12px}
     .leaderboard-item{padding:12px;background:var(--ib);border-radius:8px;border:1px solid var(--b)}
     .leaderboard-head{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:.92rem}
@@ -433,6 +436,10 @@
       <div class="card leaderboard-section">
         <div class="card-t" id="rankTitle">🏁 Compare Banks / Сравнить банки</div>
         <div class="leaderboard-subtitle" id="rankSubtitle">Select banks from presets or enter custom data / Выберите банки из примеров или введите данные вручную</div>
+        <div class="compare-separator">
+          <span id="compareOptionA"><strong>Option A:</strong> Select from presets / <strong>Вариант А:</strong> Выбрать из примеров</span>
+          <span id="compareOptionB"><strong>Option B:</strong> Enter custom data / <strong>Вариант Б:</strong> Ввести свои данные</span>
+        </div>
         <button class="btn-ghost" type="button" id="rankAdvancedToggle" onclick="toggleRankingAdvancedInput()">Show advanced input</button>
         <div class="form-gr" id="rankAdvancedInput" style="display:none;margin-top:10px;">
           <label id="rankInputLabel">Массив банков (JSON или по одной JSON-строке)</label>
@@ -442,6 +449,7 @@
         
         <div style="margin-top:10px;display:grid;gap:8px;">
           <label style="display:flex;align-items:center;gap:8px;font-size:.86rem;"><input type="checkbox" id="compareModeToggle"> <span id="compareModeLabel">Enable comparative mode (3–5 banks)</span></label>
+          <div class="compare-helper" id="compareModeHelper">Select 3-5 banks from presets above, or enter bank data in the JSON field below / Выберите 3-5 банков из примеров выше или введите данные банков в поле JSON ниже</div>
           <div id="compareModePanel" style="display:none;padding:10px;border:1px solid var(--b);border-radius:8px;background:#fff;">
             <div class="leaderboard-note" id="compareModeHint">Select 3–5 demo banks for side-by-side ranking.</div>
             <div id="comparePresetButtons" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;"></div>
@@ -468,6 +476,18 @@
         if (!advancedInput) return;
         advancedInput.style.display = advancedInput.style.display === 'none' ? 'block' : 'none';
       }
+
+      document.addEventListener('DOMContentLoaded', () => {
+        const compareToggle = document.getElementById('compareModeToggle');
+        const advancedInput = document.getElementById('rankAdvancedInput');
+        if (!compareToggle || !advancedInput) return;
+
+        compareToggle.addEventListener('change', () => {
+          if (compareToggle.checked && advancedInput.style.display === 'none') {
+            advancedInput.style.display = 'block';
+          }
+        });
+      });
     </script>
     <script src="src/js/i18n.js"></script>
     <script src="src/js/core/scoring.js"></script>

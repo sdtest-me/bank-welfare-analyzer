@@ -4,23 +4,23 @@
 
 | Post # | LinkedIn Card # | Screenshot # | UI Fragment (start → end) | Comments |
 |---|---|---|---|---|
-| Post 1 | Card 1 (Comparative angle) | Screenshot 1 | **Bank Input Data** header → end of **Country Welfare Contribution Index** (58/100 score) | Use this for the “same country, different outcomes” narrative with Eldik vs KICB. |
+| Post 1 | Card 1 (Comparative angle) | Screenshot 1 | **Compare Banks** section header → end of compact summary table (before detailed cards) | Primary visual for “same country, different outcomes” using Eldik, KICB, and Optima in one ranking frame. |
 | Post 2 | Card 2 (Methodology angle) | Screenshot 2 | **SPIRAL GAP ANALYSIS** section → end of **RECOMMENDATION** section | Use this to support extraction-pressure and intervention-priority explanation. |
 | Post 3 | Card 3 (Trust & credibility angle) | Screenshot 3 | **Data Provenance** block → end of **Data Provenance** block | Use this for transparency, lineage, and auditability message. |
-| Post 1 (alt comparative visual) | Card 1 (Comparative angle) | Screenshot 4 | **Compare Banks** section header → end of compact summary table (before detailed cards) | Optional second visual for comparative ranking context in the same post thread. |
+| Post 1 / Post 2 supplement | Card 1 or Card 2 | Screenshot 4 | **Executive summary** section only | Optional compact decision-card visual with risk signal for executive-readiness emphasis. |
 
-## Screenshot 1 — Welfare Score Comparison (same country, different risk profiles)
-- **Filename suggestion:** `linkedin_s1_welfare-comparison_eldik58_kicb79.png`
+## Screenshot 1 — Comparative ranking table (same country, different results)
+- **Filename suggestion:** `linkedin_s1_compare-banks_eldik_kicb_optima_rankings.png`
 - **What to highlight with annotations:**
-  1. Welfare Score tiles: **Eldik = 58** and **KICB = 79**.
-  2. Mismatch Score values under each bank card.
-  3. A callout that both banks are in the **same country baseline** but show different behavioral alignment outcomes.
-  4. Ranking indicator showing relative position in the comparison list.
+  1. Compact ranking table with **Eldik, KICB, and Optima** visible together.
+  2. Welfare Score and Risk level columns showing clearly different outcomes.
+  3. Same-country context confirmation for all three banks.
+  4. Rank order (1–3) that makes structural divergence immediately visible.
 - **EN caption:**
-  *Same operating environment, different institutional outcomes. In this BWA comparison, Eldik (Welfare Score 58) and KICB (Welfare Score 79) show how governance and portfolio behavior can diverge within one country context. Use Welfare Score and Mismatch Score together to identify where alignment pressure is structural versus bank-specific.*
+  *Same operating environment, different institutional outcomes. In this BWA comparison, Eldik, KICB, and Optima show how governance and portfolio behavior can diverge within one country context. Use Welfare Score and Mismatch Score together to identify where alignment pressure is structural versus bank-specific.*
 - **RU caption:**
   *Одинаковая среда работы — разные институциональные результаты. В этом сравнении BWA Eldik (Welfare Score 58) и KICB (Welfare Score 79) показывают, как управленческие и портфельные практики могут расходиться в одной стране. Смотрите на Welfare Score вместе с Mismatch Score, чтобы отделять структурное давление от факторов конкретного банка.*
-- **Capture note (preset + settings):** Use the **Eldik** bank preset in single-bank view first to confirm the **58/100** context in Country Welfare Contribution Index, then switch to **Compare Banks** with **KICB** added; keep the same country filter and default pilot weights before taking the screenshot.
+- **Capture note (preset + settings):** Load **Eldik** first, then enter JSON with **Eldik, KICB, and Optima** in **Compare Banks** and click **Build ranking**. Keep the same country filter and default pilot weights before capture.
 
 ## Screenshot 2 — Spiral Gap Analysis (red-dominant bank, extraction pressure narrative)
 - **Filename suggestion:** `linkedin_s2_gap-analysis_extraction-pressure.png`
@@ -48,18 +48,18 @@
   *Доверие начинается с дисциплины источников. BWA выводит provenance badges (Official, Estimated, Inferred) на уровне каждого показателя, чтобы аналитик различал «жесткие» данные и прокси-сигналы. Это повышает качество разбора, поддерживает аудит и удерживает интерпретацию в рамках прозрачного lineage данных.*
 - **Capture note (preset + settings):** Use any pilot bank preset with mixed-source indicators (recommended: **KICB**), then enable provenance visibility mode so **Official / Estimated / Inferred** badges and source-date lines are visible inside the Data Provenance block.
 
-## Screenshot 4 — Comparative mode (3 banks side by side)
-- **Filename suggestion:** `linkedin_s4_comparative-mode_3banks_rankings.png`
+## Screenshot 4 — Executive Summary decision card (institutional-grade output in seconds)
+- **Filename suggestion:** `linkedin_s4_executive-summary_decision-card.png`
 - **What to highlight with annotations:**
-  1. Side-by-side cards for three banks in Comparative mode.
-  2. Welfare Score and Mismatch Score visible for all three.
-  3. Rank order (1–3) and gap magnitude between first and third.
-  4. Consistent country/context filter to preserve comparability.
+  1. Executive Summary block only (tight crop, no surrounding sections).
+  2. Compact decision card with risk signal clearly visible.
+  3. Core recommendation/priority line readable at glance.
+  4. Timestamp/context line to emphasize “ready in seconds” usability.
 - **EN caption:**
-  *Comparative mode translates complex diagnostics into executive-ready prioritization. Three banks can be reviewed side by side with standardized Welfare Score and Mismatch Score, preserving methodological consistency while clarifying relative position and intervention urgency.*
+  *Institutional-grade output in seconds: the Executive Summary condenses score, risk signal, and action priority into one decision-ready card. It is built for leadership reviews where clarity and speed matter as much as methodological rigor.*
 - **RU caption:**
-  *Comparative mode переводит сложную диагностику в формат управленческой приоритизации. Три банка сравниваются бок о бок по стандартизированным Welfare Score и Mismatch Score, сохраняя методологическую сопоставимость и проясняя относительную позицию и срочность действий.*
-- **Capture note (preset + settings):** Use **Compare Banks** preset with three pilot banks (e.g., **Eldik, KICB, and one additional pilot bank**), keep identical country/context filters, and capture only up to the compact summary table before detailed cards.
+  *Institutional-grade output in seconds: Executive Summary сводит score, риск-сигнал и приоритет действий в одну decision-ready карточку. Этот формат полезен для руководства, когда критичны и скорость, и методологическая прозрачность.*
+- **Capture note (preset + settings):** Use **Eldik Bank** preset after analysis and capture only the **Executive summary** section so the compact decision card remains the focal point.
 
 ---
 
@@ -79,7 +79,7 @@ For pilot participants, this creates a practical decision framework: compare, di
 
 Public data is often treated as too fragmented for strategic insight. Our pilot experience suggests the opposite—if the transformation logic is explicit. BWA organizes official and public indicators into a deterministic assessment stack that produces Welfare Score, Mismatch Score, Spiral Gap Analysis, and Impact Index. The emphasis is not on volume of data, but on methodological clarity, comparability, and traceability.
 
-A key design principle is provenance visibility. Indicators are tagged as Official, Estimated, or Inferred, with source lineage exposed for review. This allows analysts to separate robust evidence from proxy-dependent inputs and calibrate confidence accordingly. It also improves governance quality: discussions can focus on verifiable assumptions rather than opaque model behavior.
+A key design principle is structural interpretability: Spiral Gap Analysis and recommendations make extraction pressure explicit, especially when a red-dominant profile diverges from welfare-aligned targets. This helps teams distinguish systemic imbalance from isolated noise and calibrate intervention sequencing with transparent logic.
 
 For bank leaders, the value is operational. The outputs identify where alignment is strongest, where mismatch pressure is accumulating, and where intervention should be sequenced first. Deterministic rules make re-runs reproducible over time, supporting disciplined progress reviews across reporting cycles.
 

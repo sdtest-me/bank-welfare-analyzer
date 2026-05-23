@@ -111,14 +111,23 @@
     const raw=(100-(d.di||0))*0.5 + (d.cb||0)*0.5;
     return Math.max(0,Math.min(100,Math.round(raw)));
   }
+  function getDominantStageLabel(item,t){
+    const spiralBank=item&&item.spiral&&item.spiral.bank;
+    if(!spiralBank) return '-';
+    const stages=['beige','purple','red','blue','orange','green','yellow','turquoise'];
+    const dominant=stages.reduce((best,current)=>((spiralBank[best]||0)>(spiralBank[current]||0)?best:current));
+    return t.stages[dominant]||dominant;
+  }
 
   function doRankBanks(){
     const input=$('rankInput');
     const err=$('rankError');
     const list=$('rankList');
+    const summary=$('rankSummary');
     const t=window.i18n.tr[window.i18n.lang];
     err.style.display='none';
     err.textContent='';
+    if(summary) summary.innerHTML='';
 
     try{
       let banks=parseBanksInput(input.value);
@@ -141,6 +150,32 @@
       const ranked=window.analyzeMultipleBanks(banks);
       const narrative=$('compareNarrative');
       if(narrative) narrative.textContent=buildCompareNarrative(ranked);
+      if(summary){
+        summary.innerHTML=`<table class="rank-summary-table">
+          <thead>
+            <tr>
+              <th>${t.rankTableBank}</th>
+              <th>${t.rankTableWelfare}</th>
+              <th>${t.rankTableMismatch}</th>
+              <th>${t.rankTableRisk}</th>
+              <th>${t.rankTableDominantStage}</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${ranked.map(item=>{
+              const name=(item.data&&item.data.bn)||'Unknown';
+              const risk=t.riskLevels[item.mismatch.riskLevel]||item.mismatch.riskLevel;
+              return `<tr>
+                <td>${name}</td>
+                <td>${item.score}/100</td>
+                <td>${item.mismatch.mismatchScore.toFixed(2)}</td>
+                <td>${risk}</td>
+                <td>${getDominantStageLabel(item,t)}</td>
+              </tr>`;
+            }).join('')}
+          </tbody>
+        </table>`;
+      }
       list.innerHTML=ranked.map(item=>{
         const name=(item.data&&item.data.bn)||'Unknown';
         const risk=t.riskLevels[item.mismatch.riskLevel]||item.mismatch.riskLevel;
@@ -189,6 +224,8 @@
       }).join('');
     }catch(e){
       list.innerHTML='';
+      const summary=$('rankSummary');
+      if(summary) summary.innerHTML='';
       err.textContent=t.rankParseErr;
       err.style.display='block';
     }

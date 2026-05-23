@@ -141,6 +141,11 @@
     .leaderboard-rank{font-weight:700;color:var(--p)}
     .leaderboard-meta{display:flex;gap:12px;flex-wrap:wrap;font-size:.85rem;color:var(--tm);margin-top:6px}
     .leaderboard-explain{margin-top:6px;font-size:.85rem;color:var(--t)}
+    .rank-summary-wrap{margin-top:12px;overflow:auto;border:1px solid var(--b);border-radius:8px;background:#fff}
+    .rank-summary-table{width:100%;border-collapse:collapse;font-size:.85rem}
+    .rank-summary-table th,.rank-summary-table td{padding:9px 10px;text-align:left;border-bottom:1px solid var(--b)}
+    .rank-summary-table th{background:#f8fafc;font-weight:700;color:var(--t)}
+    .rank-summary-table tr:last-child td{border-bottom:none}
     .sponsor-bridge{margin-top:12px;padding:12px;border-radius:10px;border:1px solid #bfdbfe;background:#eff6ff;text-align:left}
     .sponsor-text{font-size:.86rem;line-height:1.5;color:#1e3a8a}
     .sponsor-text + .sponsor-text{margin-top:6px}
@@ -448,6 +453,7 @@
           <button class="btn-p" onclick="doRankBanks()" id="btnRank">📋 Построить рейтинг</button>
         </div>
         <div id="rankError" class="leaderboard-note" style="color:var(--d);display:none;margin-top:10px;"></div>
+        <div id="rankSummary" class="rank-summary-wrap"></div>
         <div id="rankList" class="leaderboard-list"></div>
       </div>
 

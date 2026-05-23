@@ -578,3 +578,38 @@ Comparative controls are designed as an optional panel with lightweight, respons
 - 3–5 bank guardrails enforce fast, readable side-by-side decisions.
 - Narrative summary appears inline for strategic interpretation.
 - Existing mobile CSS rules apply; comparative controls use the same responsive card and button system.
+
+
+## 11. What-If Simulation (Optional, Frontend-only)
+
+Issue #151 introduces an optional what-if simulation panel for stress-testing strategic assumptions without changing the baseline analysis flow.
+
+### Scope Constraints
+
+- The default single-bank analysis path remains unchanged.
+- No backend service or persistence layer is required.
+- Simulation logic remains frontend-only and deterministic.
+- The panel is explicitly for internal strategic exploration, not forecasting.
+
+### What-If Flow
+
+1. User runs the standard bank analysis.
+2. User opens the **What-If Simulation** panel.
+3. User reviews a synthesized downside scenario generated from current risk drivers and mismatch posture.
+4. UI presents scenario condition, escalated risk, and likely consequence if no corrective action is taken.
+5. User uses the scenario to guide strategic discussion and next-step validation in Sponsor Lab.
+
+### Output Design
+
+The simulation panel provides concise, decision-facing outputs:
+
+- **Worst-case condition**: compressed narrative of possible deterioration.
+- **Escalated risk**: major pressure point under stress.
+- **If unaddressed**: plausible downstream consequence narrative.
+
+### UX Notes
+
+- Panel is hidden until results are available.
+- Presentation uses warning visual language and short executive phrasing.
+- Explicit disclaimers communicate non-forecast, non-validated status.
+- Intended handoff is Sponsor Lab for calibrated internal simulations.

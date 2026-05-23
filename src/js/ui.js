@@ -338,9 +338,15 @@
     const driverLabel = (t.driverLabels && t.driverLabels[mismatch.primaryDriver]) || mismatch.primaryDriver || '-';
     const mismatchScore = Number.isFinite(mismatch.mismatchScore) ? mismatch.mismatchScore.toFixed(2) : '-';
 
-    $('worstConditionValue').textContent = t['worstCondition' + riskKey];
+    const driverKey = mismatch.primaryDriver || 'fallback';
+    const conditionKey = `worstConditionDriver_${driverKey}`;
+    const consequenceKey = `worstConsequenceDriver_${driverKey}`;
+    const defaultCondition = t['worstCondition' + riskKey];
+    const defaultConsequence = t['worstConsequence' + riskKey];
+
+    $('worstConditionValue').textContent = t[conditionKey] || defaultCondition;
     $('worstRiskValue').textContent = `${t.worstDriverPrefix}: ${driverLabel}; ${window.i18n.tr[window.i18n.lang].mismatchScoreLabel} ${mismatchScore}.`;
-    $('worstConsequenceValue').textContent = t['worstConsequence' + riskKey];
+    $('worstConsequenceValue').textContent = t[consequenceKey] || defaultConsequence;
     const sponsorLead = $('whatIfSponsorLead');
     if(sponsorLead){
       sponsorLead.textContent = `${t.whatIfSponsorLead} ${t.worstDriverPrefix}: ${driverLabel}.`;

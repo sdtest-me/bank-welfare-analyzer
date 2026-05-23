@@ -22,6 +22,16 @@
   *Одинаковая среда работы — разные институциональные результаты. В этом сравнении BWA Eldik (Welfare Score 58) и KICB (Welfare Score 79) показывают, как управленческие и портфельные практики могут расходиться в одной стране. Смотрите на Welfare Score вместе с Mismatch Score, чтобы отделять структурное давление от факторов конкретного банка.*
 - **Capture note (preset + settings):** Load **Eldik** first, then enter JSON with **Eldik, KICB, and Optima** in **Compare Banks** and click **Build ranking**. Keep the same country filter and default pilot weights before capture.
 
+**JSON to paste into the Compare Banks field:**
+
+```json
+[
+  {"bn":"Eldik Bank","pg":208,"cp":74.8,"di":100,"im":17,"ix":32,"ig":12.9,"pr":25.7,"gd":2513,"as":37361,"cc":53,"cb":20,"co2":27},
+  {"bn":"KICB","pg":18,"cp":30,"di":30,"im":15,"ix":24,"ig":7,"pr":23,"gd":2513,"as":39000,"cc":40,"cb":45,"co2":15},
+  {"bn":"Optima Bank","pg":34,"cp":28,"di":40,"im":18,"ix":30,"ig":9,"pr":24,"gd":2513,"as":36000,"cc":55,"cb":30,"co2":15}
+]
+```
+
 ## Screenshot 2 — Spiral Gap Analysis (red-dominant bank, extraction pressure narrative)
 - **Filename suggestion:** `linkedin_s2_gap-analysis_extraction-pressure.png`
 - **What to highlight with annotations:**
